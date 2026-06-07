@@ -63,4 +63,5 @@ EXPOSE 3001
 
 VOLUME ["/app/backend/data", "/app/backend/uploads"]
 
-CMD ["node", "src/index.js"]
+# Keep container alive on crash so we can read the error logs in Coolify
+CMD ["sh", "-c", "node src/index.js || echo '!!! NODE PROCESS CRASHED !!!' && sleep 86400"]
