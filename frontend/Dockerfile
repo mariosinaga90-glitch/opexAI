@@ -6,8 +6,8 @@ WORKDIR /app
 # Copy package files
 COPY package.json package-lock.json* ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies (force include devDependencies so Vite is available)
+RUN npm install --include=dev
 
 # Copy the rest of the application
 COPY . .
