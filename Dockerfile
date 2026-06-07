@@ -53,6 +53,7 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist/
 # Rebuild native modules for this exact alpine image
 WORKDIR /app/backend
 RUN npm rebuild better-sqlite3
+RUN npm install drizzle-kit
 
 # Create data and uploads directories
 RUN mkdir -p /app/backend/data /app/backend/uploads
@@ -64,8 +65,7 @@ ENV DATABASE_PATH=/app/backend/data/opex.db
 
 EXPOSE 3001
 
-# Install drizzle-kit globally to run schema pushes in production
-RUN npm install -g drizzle-kit
+
 
 VOLUME ["/app/backend/data", "/app/backend/uploads"]
 
