@@ -6,14 +6,16 @@ async function seed() {
 
   // 1. Users
   const userRows = [
-    { id: 'USR-001', name: 'Admin Utama', email: 'admin@opex.ai', role: 'admin', team: 'Management' },
-    { id: 'USR-002', name: 'Andi S.', email: 'andi@opex.ai', role: 'employee', cluster: 'Commercial', microCluster: 'B2B', team: 'TS' },
-    { id: 'USR-003', name: 'Rina M.', email: 'rina@opex.ai', role: 'employee', cluster: 'Commercial', microCluster: 'Marketing', team: 'MBP' },
-    { id: 'USR-004', name: 'Budi Santoso', email: 'budi@opex.ai', role: 'employee', cluster: 'Operations', microCluster: 'Tech', team: 'PM' },
-    { id: 'USR-005', name: 'Siti K.', email: 'siti@opex.ai', role: 'employee', cluster: 'Operations', microCluster: 'Support', team: 'TS' },
+    { id: 'USR-001', name: 'Admin Utama', email: 'admin@opex.ai', password: '123456', role: 'admin', team: 'Management' },
+    { id: 'USR-002', name: 'Andi S.', email: 'andi@opex.ai', password: '123456', role: 'employee', cluster: 'Commercial', microCluster: 'B2B', team: 'TS' },
+    { id: 'USR-003', name: 'Rina M.', email: 'rina@opex.ai', password: '123456', role: 'employee', cluster: 'Commercial', microCluster: 'Marketing', team: 'MBP' },
+    { id: 'USR-004', name: 'Budi Santoso', email: 'budi@opex.ai', password: '123456', role: 'employee', cluster: 'Operations', microCluster: 'Tech', team: 'PM' },
+    { id: 'USR-005', name: 'Siti K.', email: 'siti@opex.ai', password: '123456', role: 'employee', cluster: 'Operations', microCluster: 'Support', team: 'TS' },
   ];
-  
-  await db.insert(users).values(userRows).onConflictDoNothing();
+  await db.insert(users).values(userRows).onConflictDoUpdate({
+    target: users.id,
+    set: { password: '123456' }
+  });
 
   // 2. Fund Requests
   const requestRows = [
