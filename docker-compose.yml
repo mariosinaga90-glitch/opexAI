@@ -1,0 +1,50 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: backend
+    container_name: opexai-backend
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - HOST=0.0.0.0
+      - DATABASE_PATH=/app/data/opex.db
+      - CORS_ORIGIN=http://localhost,http://localhost:80
+    volumes:
+      - opexai-data:/app/data
+      - opexai-uploads:/app/uploads
+    networks:
+      - opexai-net
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/api/admin/users"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: frontend
+    container_name: opexai-frontend
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-80}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - opexai-net
+
+volumes:
+  opexai-data:
+    driver: local
+  opexai-uploads:
+    driver: local
+
+networks:
+  opexai-net:
+    driver: bridge

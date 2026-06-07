@@ -1,7 +1,7 @@
 import React from 'react';
 import './Hero.css';
 
-const Hero = () => {
+const Hero = ({ onOpenLogin }) => {
   return (
     <section className="hero">
       <div className="container hero-container">
@@ -12,8 +12,8 @@ const Hero = () => {
             Streamline requests, track real-time approvals, and manage expense reports seamlessly for your entire team. Built for speed, clarity, and accountability.
           </p>
           <div className="hero-cta delay-2">
-            <button className="btn btn-primary btn-lg">Login to App</button>
-            <button className="btn btn-secondary btn-lg">View Documentation</button>
+            <button className="btn btn-primary btn-lg" onClick={onOpenLogin}>Login to App</button>
+            <button className="btn btn-secondary btn-lg" onClick={() => window.location.href = '#features'}>View Features</button>
           </div>
           
           <div className="stats delay-3">

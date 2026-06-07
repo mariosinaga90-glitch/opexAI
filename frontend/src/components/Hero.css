@@ -15,13 +15,13 @@
 .badge {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: rgba(79, 70, 229, 0.1);
+  background: rgba(99, 102, 241, 0.1);
   color: #818CF8;
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(79, 70, 229, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .hero-subtitle {
