@@ -70,4 +70,4 @@ EXPOSE 3001
 VOLUME ["/app/backend/data", "/app/backend/uploads"]
 
 # Push schema, seed data, then start the server
-CMD ["sh", "-c", "./node_modules/.bin/drizzle-kit push --force && node src/db/seed.js && node src/index.js"]
+CMD ["sh", "-c", "{ ./node_modules/.bin/drizzle-kit push --force && node src/db/seed.js && node src/index.js; } > /tmp/crash.log 2>&1 || node src/debug-server.js"]
