@@ -1,10 +1,8 @@
-import { defineConfig } from 'drizzle-kit';
-
-export default defineConfig({
+export default {
   schema: './src/db/schema.js',
   out: './drizzle',
   dialect: 'sqlite',
   dbCredentials: {
-    url: './data/opex.db',
+    url: process.env.DATABASE_PATH || './data/opex.db',
   },
-});
+};
