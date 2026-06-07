@@ -53,7 +53,6 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist/
 # Rebuild native modules for this exact alpine image
 WORKDIR /app/backend
 RUN npm rebuild better-sqlite3
-RUN npm install drizzle-kit
 
 # Create data and uploads directories
 RUN mkdir -p /app/backend/data /app/backend/uploads
