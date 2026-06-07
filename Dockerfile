@@ -23,6 +23,9 @@ FROM node:20-alpine AS backend-builder
 WORKDIR /app/backend
 
 COPY backend/package.json backend/package-lock.json* ./
+
+# Install python and build tools for better-sqlite3 compilation
+RUN apk add --no-cache python3 make g++
 RUN npm ci --omit=dev
 
 COPY backend/src ./src
