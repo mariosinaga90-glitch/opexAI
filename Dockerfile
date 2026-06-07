@@ -70,4 +70,4 @@ RUN npm install -g drizzle-kit
 VOLUME ["/app/backend/data", "/app/backend/uploads"]
 
 # Push schema, seed data, then start the server
-CMD ["sh", "-c", "{ npx drizzle-kit push:sqlite || npx drizzle-kit push; } && node src/db/seed.js && node src/index.js"]
+CMD ["sh", "-c", "npx drizzle-kit push --force && node src/db/seed.js && node src/index.js"]
