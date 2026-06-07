@@ -64,7 +64,10 @@ ENV DATABASE_PATH=/app/backend/data/opex.db
 
 EXPOSE 3001
 
+# Install drizzle-kit globally to run schema pushes in production
+RUN npm install -g drizzle-kit
+
 VOLUME ["/app/backend/data", "/app/backend/uploads"]
 
-# Run main app, redirect stderr to crash.log, and if it fails, start the debug web server
-CMD ["sh", "-c", "node src/index.js 2> /tmp/crash.log || node src/debug-server.js"]
+# Push schema, seed data, then start the server
+CMD ["sh", "-c", "npx drizzle-kit push && node src/db/seed.js && node src/index.js 2> /tmp/crash.log || node src/debug-server.js"]
