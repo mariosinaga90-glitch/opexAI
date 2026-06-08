@@ -322,8 +322,7 @@ function AdminReportView() {
               <tr>
                 <th>ID Laporan</th>
                 <th>Terkait Pengajuan</th>
-                <th>Pembuat</th>
-                <th>Role Team</th>
+                <th>Pembuat & Role</th>
                 <th>Kategori</th>
                 <th>Total Terpakai</th>
                 <th>Tanggal Submit</th>
@@ -333,16 +332,20 @@ function AdminReportView() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : reports.length === 0 ? (
-                <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
+                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
               ) : (
                 reports.map((rep, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
                     <td><span className="text-primary">{rep.reqId}</span></td>
-                    <td>{rep.user}</td>
-                    <td><span className="team-badge">{rep.team || '-'}</span></td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        <span className="font-medium">{rep.user}</span>
+                        <span className="team-badge" style={{ width: 'fit-content' }}>{rep.team || '-'}</span>
+                      </div>
+                    </td>
                     <td>{rep.categoryLabel}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
                     <td>{rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-'}</td>

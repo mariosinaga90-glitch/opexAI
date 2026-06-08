@@ -201,11 +201,11 @@ function EmployeeDashboardOverview() {
               <tr>
                 <th>ID Pengajuan</th>
                 <th>Judul Pengajuan</th>
+                <th>Tanggal</th>
                 <th>Dana Diajukan</th>
                 <th>Dana Terpakai</th>
                 <th>Sisa Dana / Selisih</th>
-                <th>Status Pengajuan</th>
-                <th>Status Laporan</th>
+                <th>Status (Req & Rep)</th>
               </tr>
             </thead>
             <tbody>
@@ -218,20 +218,21 @@ function EmployeeDashboardOverview() {
                   <tr key={index}>
                     <td><span className="text-muted">{data.id}</span></td>
                     <td className="font-medium">{data.title}</td>
+                    <td>{data.createdAt ? formatDateTime(data.createdAt) : data.date ? formatDateTime(data.date) : '-'}</td>
                     <td>Rp {data.requestedAmount.toLocaleString('id-ID')}</td>
                     <td>Rp {data.reportedAmount.toLocaleString('id-ID')}</td>
                     <td className="font-medium">
                       Rp {data.difference.toLocaleString('id-ID')}
                     </td>
                     <td>
-                      <span className={`status-badge status-${data.requestStatus.toLowerCase().replace(' ', '-')}`}>
-                        {data.requestStatus}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`status-badge status-${data.reportStatus.toLowerCase().replace(' ', '-')}`}>
-                        {data.reportStatus}
-                      </span>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        <span className={`status-badge status-${data.requestStatus.toLowerCase().replace(' ', '-')}`} style={{ width: 'fit-content' }}>
+                          Req: {data.requestStatus}
+                        </span>
+                        <span className={`status-badge status-${data.reportStatus.toLowerCase().replace(' ', '-')}`} style={{ width: 'fit-content' }}>
+                          Rep: {data.reportStatus}
+                        </span>
+                      </div>
                     </td>
                   </tr>
                 ))

@@ -117,8 +117,7 @@ function AdminDashboardOverview() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Pengaju</th>
-                <th>Role Team</th>
+                <th>Pengaju & Role</th>
                 <th>TO Cluster</th>
                 <th>Kategori</th>
                 <th>Tanggal</th>
@@ -128,9 +127,9 @@ function AdminDashboardOverview() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : pendingRequests.length === 0 ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan pending.</td></tr>
+                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan pending.</td></tr>
               ) : (() => {
                 const filteredReqs = pendingRequests.filter(req => {
                   const matchesName = req.user?.toLowerCase().includes(searchName.toLowerCase()) || false;
@@ -139,14 +138,18 @@ function AdminDashboardOverview() {
                 });
                 
                 if (filteredReqs.length === 0) {
-                  return <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan yang sesuai filter.</td></tr>;
+                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan yang sesuai filter.</td></tr>;
                 }
                 
                 return filteredReqs.map((req, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{req.id}</span></td>
-                    <td className="font-medium">{req.user}</td>
-                    <td><span className="team-badge">{req.team}</span></td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        <span className="font-medium">{req.user}</span>
+                        <span className="team-badge" style={{ width: 'fit-content' }}>{req.team}</span>
+                      </div>
+                    </td>
                     <td>{req.toCluster}</td>
                     <td>{req.categoryLabel}</td>
                     <td>{req.createdAt ? formatDateTime(req.createdAt) : req.date ? formatDateTime(req.date) : '-'}</td>
