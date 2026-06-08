@@ -3,6 +3,7 @@ import { ArrowLeft, Check, X, Search, Filter, Download, FileSpreadsheet } from '
 import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import { API_BASE_URL } from '../../config';
+import { getFileUrl } from '../../utils/fileUrl';
 
 function AdminRequestView() {
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -237,17 +238,17 @@ function AdminRequestView() {
               {selectedRequest.attachments?.map(att => (
                 <div key={att.id} style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
                   {att.fileType && att.fileType.includes('pdf') ? (
-                    <a href={att.filePath} target="_blank" rel="noreferrer" className="btn btn-secondary">
+                    <a href={getFileUrl(att.filePath)} target="_blank" rel="noreferrer" className="btn btn-secondary">
                       Lihat Dokumen PDF
                     </a>
                   ) : (
-                    <img src={att.filePath} alt="Lampiran" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                    <img src={getFileUrl(att.filePath)} alt="Lampiran" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                   )}
                 </div>
               ))}
               {selectedRequest.photo && (!selectedRequest.attachments || selectedRequest.attachments.length === 0) && (
                 <div style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
-                  <img src={selectedRequest.photo} alt="Lampiran" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                  <img src={getFileUrl(selectedRequest.photo)} alt="Lampiran" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                 </div>
               )}
             </div>

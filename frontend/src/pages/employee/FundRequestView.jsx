@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Plus, ArrowLeft, Download, FileText, X, UploadCloud, Trash2 } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import { API_BASE_URL } from '../../config';
+import { getFileUrl } from '../../utils/fileUrl';
 
 function FundRequestView({ onBack }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -275,17 +276,17 @@ function FundRequestView({ onBack }) {
                 {selectedRequest.attachments?.map(att => (
                   <div key={att.id} style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(0,0,0,0.02)' }}>
                     {att.fileType && att.fileType.includes('pdf') ? (
-                      <a href={att.filePath} target="_blank" rel="noreferrer" className="btn btn-secondary">
+                      <a href={getFileUrl(att.filePath)} target="_blank" rel="noreferrer" className="btn btn-secondary">
                         Lihat Dokumen PDF
                       </a>
                     ) : (
-                      <img src={att.filePath} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                      <img src={getFileUrl(att.filePath)} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                     )}
                   </div>
                 ))}
                 {selectedRequest.photo && (!selectedRequest.attachments || selectedRequest.attachments.length === 0) && (
                   <div style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(0,0,0,0.02)' }}>
-                    <img src={selectedRequest.photo} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                    <img src={getFileUrl(selectedRequest.photo)} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                   </div>
                 )}
               </div>
