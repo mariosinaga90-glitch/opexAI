@@ -1,5 +1,5 @@
 import { db } from './index.js';
-import { users, fundRequests, requestItems, requestSites, fundReports, reportItems } from './schema.js';
+import { users, fundRequests, requestItems, requestSites, fundReports, reportItems, attachments } from './schema.js';
 import { eq } from 'drizzle-orm';
 
 async function seed() {
