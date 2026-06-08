@@ -9,7 +9,7 @@ const Footer = () => {
           <div className="footer-brand">
             <div className="logo">
               <span className="logo-icon">▲</span>
-              <span className="logo-text">OpexAI</span>
+              <span className="logo-text">OpexTac</span>
             </div>
             <p>Internal Operational Fund Management System.</p>
           </div>
@@ -31,7 +31,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} OpexAI Internal Tool. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} OpexTac Internal Tool. All rights reserved.</p>
         </div>
       </div>
     </footer>

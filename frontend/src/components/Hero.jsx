@@ -6,7 +6,7 @@ const Hero = ({ onOpenLogin }) => {
     <section className="hero">
       <div className="container hero-container">
         <div className="hero-content animate-fade-in-up">
-          <div className="badge">✨ OpexAI Internal Tool</div>
+          <div className="badge">✨ OpexTac Internal Tool</div>
           <h1>Modernize Your<br/>Operational Funds</h1>
           <p className="hero-subtitle delay-1">
             Streamline requests, track real-time approvals, and manage expense reports seamlessly for your entire team. Built for speed, clarity, and accountability.

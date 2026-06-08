@@ -17,7 +17,7 @@ const Navbar = ({ onOpenLogin }) => {
       <div className="container navbar-container">
         <div className="logo">
           <span className="logo-icon">▲</span>
-          <span className="logo-text">OpexAI</span>
+          <span className="logo-text">OpexTac</span>
         </div>
         <div className="nav-links">
           <a href="#features" className="nav-link">Features</a>
