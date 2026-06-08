@@ -4,6 +4,7 @@ import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 function AdminReportView() {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -120,7 +121,7 @@ function AdminReportView() {
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Submit</p>
-                <p className="font-medium">{selectedReport.createdAt ? new Date(selectedReport.createdAt).toLocaleDateString() : selectedReport.date ? new Date(selectedReport.date).toLocaleDateString() : '-'}</p>
+                <p className="font-medium">{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p>
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Kategori Kebutuhan</p>
@@ -203,7 +204,7 @@ function AdminReportView() {
                 {selectedReport.items?.map((item, i) => (
                   <tr key={i}>
                     <td>{i + 1}</td>
-                    <td>{item.transferDate ? new Date(item.transferDate).toLocaleDateString() : '-'}</td>
+                    <td>{item.transferDate ? formatDateTime(item.transferDate) : '-'}</td>
                     <td>{item.categoryLabel || item.category || '-'}</td>
                     <td>{item.team ? item.team.toUpperCase() : '-'}</td>
                     <td className="font-medium">{item.description}</td>
@@ -295,7 +296,7 @@ function AdminReportView() {
               'TO Cluster': rep.toCluster || '-',
               'Kategori': rep.categoryLabel || '-',
               'Total Terpakai': rep.totalUsed || 0,
-              'Tanggal Submit': rep.date ? new Date(rep.date).toLocaleDateString() : '-',
+              'Tanggal Submit': rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-',
               'Status': rep.status || '-',
             }));
             const ws = XLSX.utils.json_to_sheet(excelData);
@@ -344,7 +345,7 @@ function AdminReportView() {
                     <td><span className="team-badge">{rep.team || '-'}</span></td>
                     <td>{rep.categoryLabel}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
-                    <td>{rep.date ? new Date(rep.date).toLocaleDateString() : '-'}</td>
+                    <td>{rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-'}</td>
                     <td>
                       <span className={`status-badge status-${rep.status === 'Revision' ? 'warning' : 'pending'}`}>
                         {rep.status}

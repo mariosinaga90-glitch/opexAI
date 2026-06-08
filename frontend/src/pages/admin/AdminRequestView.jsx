@@ -4,6 +4,7 @@ import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 function AdminRequestView() {
   const [selectedRequest, setSelectedRequest] = useState(null);
@@ -131,7 +132,7 @@ function AdminRequestView() {
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Pengajuan</p>
-                <p className="font-medium">{selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString() : selectedRequest.date}</p>
+                <p className="font-medium">{selectedRequest.createdAt ? formatDateTime(selectedRequest.createdAt) : formatDateTime(selectedRequest.date)}</p>
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Kategori Kebutuhan</p>
@@ -300,7 +301,7 @@ function AdminRequestView() {
             'Kategori': req.categoryLabel,
             'Judul': req.title,
             'Jumlah': req.amount,
-            'Tanggal': req.date ? new Date(req.date).toLocaleDateString() : '-',
+            'Tanggal': req.date || req.createdAt ? formatDateTime(req.date || req.createdAt) : '-',
             'Status': req.status,
           }));
           const ws = XLSX.utils.json_to_sheet(excelData);

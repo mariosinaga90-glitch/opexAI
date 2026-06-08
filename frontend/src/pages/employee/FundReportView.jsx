@@ -3,6 +3,7 @@ import { UploadCloud, Plus, Trash2, ArrowLeft, FileText, Download, X } from 'luc
 import html2pdf from 'html2pdf.js';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 function FundReportView() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -242,7 +243,7 @@ function FundReportView() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
               <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>ID Laporan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.id}</p></div>
-              <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal Submit</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.createdAt ? new Date(selectedReport.createdAt).toLocaleDateString() : selectedReport.date ? new Date(selectedReport.date).toLocaleDateString() : '-'}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal Submit</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p></div>
               <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Terkait Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem', color: 'var(--primary)' }}>{selectedReport.reqId || selectedReport.requestId}</p></div>
               <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Status</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.status}</p></div>
           </div>
@@ -333,7 +334,7 @@ function FundReportView() {
                     {selectedReport.items.map((item, i) => (
                       <tr key={i}>
                         <td>{i + 1}</td>
-                        <td>{item.transferDate ? new Date(item.transferDate).toLocaleDateString() : '-'}</td>
+                        <td>{item.transferDate ? formatDateTime(item.transferDate) : '-'}</td>
                         <td>{item.categoryLabel || item.category || '-'}</td>
                         <td>{item.team ? item.team.toUpperCase() : '-'}</td>
                         <td className="font-medium">{item.description}</td>
@@ -571,7 +572,7 @@ function FundReportView() {
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
                     <td><span className="text-primary">{rep.reqId || rep.requestId}</span></td>
-                    <td>{rep.createdAt ? new Date(rep.createdAt).toLocaleDateString() : rep.date ? new Date(rep.date).toLocaleDateString() : '-'}</td>
+                    <td>{rep.createdAt ? formatDateTime(rep.createdAt) : rep.date ? formatDateTime(rep.date) : '-'}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
                     <td>
                       <span className={`status-badge status-${rep.status?.toLowerCase().replace(' ', '-')}`}>

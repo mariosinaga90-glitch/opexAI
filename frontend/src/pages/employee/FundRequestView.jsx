@@ -3,6 +3,7 @@ import { Plus, ArrowLeft, Download, FileText, X, UploadCloud, Trash2 } from 'luc
 import html2pdf from 'html2pdf.js';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 function FundRequestView({ onBack }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -179,7 +180,7 @@ function FundRequestView({ onBack }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
             <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>ID Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.id}</p></div>
-            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.createdAt ? new Date(selectedRequest.createdAt).toLocaleDateString() : '-'}</p></div>
+            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.createdAt ? formatDateTime(selectedRequest.createdAt) : '-'}</p></div>
             <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Judul Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.title}</p></div>
             <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Status</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.status}</p></div>
           </div>
@@ -497,7 +498,7 @@ function FundRequestView({ onBack }) {
                   <tr key={index}>
                     <td><span className="text-muted">{req.id}</span></td>
                     <td className="font-medium">{req.title}</td>
-                    <td>{req.createdAt ? new Date(req.createdAt).toLocaleDateString() : '-'}</td>
+                    <td>{req.createdAt ? formatDateTime(req.createdAt) : '-'}</td>
                     <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
                     <td>
                       <span className={`status-badge status-${req.status?.toLowerCase()}`}>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, Clock, CheckCircle, FileWarning } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { formatDateTime } from '../utils/dateFormatter';
 import FundRequestView from './employee/FundRequestView';
 import FundReportView from './employee/FundReportView';
 
@@ -263,7 +264,7 @@ function EmployeeDashboardOverview() {
                 <tr key={index}>
                   <td><span className="text-muted">{req.id}</span></td>
                   <td className="font-medium">{req.title}</td>
-                  <td>{req.createdAt ? new Date(req.createdAt).toLocaleDateString() : '-'}</td>
+                  <td>{req.createdAt ? formatDateTime(req.createdAt) : '-'}</td>
                   <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
                   <td>
                     <span className={`status-badge status-${req.status?.toLowerCase()}`}>
