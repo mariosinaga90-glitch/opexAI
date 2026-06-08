@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../config';
 import { Inbox, CheckCircle, AlertTriangle, Users } from 'lucide-react';
+import { formatDateTime } from '../utils/dateFormatter';
 import AdminRequestView from './admin/AdminRequestView';
 import AdminReportView from './admin/AdminReportView';
 import AdminUserView from './admin/AdminUserView';
@@ -120,15 +121,16 @@ function AdminDashboardOverview() {
                 <th>Role Team</th>
                 <th>TO Cluster</th>
                 <th>Kategori</th>
+                <th>Tanggal</th>
                 <th>Jumlah</th>
                 <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : pendingRequests.length === 0 ? (
-                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan pending.</td></tr>
+                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan pending.</td></tr>
               ) : (() => {
                 const filteredReqs = pendingRequests.filter(req => {
                   const matchesName = req.user?.toLowerCase().includes(searchName.toLowerCase()) || false;
@@ -137,7 +139,7 @@ function AdminDashboardOverview() {
                 });
                 
                 if (filteredReqs.length === 0) {
-                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan yang sesuai filter.</td></tr>;
+                  return <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan yang sesuai filter.</td></tr>;
                 }
                 
                 return filteredReqs.map((req, index) => (
@@ -147,6 +149,7 @@ function AdminDashboardOverview() {
                     <td><span className="team-badge">{req.team}</span></td>
                     <td>{req.toCluster}</td>
                     <td>{req.categoryLabel}</td>
+                    <td>{req.createdAt ? formatDateTime(req.createdAt) : req.date ? formatDateTime(req.date) : '-'}</td>
                     <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
                     <td className="action-cell">
                       <button className="btn btn-success btn-xs" onClick={() => navigate('/admin#pengajuan')}>Review</button>
