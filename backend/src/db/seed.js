@@ -57,6 +57,8 @@ async function seed() {
     { id: 'RPI-01', reportId: 'REP-001', description: 'Kabel Fiber Optik 100m', team: 'MBP', category: 'material', transferDate: '2026-05-25', unitPrice: 600000, quantity: 2, total: 1200000 },
     { id: 'RPI-02', reportId: 'REP-002', description: 'BBM Pertamax', team: 'TS', category: 'bbm-mobil', transferDate: '2026-06-02', unitPrice: 240000, quantity: 2, total: 480000 },
     { id: 'RPI-03', reportId: 'REP-003', description: 'Snack Box', team: 'PM', category: 'homebase-dop', transferDate: '2026-05-29', unitPrice: 35000, quantity: 10, total: 350000 }
+  ]).onConflictDoNothing();
+
   // Fix any old hardcoded localhost URLs in the database
   const allAttachments = await db.select().from(attachments);
   for (const att of allAttachments) {
