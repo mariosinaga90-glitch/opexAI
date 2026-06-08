@@ -17,7 +17,7 @@ app.use(cors({
 app.use(express.json());
 
 // Serve static files for uploads
-app.use('/uploads', express.static(path.resolve('uploads')));
+app.use('/uploads', express.static(path.resolve('data/uploads')));
 
 // Serve frontend static files in production
 const frontendDistPath = path.resolve('../frontend/dist');
