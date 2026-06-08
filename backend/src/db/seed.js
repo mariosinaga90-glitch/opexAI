@@ -57,50 +57,13 @@ async function seed() {
     { id: 'RPI-01', reportId: 'REP-001', description: 'Kabel Fiber Optik 100m', team: 'MBP', category: 'material', transferDate: '2026-05-25', unitPrice: 600000, quantity: 2, total: 1200000 },
     { id: 'RPI-02', reportId: 'REP-002', description: 'BBM Pertamax', team: 'TS', category: 'bbm-mobil', transferDate: '2026-06-02', unitPrice: 240000, quantity: 2, total: 480000 },
     { id: 'RPI-03', reportId: 'REP-003', description: 'Snack Box', team: 'PM', category: 'homebase-dop', transferDate: '2026-05-29', unitPrice: 35000, quantity: 10, total: 350000 }
-  ]).onConflictDoNothing();
-
   // Fix any old hardcoded localhost URLs in the database
-  const requests = await db.select().from(fundRequests);
-  for (const req of requests) {
-    let changed = false;
-    let newPhoto = req.photo;
-    let newAttachments = req.attachments;
-    
-    if (newPhoto && typeof newPhoto === 'string' && newPhoto.includes('http://localhost:3001')) {
-      newPhoto = newPhoto.replace(/http:\/\/localhost:3001/g, '');
-      changed = true;
-    }
-    
-    if (newAttachments && typeof newAttachments === 'string' && newAttachments.includes('http://localhost:3001')) {
-      newAttachments = newAttachments.replace(/http:\/\/localhost:3001/g, '');
-      changed = true;
-    }
-    
-    if (changed) {
-      await db.update(fundRequests).set({ photo: newPhoto, attachments: newAttachments }).where(eq(fundRequests.id, req.id));
-      console.log(`Fixed URLs for request ${req.id}`);
-    }
-  }
-
-  const reports = await db.select().from(fundReports);
-  for (const rep of reports) {
-    let changed = false;
-    let newPhoto = rep.photo;
-    let newAttachments = rep.attachments;
-    
-    if (newPhoto && typeof newPhoto === 'string' && newPhoto.includes('http://localhost:3001')) {
-      newPhoto = newPhoto.replace(/http:\/\/localhost:3001/g, '');
-      changed = true;
-    }
-    
-    if (newAttachments && typeof newAttachments === 'string' && newAttachments.includes('http://localhost:3001')) {
-      newAttachments = newAttachments.replace(/http:\/\/localhost:3001/g, '');
-      changed = true;
-    }
-    
-    if (changed) {
-      await db.update(fundReports).set({ photo: newPhoto, attachments: newAttachments }).where(eq(fundReports.id, rep.id));
-      console.log(`Fixed URLs for report ${rep.id}`);
+  const allAttachments = await db.select().from(attachments);
+  for (const att of allAttachments) {
+    if (att.filePath && att.filePath.includes('http://localhost:3001')) {
+      const newPath = att.filePath.replace(/http:\/\/localhost:3001/g, '');
+      await db.update(attachments).set({ filePath: newPath }).where(eq(attachments.id, att.id));
+      console.log(`Fixed URL for attachment ${att.id}`);
     }
   }
 
