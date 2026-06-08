@@ -71,7 +71,7 @@ function DashboardLayout({ role }) {
         <div className="sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="logo-container">
             <span className="logo-text">Opex</span>
-            <span className="logo-badge">AI</span>
+            <span className="logo-badge">Tac</span>
           </div>
           {isSidebarOpen && (
             <button className="mobile-toggle" onClick={closeSidebar}>
