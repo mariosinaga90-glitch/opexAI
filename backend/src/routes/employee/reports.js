@@ -61,6 +61,15 @@ router.post('/', async (req, res) => {
     // Generate simple ID (e.g., REP-12345)
     const newId = `REP-${Math.floor(Math.random() * 90000) + 10000}`;
 
+    // Merge chosen date with real-time hours/minutes
+    let finalCreatedAt = new Date();
+    if (reportDate) {
+      const parsedDate = new Date(reportDate);
+      if (!isNaN(parsedDate)) {
+        finalCreatedAt.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+      }
+    }
+
     // Insert Report
     await db.insert(fundReports).values({
       id: newId,
@@ -76,7 +85,7 @@ router.post('/', async (req, res) => {
       kmBefore: kmBefore ? parseFloat(kmBefore) : null,
       kmAfter: kmAfter ? parseFloat(kmAfter) : null,
       detail,
-      createdAt: reportDate ? new Date(reportDate) : new Date(),
+      createdAt: finalCreatedAt,
     });
 
     // Insert Items

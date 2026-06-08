@@ -59,6 +59,15 @@ router.post('/', async (req, res) => {
     // Generate simple ID (e.g., REQ-12345)
     const newId = `REQ-${Math.floor(Math.random() * 90000) + 10000}`;
 
+    // Merge chosen date with real-time hours/minutes
+    let finalCreatedAt = new Date();
+    if (requestDate) {
+      const parsedDate = new Date(requestDate);
+      if (!isNaN(parsedDate)) {
+        finalCreatedAt.setFullYear(parsedDate.getFullYear(), parsedDate.getMonth(), parsedDate.getDate());
+      }
+    }
+
     // Insert Request
     await db.insert(fundRequests).values({
       id: newId,
@@ -74,7 +83,7 @@ router.post('/', async (req, res) => {
       kmBefore: kmBefore ? parseFloat(kmBefore) : null,
       kmAfter: kmAfter ? parseFloat(kmAfter) : null,
       detail,
-      createdAt: requestDate ? new Date(requestDate) : new Date(),
+      createdAt: finalCreatedAt,
     });
 
     // Insert Items
