@@ -42,7 +42,7 @@ router.post('/', upload.single('file'), (req, res) => {
     }
     
     // Create the public URL
-    const fileUrl = `http://localhost:3001/uploads/${req.file.filename}`;
+    const fileUrl = `/uploads/${req.file.filename}`;
     
     res.json({
       success: true,
