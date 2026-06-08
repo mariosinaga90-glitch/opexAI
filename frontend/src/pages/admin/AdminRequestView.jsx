@@ -348,6 +348,7 @@ function AdminRequestView() {
                 <th>Role Team</th>
                 <th>TO Cluster</th>
                 <th>Kategori</th>
+                <th>Tanggal</th>
                 <th>Jumlah</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -355,9 +356,9 @@ function AdminRequestView() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : requests.length === 0 ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan ditemukan.</td></tr>
+                <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan ditemukan.</td></tr>
               ) : (
                 requests
                   .filter(req => statusFilter === 'all' || req.status?.toLowerCase() === statusFilter)
@@ -368,6 +369,7 @@ function AdminRequestView() {
                     <td><span className="team-badge">{req.team || '-'}</span></td>
                     <td>{req.toCluster || '-'}</td>
                     <td>{req.categoryLabel}</td>
+                    <td>{req.createdAt ? formatDateTime(req.createdAt) : req.date ? formatDateTime(req.date) : '-'}</td>
                     <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
                     <td>
                       <span className={`status-badge status-${req.status?.toLowerCase()}`}>
