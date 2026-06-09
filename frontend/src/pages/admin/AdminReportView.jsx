@@ -356,9 +356,9 @@ function AdminReportView() {
               onChange={(e) => setFilterCluster(e.target.value)}
             >
               <option value="all">Semua TO Cluster</option>
-              {[...new Set(reports.map(r => r.toCluster).filter(Boolean))].map((cluster, idx) => (
-                <option key={`cluster-${idx}`} value={cluster}>{cluster}</option>
-              ))}
+              <option value="TO Kab. Bekasi">Kab. Bekasi</option>
+              <option value="TO Karawang">Karawang</option>
+              <option value="TO Purwakarta">Purwakarta</option>
             </select>
             <select 
               className="form-control" 
