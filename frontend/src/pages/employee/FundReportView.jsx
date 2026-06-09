@@ -557,7 +557,8 @@ function FundReportView() {
               <tr>
                 <th>ID</th>
                 <th>Terkait Pengajuan</th>
-                <th>Tgl Pengajuan & Pelaporan</th>
+                <th>Tanggal Pengajuan</th>
+                <th>Tanggal Pelaporan</th>
                 <th>Total Terpakai</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -573,12 +574,8 @@ function FundReportView() {
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
                     <td><span className="text-primary">{rep.reqId || rep.requestId}</span></td>
-                    <td>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-                        <span className="font-medium" style={{ fontSize: '0.85rem' }}>Req: {rep.requestDate ? formatDateTime(rep.requestDate) : '-'}</span>
-                        <span className="text-muted" style={{ fontSize: '0.85rem' }}>Rep: {rep.createdAt ? formatDateTime(rep.createdAt) : rep.date ? formatDateTime(rep.date) : '-'}</span>
-                      </div>
-                    </td>
+                    <td>{rep.requestDate ? formatDateTime(rep.requestDate) : '-'}</td>
+                    <td>{rep.createdAt ? formatDateTime(rep.createdAt) : rep.date ? formatDateTime(rep.date) : '-'}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
                     <td>
                       <span className={`status-badge status-${rep.status?.toLowerCase().replace(' ', '-')}`}>
