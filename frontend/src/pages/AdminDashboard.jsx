@@ -7,6 +7,7 @@ import AdminRequestView from './admin/AdminRequestView';
 import AdminReportView from './admin/AdminReportView';
 import AdminUserView from './admin/AdminUserView';
 import AdminSettingsView from './admin/AdminSettingsView';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function AdminDashboardOverview() {
   const navigate = useNavigate();
@@ -15,7 +16,8 @@ function AdminDashboardOverview() {
     totalRequests: 0,
     pendingReview: 0,
     completedThisMonth: 0,
-    totalEmployees: 0
+    totalEmployees: 0,
+    requestsByCategory: []
   });
   const [pendingRequests, setPendingRequests] = useState([]);
   const [searchName, setSearchName] = useState('');
@@ -81,8 +83,9 @@ function AdminDashboardOverview() {
         })}
       </div>
 
-      {/* Pending Requests Table */}
-      <div className="data-section glass-panel">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+        {/* Pending Requests Table */}
+        <div className="data-section glass-panel">
         <div className="section-header" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'stretch' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h2 className="section-title" style={{ margin: 0 }}>Pengajuan Perlu Persetujuan</h2>
@@ -164,6 +167,45 @@ function AdminDashboardOverview() {
           </table>
         </div>
       </div>
+
+      {/* Pie Chart Card */}
+      <div className="glass-panel" style={{ padding: '1.5rem' }}>
+        <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Sebaran Kategori</h2>
+        {statsData.requestsByCategory && statsData.requestsByCategory.length > 0 ? (
+          <div style={{ width: '100%', height: 320 }}>
+            <ResponsiveContainer>
+              <PieChart>
+                <Pie
+                  data={statsData.requestsByCategory}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={70}
+                  outerRadius={95}
+                  paddingAngle={5}
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {statsData.requestsByCategory.map((entry, index) => {
+                    const COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
+                    return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
+                  })}
+                </Pie>
+                <Tooltip 
+                  contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                  itemStyle={{ color: '#fff' }}
+                />
+                <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px', fontSize: '0.85rem' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div style={{ height: 320, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+            Belum ada data kategori.
+          </div>
+        )}
+      </div>
+
+      </div> {/* End Grid */}
     </div>
   );
 }

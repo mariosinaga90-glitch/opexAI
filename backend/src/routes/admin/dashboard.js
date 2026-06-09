@@ -12,11 +12,18 @@ router.get('/stats', async (req, res) => {
     const completedRes = await db.select({ count: count() }).from(fundRequests).where(eq(fundRequests.status, 'Completed'));
     const totalUsersRes = await db.select({ count: count() }).from(users).where(eq(users.role, 'employee'));
 
+    // Group by categoryLabel
+    const categoryStats = await db.select({
+      name: fundRequests.categoryLabel,
+      value: count()
+    }).from(fundRequests).groupBy(fundRequests.categoryLabel);
+
     res.json({
       totalRequests: totalRequestsRes[0].count,
       pendingReview: pendingReviewRes[0].count,
       completedThisMonth: completedRes[0].count, // In a real app, filter by current month
       totalEmployees: totalUsersRes[0].count,
+      requestsByCategory: categoryStats.map(c => ({ name: c.name || 'Lainnya', value: c.value }))
     });
   } catch (error) {
     console.error(error);
