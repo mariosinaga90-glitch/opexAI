@@ -120,7 +120,7 @@ function AdminDashboardOverview() {
                 <th>Pengaju & Role</th>
                 <th>TO Cluster</th>
                 <th>Kategori</th>
-                <th>Tanggal</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
                 <th>Aksi</th>
               </tr>

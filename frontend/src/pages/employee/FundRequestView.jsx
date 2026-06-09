@@ -180,7 +180,7 @@ function FundRequestView({ onBack }) {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
             <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>ID Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.id}</p></div>
-            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.createdAt ? formatDateTime(selectedRequest.createdAt) : '-'}</p></div>
+            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.createdAt ? formatDateTime(selectedRequest.createdAt) : '-'}</p></div>
             <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Judul Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.title}</p></div>
             <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Status</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.status}</p></div>
           </div>
@@ -482,7 +482,7 @@ function FundRequestView({ onBack }) {
               <tr>
                 <th>ID</th>
                 <th>Judul Pengajuan</th>
-                <th>Tanggal</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
                 <th>Status</th>
                 <th>Aksi</th>

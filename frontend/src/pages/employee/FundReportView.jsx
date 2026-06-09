@@ -243,7 +243,7 @@ function FundReportView() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
               <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>ID Laporan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.id}</p></div>
-              <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal Submit</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p></div>
               <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Terkait Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem', color: 'var(--primary)' }}>{selectedReport.reqId || selectedReport.requestId}</p></div>
               <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Status</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedReport.status}</p></div>
           </div>
@@ -556,7 +556,7 @@ function FundReportView() {
               <tr>
                 <th>ID</th>
                 <th>Terkait Pengajuan</th>
-                <th>Tanggal Submit</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Total Terpakai</th>
                 <th>Status</th>
                 <th>Aksi</th>

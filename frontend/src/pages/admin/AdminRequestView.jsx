@@ -347,7 +347,7 @@ function AdminRequestView() {
                 <th>Pengaju & Role</th>
                 <th>TO Cluster</th>
                 <th>Kategori</th>
-                <th>Tanggal</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
                 <th>Status</th>
                 <th>Aksi</th>

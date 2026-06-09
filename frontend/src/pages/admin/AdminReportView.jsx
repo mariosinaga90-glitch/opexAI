@@ -120,7 +120,7 @@ function AdminReportView() {
                 <p className="font-medium">{selectedReport.toCluster}</p>
               </div>
               <div>
-                <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Submit</p>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Pengajuan</p>
                 <p className="font-medium">{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p>
               </div>
               <div>
@@ -296,7 +296,7 @@ function AdminReportView() {
               'TO Cluster': rep.toCluster || '-',
               'Kategori': rep.categoryLabel || '-',
               'Total Terpakai': rep.totalUsed || 0,
-              'Tanggal Submit': rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-',
+              'Tanggal Pengajuan': rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-',
               'Status': rep.status || '-',
             }));
             const ws = XLSX.utils.json_to_sheet(excelData);
@@ -325,7 +325,7 @@ function AdminReportView() {
                 <th>Pembuat & Role</th>
                 <th>Kategori</th>
                 <th>Total Terpakai</th>
-                <th>Tanggal Submit</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </tr>

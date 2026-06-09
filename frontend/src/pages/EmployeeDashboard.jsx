@@ -201,7 +201,7 @@ function EmployeeDashboardOverview() {
               <tr>
                 <th>ID Pengajuan</th>
                 <th>Judul Pengajuan</th>
-                <th>Tanggal</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Dana Diajukan</th>
                 <th>Dana Terpakai</th>
                 <th>Sisa Dana / Selisih</th>
@@ -254,7 +254,7 @@ function EmployeeDashboardOverview() {
               <tr>
                 <th>ID</th>
                 <th>Judul Pengajuan</th>
-                <th>Tanggal</th>
+                <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
                 <th>Status</th>
                 <th>Aksi</th>
