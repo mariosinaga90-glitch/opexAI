@@ -329,7 +329,7 @@ function AdminReportView() {
                 <th>Pembuat & Role</th>
                 <th>Kategori</th>
                 <th>Total Terpakai</th>
-                <th>Tanggal Pengajuan</th>
+                <th>Tgl Pengajuan & Pelaporan</th>
                 <th>Status</th>
                 <th>Aksi</th>
               </tr>
@@ -352,7 +352,12 @@ function AdminReportView() {
                     </td>
                     <td>{rep.categoryLabel}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
-                    <td>{rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-'}</td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        <span className="font-medium" style={{ fontSize: '0.85rem' }}>Req: {rep.requestDate ? formatDateTime(rep.requestDate) : '-'}</span>
+                        <span className="text-muted" style={{ fontSize: '0.85rem' }}>Rep: {rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-'}</span>
+                      </div>
+                    </td>
                     <td>
                       <span className={`status-badge status-${rep.status === 'Revision' ? 'warning' : 'pending'}`}>
                         {rep.status}

@@ -36,7 +36,14 @@ router.get('/', async (req, res) => {
         .where(eq(reportItems.reportId, r.id))
         .get();
       const raw = firstItem?.toCluster || '';
-      return { ...r, toCluster: clusterLabels[raw] || raw || '-' };
+      
+      const reqData = r.reqId ? await db.select({ requestDate: fundRequests.createdAt }).from(fundRequests).where(eq(fundRequests.id, r.reqId)).get() : null;
+      
+      return { 
+        ...r, 
+        toCluster: clusterLabels[raw] || raw || '-',
+        requestDate: reqData?.requestDate || null
+      };
     }));
 
     res.json(enriched);

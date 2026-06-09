@@ -16,8 +16,15 @@ router.get('/', async (req, res) => {
       .from(fundReports)
       .where(eq(fundReports.userId, userId))
       .orderBy(desc(fundReports.createdAt));
+    const enriched = await Promise.all(reports.map(async (r) => {
+      const reqData = r.requestId ? await db.select({ requestDate: fundRequests.createdAt }).from(fundRequests).where(eq(fundRequests.id, r.requestId)).get() : null;
+      return { 
+        ...r, 
+        requestDate: reqData?.requestDate || null
+      };
+    }));
       
-    res.json(reports);
+    res.json(enriched);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch reports' });
