@@ -16,11 +16,25 @@ router.get('/', async (req, res) => {
       .from(fundReports)
       .where(eq(fundReports.userId, userId))
       .orderBy(desc(fundReports.createdAt));
+    const clusterLabels = {
+      bekasi: 'TO Kab. Bekasi',
+      karawang: 'TO Karawang',
+      purwakarta: 'TO Purwakarta',
+    };
+
     const enriched = await Promise.all(reports.map(async (r) => {
       const reqData = r.requestId ? await db.select({ requestDate: fundRequests.createdAt }).from(fundRequests).where(eq(fundRequests.id, r.requestId)).get() : null;
+      
+      const firstItem = await db.select({ toCluster: reportItems.toCluster })
+        .from(reportItems)
+        .where(eq(reportItems.reportId, r.id))
+        .get();
+      const raw = firstItem?.toCluster || '';
+
       return { 
         ...r, 
-        requestDate: reqData?.requestDate || null
+        requestDate: reqData?.requestDate || null,
+        toCluster: clusterLabels[raw] || raw || '-'
       };
     }));
       

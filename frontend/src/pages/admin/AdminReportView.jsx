@@ -11,6 +11,10 @@ function AdminReportView() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionNote, setActionNote] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCluster, setFilterCluster] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const printRef = useRef(null);
 
   const fetchReports = async () => {
@@ -320,6 +324,55 @@ function AdminReportView() {
       </div>
 
       <div className="data-section glass-panel">
+        <div className="section-header" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '300px' }}>
+            <Search size={18} className="text-muted" />
+            <input 
+              type="text" 
+              placeholder="Cari nama atau ID..." 
+              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <Filter size={18} className="text-muted" />
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Semua Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="revision">Revision</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCluster}
+              onChange={(e) => setFilterCluster(e.target.value)}
+            >
+              <option value="all">Semua TO Cluster</option>
+              {[...new Set(reports.map(r => r.toCluster).filter(Boolean))].map((cluster, idx) => (
+                <option key={`cluster-${idx}`} value={cluster}>{cluster}</option>
+              ))}
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="all">Semua Kategori</option>
+              {[...new Set(reports.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
+                <option key={`cat-${idx}`} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div className="table-responsive">
           <table className="data-table">
             <thead>
@@ -340,8 +393,23 @@ function AdminReportView() {
                 <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : reports.length === 0 ? (
                 <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
-              ) : (
-                reports.map((rep, index) => (
+              ) : (() => {
+                const filteredReps = reports.filter(rep => {
+                  const matchesStatus = statusFilter === 'all' || rep.status?.toLowerCase() === statusFilter;
+                  const matchesSearch = searchQuery === '' || 
+                    rep.user?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    rep.id?.toString().includes(searchQuery) ||
+                    rep.reqId?.toString().includes(searchQuery);
+                  const matchesCluster = filterCluster === 'all' || rep.toCluster === filterCluster;
+                  const matchesCategory = filterCategory === 'all' || rep.categoryLabel === filterCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                });
+
+                if (filteredReps.length === 0) {
+                  return <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>;
+                }
+
+                return filteredReps.map((rep, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
                     <td><span className="text-primary">{rep.reqId}</span></td>

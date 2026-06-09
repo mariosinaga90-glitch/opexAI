@@ -22,6 +22,8 @@ function AdminDashboardOverview() {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [searchName, setSearchName] = useState('');
   const [filterTeam, setFilterTeam] = useState('all');
+  const [filterCluster, setFilterCluster] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -110,7 +112,29 @@ function AdminDashboardOverview() {
             >
               <option value="all">Semua Role Team</option>
               {[...new Set(pendingRequests.map(r => r.team).filter(Boolean))].map((team, idx) => (
-                <option key={idx} value={team}>{team}</option>
+                <option key={`team-${idx}`} value={team}>{team}</option>
+              ))}
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', minWidth: '150px', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCluster}
+              onChange={(e) => setFilterCluster(e.target.value)}
+            >
+              <option value="all">Semua TO Cluster</option>
+              {[...new Set(pendingRequests.map(r => r.toCluster).filter(Boolean))].map((cluster, idx) => (
+                <option key={`cluster-${idx}`} value={cluster}>{cluster}</option>
+              ))}
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', minWidth: '150px', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="all">Semua Kategori</option>
+              {[...new Set(pendingRequests.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
+                <option key={`cat-${idx}`} value={cat}>{cat}</option>
               ))}
             </select>
           </div>
@@ -137,7 +161,9 @@ function AdminDashboardOverview() {
                 const filteredReqs = pendingRequests.filter(req => {
                   const matchesName = req.user?.toLowerCase().includes(searchName.toLowerCase()) || false;
                   const matchesTeam = filterTeam === 'all' || req.team === filterTeam;
-                  return matchesName && matchesTeam;
+                  const matchesCluster = filterCluster === 'all' || req.toCluster === filterCluster;
+                  const matchesCategory = filterCategory === 'all' || req.categoryLabel === filterCategory;
+                  return matchesName && matchesTeam && matchesCluster && matchesCategory;
                 });
                 
                 if (filteredReqs.length === 0) {

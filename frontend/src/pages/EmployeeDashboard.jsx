@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Plus, Clock, CheckCircle, FileWarning } from 'lucide-react';
+import { Plus, Clock, CheckCircle, FileWarning, Search, Filter } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { formatDateTime } from '../utils/dateFormatter';
 import FundRequestView from './employee/FundRequestView';
@@ -14,6 +14,10 @@ function EmployeeDashboardOverview() {
   const [rawComparisonData, setRawComparisonData] = useState([]);
   const [dateFilter, setDateFilter] = useState('all');
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [filterCluster, setFilterCluster] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   
   const activeRequestsCount = rawComparisonData.filter(d => d.requestStatus === 'Pending' || d.requestStatus === 'Revision').length;
   const approvedRequestsCount = rawComparisonData.filter(d => d.requestStatus === 'Approved').length;
@@ -87,7 +91,9 @@ function EmployeeDashboardOverview() {
               difference,
               requestStatus: req.status,
               reportStatus: report ? report.status : 'Belum Ada',
-              createdAt: req.createdAt
+              createdAt: req.createdAt,
+              toCluster: req.toCluster,
+              categoryLabel: req.categoryLabel
             };
           });
 
@@ -192,8 +198,54 @@ function EmployeeDashboardOverview() {
 
       {/* Comparison Table */}
       <div className="data-section glass-panel" style={{ marginBottom: '2rem' }}>
-        <div className="section-header">
-          <h2 className="section-title">Detail Perbandingan Pengajuan vs Laporan</h2>
+        <div className="section-header" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <h2 className="section-title" style={{ width: '100%', marginBottom: '0.5rem' }}>Detail Perbandingan Pengajuan vs Laporan</h2>
+          <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '300px' }}>
+            <Search size={18} className="text-muted" />
+            <input 
+              type="text" 
+              placeholder="Cari ID atau judul..." 
+              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <Filter size={18} className="text-muted" />
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Semua Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCluster}
+              onChange={(e) => setFilterCluster(e.target.value)}
+            >
+              <option value="all">Semua TO Cluster</option>
+              {[...new Set(comparisonData.map(r => r.toCluster).filter(Boolean))].map((cluster, idx) => (
+                <option key={`cluster-${idx}`} value={cluster}>{cluster}</option>
+              ))}
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="all">Semua Kategori</option>
+              {[...new Set(comparisonData.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
+                <option key={`cat-${idx}`} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="table-responsive">
           <table className="data-table">
@@ -213,8 +265,22 @@ function EmployeeDashboardOverview() {
                 <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Memuat data perbandingan...</td></tr>
               ) : comparisonData.length === 0 ? (
                 <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada data pengajuan.</td></tr>
-              ) : (
-                comparisonData.map((data, index) => (
+              ) : (() => {
+                const filteredData = comparisonData.filter(data => {
+                  const matchesStatus = statusFilter === 'all' || data.requestStatus?.toLowerCase() === statusFilter || data.reportStatus?.toLowerCase() === statusFilter;
+                  const matchesSearch = searchQuery === '' || 
+                    data.id?.toString().includes(searchQuery) ||
+                    data.title?.toLowerCase().includes(searchQuery.toLowerCase());
+                  const matchesCluster = filterCluster === 'all' || data.toCluster === filterCluster;
+                  const matchesCategory = filterCategory === 'all' || data.categoryLabel === filterCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                });
+
+                if (filteredData.length === 0) {
+                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data perbandingan ditemukan.</td></tr>;
+                }
+
+                return filteredData.map((data, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{data.id}</span></td>
                     <td className="font-medium">{data.title}</td>
@@ -235,8 +301,8 @@ function EmployeeDashboardOverview() {
                       </div>
                     </td>
                   </tr>
-                ))
-              )}
+                ));
+              })()}
             </tbody>
           </table>
         </div>

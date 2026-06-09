@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { UploadCloud, Plus, Trash2, ArrowLeft, FileText, Download, X } from 'lucide-react';
+import { UploadCloud, Plus, Trash2, ArrowLeft, FileText, Download, X, Search, Filter } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
@@ -22,6 +22,10 @@ function FundReportView() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadUrl, setUploadUrl] = useState('');
   const [reportDate, setReportDate] = useState(new Date().toISOString().slice(0,10));
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCluster, setFilterCluster] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
 
   const fetchData = async () => {
     setLoading(true);
@@ -551,6 +555,55 @@ function FundReportView() {
       </div>
 
       <div className="data-section glass-panel">
+        <div className="section-header" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '300px' }}>
+            <Search size={18} className="text-muted" />
+            <input 
+              type="text" 
+              placeholder="Cari ID atau Terkait Pengajuan..." 
+              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <Filter size={18} className="text-muted" />
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Semua Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="revision">Revision</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCluster}
+              onChange={(e) => setFilterCluster(e.target.value)}
+            >
+              <option value="all">Semua TO Cluster</option>
+              {[...new Set(history.map(r => r.toCluster).filter(Boolean))].map((cluster, idx) => (
+                <option key={`cluster-${idx}`} value={cluster}>{cluster}</option>
+              ))}
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="all">Semua Kategori</option>
+              {[...new Set(history.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
+                <option key={`cat-${idx}`} value={cat}>{cat}</option>
+              ))}
+            </select>
+          </div>
+        </div>
         <div className="table-responsive">
           <table className="data-table">
             <thead>
@@ -568,9 +621,24 @@ function FundReportView() {
               {loading ? (
                 <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : history.length === 0 ? (
-                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada laporan.</td></tr>
-              ) : (
-                history.map((rep, index) => (
+                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada laporan.</td></tr>
+              ) : (() => {
+                const filteredReps = history.filter(rep => {
+                  const matchesStatus = statusFilter === 'all' || rep.status?.toLowerCase() === statusFilter;
+                  const matchesSearch = searchQuery === '' || 
+                    rep.id?.toString().includes(searchQuery) ||
+                    rep.reqId?.toString().includes(searchQuery) ||
+                    rep.requestId?.toString().includes(searchQuery);
+                  const matchesCluster = filterCluster === 'all' || rep.toCluster === filterCluster;
+                  const matchesCategory = filterCategory === 'all' || rep.categoryLabel === filterCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                });
+
+                if (filteredReps.length === 0) {
+                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>;
+                }
+
+                return filteredReps.map((rep, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
                     <td><span className="text-primary">{rep.reqId || rep.requestId}</span></td>

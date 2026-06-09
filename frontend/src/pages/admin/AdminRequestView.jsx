@@ -12,6 +12,9 @@ function AdminRequestView() {
   const [loading, setLoading] = useState(true);
   const [actionNote, setActionNote] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCluster, setFilterCluster] = useState('all');
+  const [filterCategory, setFilterCategory] = useState('all');
   const printRef = useRef(null);
 
   const fetchRequests = async () => {
@@ -320,9 +323,15 @@ function AdminRequestView() {
         <div className="section-header" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '300px' }}>
             <Search size={18} className="text-muted" />
-            <input type="text" placeholder="Cari nama, ID, atau judul..." style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }} />
+            <input 
+              type="text" 
+              placeholder="Cari nama, ID, atau judul..." 
+              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
             <Filter size={18} className="text-muted" />
             <select 
               className="form-control" 
@@ -335,6 +344,28 @@ function AdminRequestView() {
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
               <option value="completed">Completed</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCluster}
+              onChange={(e) => setFilterCluster(e.target.value)}
+            >
+              <option value="all">Semua TO Cluster</option>
+              {[...new Set(requests.map(r => r.toCluster).filter(Boolean))].map((cluster, idx) => (
+                <option key={`cluster-${idx}`} value={cluster}>{cluster}</option>
+              ))}
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterCategory}
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              <option value="all">Semua Kategori</option>
+              {[...new Set(requests.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
+                <option key={`cat-${idx}`} value={cat}>{cat}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -358,10 +389,23 @@ function AdminRequestView() {
                 <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
               ) : requests.length === 0 ? (
                 <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan ditemukan.</td></tr>
-              ) : (
-                requests
-                  .filter(req => statusFilter === 'all' || req.status?.toLowerCase() === statusFilter)
-                  .map((req, index) => (
+              ) : (() => {
+                const filteredReqs = requests.filter(req => {
+                  const matchesStatus = statusFilter === 'all' || req.status?.toLowerCase() === statusFilter;
+                  const matchesSearch = searchQuery === '' || 
+                    req.user?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    req.id?.toString().includes(searchQuery) ||
+                    req.title?.toLowerCase().includes(searchQuery.toLowerCase());
+                  const matchesCluster = filterCluster === 'all' || req.toCluster === filterCluster;
+                  const matchesCategory = filterCategory === 'all' || req.categoryLabel === filterCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                });
+                
+                if (filteredReqs.length === 0) {
+                  return <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan ditemukan.</td></tr>;
+                }
+                
+                return filteredReqs.map((req, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{req.id}</span></td>
                     <td>

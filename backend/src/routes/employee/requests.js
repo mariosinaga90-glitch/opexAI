@@ -18,7 +18,22 @@ router.get('/', async (req, res) => {
       .where(eq(fundRequests.userId, userId))
       .orderBy(desc(fundRequests.createdAt));
       
-    res.json(requests);
+    const clusterLabels = {
+      bekasi: 'TO Kab. Bekasi',
+      karawang: 'TO Karawang',
+      purwakarta: 'TO Purwakarta',
+    };
+
+    const enriched = await Promise.all(requests.map(async (r) => {
+      const firstItem = await db.select({ toCluster: requestItems.toCluster })
+        .from(requestItems)
+        .where(eq(requestItems.requestId, r.id))
+        .get();
+      const raw = firstItem?.toCluster || '';
+      return { ...r, toCluster: clusterLabels[raw] || raw || '-' };
+    }));
+
+    res.json(enriched);
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch requests' });
