@@ -128,14 +128,18 @@ function AdminDashboardOverview() {
             </select>
             <select 
               className="form-control" 
-              style={{ width: 'auto', minWidth: '150px', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
               <option value="all">Semua Kategori</option>
-              {[...new Set(pendingRequests.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
-                <option key={`cat-${idx}`} value={cat}>{cat}</option>
-              ))}
+              <option value="BBM Mobil">BBM Mobil</option>
+              <option value="BBM Motor">BBM Motor</option>
+              <option value="BBM Genset">BBM Genset</option>
+              <option value="Parkir - Toll">Parkir - Toll</option>
+              <option value="Material">Material</option>
+              <option value="Ormas">Ormas</option>
+              <option value="Kebutuhan Homebase/DOP">Kebutuhan Homebase/DOP</option>
             </select>
           </div>
         </div>

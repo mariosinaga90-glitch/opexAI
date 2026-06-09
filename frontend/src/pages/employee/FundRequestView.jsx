@@ -524,9 +524,13 @@ function FundRequestView({ onBack }) {
               onChange={(e) => setFilterCategory(e.target.value)}
             >
               <option value="all">Semua Kategori</option>
-              {[...new Set(history.map(r => r.categoryLabel).filter(Boolean))].map((cat, idx) => (
-                <option key={`cat-${idx}`} value={cat}>{cat}</option>
-              ))}
+              <option value="BBM Mobil">BBM Mobil</option>
+              <option value="BBM Motor">BBM Motor</option>
+              <option value="BBM Genset">BBM Genset</option>
+              <option value="Parkir - Toll">Parkir - Toll</option>
+              <option value="Material">Material</option>
+              <option value="Ormas">Ormas</option>
+              <option value="Kebutuhan Homebase/DOP">Kebutuhan Homebase/DOP</option>
             </select>
           </div>
         </div>
