@@ -577,8 +577,8 @@ function FundRequestView({ onBack }) {
                       <button className="btn-icon" onClick={() => handleReviewClick(req)}>Detail</button>
                     </td>
                   </tr>
-                ))
-              )}
+                ));
+              })()}
             </tbody>
           </table>
         </div>

@@ -654,8 +654,8 @@ function FundReportView() {
                       <button className="btn-icon" onClick={() => handleReviewClick(rep)}>Detail</button>
                     </td>
                   </tr>
-                ))
-              )}
+                ));
+              })()}
             </tbody>
           </table>
         </div>

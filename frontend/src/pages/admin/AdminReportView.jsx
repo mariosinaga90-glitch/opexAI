@@ -432,8 +432,8 @@ function AdminReportView() {
                       <button className="btn-icon" onClick={() => handleReviewClick(rep)}>Review</button>
                     </td>
                   </tr>
-                ))
-              )}
+                ));
+              })()}
             </tbody>
           </table>
         </div>

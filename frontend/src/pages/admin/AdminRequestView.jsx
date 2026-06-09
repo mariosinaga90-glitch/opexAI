@@ -427,8 +427,8 @@ function AdminRequestView() {
                       <button className="btn-icon" onClick={() => handleReviewClick(req)}>Review</button>
                     </td>
                   </tr>
-                ))
-              )}
+                ));
+              })()}
             </tbody>
           </table>
         </div>
