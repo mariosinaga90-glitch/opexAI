@@ -102,7 +102,7 @@ function AdminReportView() {
         <div className="form-grid" style={{ marginBottom: '2rem' }}>
           <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.02)' }}>
             <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--primary)' }}>Ringkasan Laporan</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>ID Laporan</p>
                 <p className="font-medium">{selectedReport.id}</p>
@@ -121,7 +121,11 @@ function AdminReportView() {
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Pengajuan</p>
-                <p className="font-medium">{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p>
+                <p className="font-medium">{selectedReport.requestDate ? formatDateTime(selectedReport.requestDate) : '-'}</p>
+              </div>
+              <div>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Pelaporan</p>
+                <p className="font-medium" style={{ color: 'var(--accent-amber)' }}>{selectedReport.createdAt ? formatDateTime(selectedReport.createdAt) : selectedReport.date ? formatDateTime(selectedReport.date) : '-'}</p>
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Kategori Kebutuhan</p>

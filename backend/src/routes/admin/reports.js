@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { fundReports, reportItems, users, attachments, requestSites } from '../../db/schema.js';
+import { fundReports, reportItems, users, attachments, requestSites, fundRequests } from '../../db/schema.js';
 import { eq, desc } from 'drizzle-orm';
 
 const router = Router();
@@ -78,6 +78,9 @@ router.get('/:id', async (req, res) => {
       ? (await db.select().from(requestSites).where(eq(requestSites.requestId, requestId))).map(s => s.siteName)
       : [];
 
+    const reqData = requestId ? await db.select({ requestDate: fundRequests.createdAt }).from(fundRequests).where(eq(fundRequests.id, requestId)).get() : null;
+    const requestDate = reqData ? reqData.requestDate : null;
+
     const formattedReport = {
       ...reportData.fund_reports,
       user: reportData.users.name,
@@ -86,6 +89,7 @@ router.get('/:id', async (req, res) => {
       items,
       attachments: atts,
       sites,
+      requestDate,
     };
 
     res.json(formattedReport);

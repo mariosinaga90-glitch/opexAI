@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { fundReports, reportItems, attachments, requestSites } from '../../db/schema.js';
+import { fundReports, reportItems, attachments, requestSites, fundRequests } from '../../db/schema.js';
 import { desc, eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
@@ -39,8 +39,12 @@ router.get('/:id', async (req, res) => {
     const sites = report.requestId 
       ? (await db.select().from(requestSites).where(eq(requestSites.requestId, report.requestId))).map(s => s.siteName)
       : [];
+      
+    // Fetch request date
+    const reqData = report.requestId ? await db.select({ requestDate: fundRequests.createdAt }).from(fundRequests).where(eq(fundRequests.id, report.requestId)).get() : null;
+    const requestDate = reqData ? reqData.requestDate : null;
     
-    res.json({ ...report, items, attachments: atts, sites });
+    res.json({ ...report, items, attachments: atts, sites, requestDate });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Failed to fetch report' });
