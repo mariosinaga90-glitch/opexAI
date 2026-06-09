@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { db } from '../../db/index.js';
 import { fundRequests, users } from '../../db/schema.js';
 import { eq, count, sql, desc } from 'drizzle-orm';
+import { fundReports } from '../../db/schema.js';
 
 const router = Router();
 
@@ -18,12 +19,22 @@ router.get('/stats', async (req, res) => {
       value: count()
     }).from(fundRequests).groupBy(fundRequests.categoryLabel);
 
+    const totalRequestedSum = await db.select({ total: sql`SUM(amount)` }).from(fundRequests);
+    const totalReportedSum = await db.select({ total: sql`SUM(totalUsed)` }).from(fundReports);
+    
+    const reqAmount = totalRequestedSum[0]?.total || 0;
+    const repAmount = totalReportedSum[0]?.total || 0;
+
     res.json({
       totalRequests: totalRequestsRes[0].count,
       pendingReview: pendingReviewRes[0].count,
       completedThisMonth: completedRes[0].count, // In a real app, filter by current month
       totalEmployees: totalUsersRes[0].count,
-      requestsByCategory: categoryStats.map(c => ({ name: c.name || 'Lainnya', value: c.value }))
+      requestsByCategory: categoryStats.map(c => ({ name: c.name || 'Lainnya', value: c.value })),
+      fundsOverview: [
+        { name: 'Nominal Realisasi', value: repAmount },
+        { name: 'Belum Terealisasi', value: Math.max(0, reqAmount - repAmount) }
+      ]
     });
   } catch (error) {
     console.error(error);

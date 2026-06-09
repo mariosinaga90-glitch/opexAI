@@ -198,41 +198,82 @@ function AdminDashboardOverview() {
         </div>
       </div>
 
-      {/* Pie Chart Card */}
-      <div className="glass-panel" style={{ padding: '1.5rem' }}>
-        <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Sebaran Kategori</h2>
-        {statsData.requestsByCategory && statsData.requestsByCategory.length > 0 ? (
-          <div style={{ width: '100%', height: 320 }}>
-            <ResponsiveContainer>
-              <PieChart>
-                <Pie
-                  data={statsData.requestsByCategory}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={70}
-                  outerRadius={95}
-                  paddingAngle={5}
-                  dataKey="value"
-                  stroke="none"
-                >
-                  {statsData.requestsByCategory.map((entry, index) => {
-                    const COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
-                    return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
-                  })}
-                </Pie>
-                <Tooltip 
-                  contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
-                  itemStyle={{ color: '#fff' }}
-                />
-                <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px', fontSize: '0.85rem' }} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-        ) : (
-          <div style={{ height: 320, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-            Belum ada data kategori.
-          </div>
-        )}
+      {/* Charts Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+        {/* Pie Chart Card */}
+        <div className="glass-panel" style={{ padding: '1.5rem' }}>
+          <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Sebaran Kategori</h2>
+          {statsData.requestsByCategory && statsData.requestsByCategory.length > 0 ? (
+            <div style={{ width: '100%', height: 320 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={statsData.requestsByCategory}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={95}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {statsData.requestsByCategory.map((entry, index) => {
+                      const COLORS = ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6'];
+                      return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
+                    })}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                  />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px', fontSize: '0.85rem' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div style={{ height: 320, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+              Belum ada data kategori.
+            </div>
+          )}
+        </div>
+
+        {/* Realisasi Dana Pie Chart */}
+        <div className="glass-panel" style={{ padding: '1.5rem' }}>
+          <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Realisasi vs Pengajuan</h2>
+          {statsData.fundsOverview && statsData.fundsOverview.length > 0 ? (
+            <div style={{ width: '100%', height: 320 }}>
+              <ResponsiveContainer>
+                <PieChart>
+                  <Pie
+                    data={statsData.fundsOverview}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={70}
+                    outerRadius={95}
+                    paddingAngle={5}
+                    dataKey="value"
+                    stroke="none"
+                  >
+                    {statsData.fundsOverview.map((entry, index) => {
+                      const COLORS = ['#10B981', '#3B82F6']; // Green for Used, Blue for Remaining
+                      return <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />;
+                    })}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#fff' }}
+                    formatter={(value) => `Rp ${value.toLocaleString('id-ID')}`}
+                  />
+                  <Legend verticalAlign="bottom" wrapperStyle={{ paddingTop: '20px', fontSize: '0.85rem' }} />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          ) : (
+            <div style={{ height: 320, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+              Belum ada data dana.
+            </div>
+          )}
+        </div>
       </div>
 
       </div> {/* End Grid */}
