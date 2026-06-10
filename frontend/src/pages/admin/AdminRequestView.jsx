@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Check, X, Search, Filter, Download, FileSpreadsheet } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
 import { formatDateTime } from '../../utils/dateFormatter';
@@ -297,25 +298,122 @@ function AdminRequestView() {
           <h1 className="page-title" style={{ fontSize: '1.8rem' }}>Daftar Pengajuan</h1>
           <p className="page-subtitle">Kelola dan review seluruh pengajuan dana karyawan.</p>
         </div>
-        <button className="btn btn-success" onClick={() => {
-          const excelData = requests.map(req => ({
-            'ID': req.id,
-            'Pengaju': req.user,
-            'Email': req.email || '-',
-            'Role Team': req.team,
-            'TO Cluster': req.toCluster,
-            'Kategori': req.categoryLabel,
-            'Judul': req.title,
-            'Jumlah': req.amount,
-            'Tanggal': req.date || req.createdAt ? formatDateTime(req.date || req.createdAt) : '-',
-            'Status': req.status,
-          }));
-          const ws = XLSX.utils.json_to_sheet(excelData);
-          const colWidths = Object.keys(excelData[0]).map(key => ({ wch: Math.max(key.length, 18) }));
-          ws['!cols'] = colWidths;
-          const wb = XLSX.utils.book_new();
-          XLSX.utils.book_append_sheet(wb, ws, 'Daftar Pengajuan');
-          XLSX.writeFile(wb, `Pengajuan_Dana_${new Date().toISOString().slice(0,10)}.xlsx`);
+        <button className="btn btn-success" onClick={async () => {
+          if (!requests || requests.length === 0) {
+            alert('Tidak ada data untuk diekspor.');
+            return;
+          }
+          try {
+            setLoading(true);
+            const filteredReqs = requests.filter(req => {
+              const matchesStatus = statusFilter === 'all' || req.status?.toLowerCase() === statusFilter;
+              const matchesSearch = searchQuery === '' || 
+                req.user?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                req.id?.toString().includes(searchQuery);
+              const matchesCluster = filterCluster === 'all' || req.toCluster === filterCluster;
+              const matchesCategory = filterCategory === 'all' || req.categoryLabel === filterCategory;
+              return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+            });
+
+            if (filteredReqs.length === 0) {
+              alert('Tidak ada pengajuan yang sesuai filter.');
+              setLoading(false);
+              return;
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const sheet = workbook.addWorksheet('Daftar Pengajuan');
+
+            sheet.columns = [
+              { header: 'ID Pengajuan', key: 'id', width: 15 },
+              { header: 'Pengaju', key: 'user', width: 20 },
+              { header: 'Email', key: 'email', width: 25 },
+              { header: 'Role Team', key: 'team', width: 15 },
+              { header: 'TO Cluster', key: 'toCluster', width: 20 },
+              { header: 'Kategori', key: 'category', width: 20 },
+              { header: 'Judul', key: 'title', width: 30 },
+              { header: 'Jumlah', key: 'amount', width: 18 },
+              { header: 'Tanggal', key: 'date', width: 20 },
+              { header: 'Status', key: 'status', width: 15 },
+              { header: 'Lampiran / Bukti', key: 'photo', width: 40 }
+            ];
+
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+            for (let i = 0; i < filteredReqs.length; i++) {
+              const req = filteredReqs[i];
+              const res = await fetch(`${API_BASE_URL}/admin/requests/${req.id}`);
+              const detail = res.ok ? await res.json() : null;
+              
+              const row = sheet.addRow({
+                id: req.id || '-',
+                user: req.user || '-',
+                email: req.email || '-',
+                team: req.team || '-',
+                toCluster: req.toCluster || '-',
+                category: req.categoryLabel || '-',
+                title: req.title || '-',
+                amount: req.amount || 0,
+                date: req.date || req.createdAt ? formatDateTime(req.date || req.createdAt) : '-',
+                status: req.status || '-',
+                photo: ''
+              });
+              
+              row.height = 100;
+              row.alignment = { vertical: 'middle' };
+
+              if (detail && detail.attachments && detail.attachments.length > 0) {
+                 const imgAtt = detail.attachments.find(a => {
+                    const extension = a.filePath?.split('.').pop().toLowerCase();
+                    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
+                 });
+                 
+                 if (imgAtt) {
+                    try {
+                        const urlToFetch = getFileUrl(imgAtt.filePath);
+                        const imgRes = await fetch(urlToFetch);
+                        if (!imgRes.ok) throw new Error(`Status ${imgRes.status} on ${urlToFetch}`);
+                        
+                        const blob = await imgRes.blob();
+                        const base64Data = await new Promise((resolve, reject) => {
+                           const reader = new FileReader();
+                           reader.onloadend = () => resolve(reader.result);
+                           reader.onerror = reject;
+                           reader.readAsDataURL(blob);
+                        });
+                        
+                        const ext = imgAtt.filePath.split('.').pop().toLowerCase() === 'png' ? 'png' : 'jpeg';
+                        const imageId = workbook.addImage({
+                          base64: base64Data,
+                          extension: ext,
+                        });
+                        
+                        sheet.addImage(imageId, {
+                          tl: { col: 10, row: row.number - 1 },
+                          ext: { width: 120, height: 120 },
+                          editAs: 'oneCell'
+                        });
+                    } catch(e) {
+                        console.error('Failed to embed image', e);
+                        sheet.getCell(`K${row.number}`).value = `Gagal memuat: ${e.message}`;
+                    }
+                 } else {
+                    sheet.getCell(`K${row.number}`).value = "Bukan format gambar";
+                 }
+              } else {
+                 sheet.getCell(`K${row.number}`).value = "Tidak ada lampiran";
+              }
+            }
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer]), `Pengajuan_Dana_${new Date().toISOString().slice(0,10)}.xlsx`);
+          } catch (err) {
+            console.error('Error exporting excel:', err);
+            alert('Gagal mengekspor file Excel. Cek koneksi jaringan Anda.');
+          } finally {
+            setLoading(false);
+          }
         }}>
           <FileSpreadsheet size={18} style={{ marginRight: '8px' }} />
           Export Excel
