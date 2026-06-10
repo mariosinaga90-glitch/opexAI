@@ -76,11 +76,13 @@ router.get('/:id', async (req, res) => {
     };
     const firstItemCluster = items[0]?.toCluster || '';
 
+    const reqMeta = requestData.fund_requests || requestData.fundRequests || requestData;
+
     const formattedRequest = {
-      ...requestData.fund_requests,
-      user: requestData.users.name,
-      email: requestData.users.email,
-      team: requestData.users.team,
+      ...reqMeta,
+      user: requestData.users?.name || 'Unknown User',
+      email: requestData.users?.email || '',
+      team: requestData.users?.team || '-',
       toCluster: clusterLabels[firstItemCluster] || firstItemCluster || '-',
       items,
       sites: sites.map(s => s.siteName),

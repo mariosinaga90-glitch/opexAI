@@ -80,7 +80,8 @@ router.get('/:id', async (req, res) => {
     const firstItemCluster = items[0]?.toCluster || '';
 
     // Fetch sites from the related fund request
-    const requestId = reportData.fund_reports.requestId;
+    const reportMeta = reportData.fund_reports || reportData.fundReports || reportData;
+    const requestId = reportMeta.requestId;
     const sites = requestId
       ? (await db.select().from(requestSites).where(eq(requestSites.requestId, requestId))).map(s => s.siteName)
       : [];
@@ -89,9 +90,10 @@ router.get('/:id', async (req, res) => {
     const requestDate = reqData ? reqData.requestDate : null;
 
     const formattedReport = {
-      ...reportData.fund_reports,
-      user: reportData.users.name,
-      team: reportData.users.team,
+      ...reportMeta,
+      user: reportData.users?.name || 'Unknown User',
+      email: reportData.users?.email || '',
+      team: reportData.users?.team || '-',
       toCluster: clusterLabels[firstItemCluster] || firstItemCluster || '-',
       items,
       attachments: atts,
