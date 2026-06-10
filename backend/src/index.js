@@ -18,7 +18,7 @@ app.use(cors({
 app.use(express.json());
 
 // Serve static files for uploads
-app.use('/uploads', express.static(path.resolve('data/uploads')));
+app.use('/uploads', express.static(path.resolve('uploads')));
 
 // Serve frontend static files in production
 const frontendDistPath = path.resolve('../frontend/dist');
@@ -27,7 +27,7 @@ app.use(express.static(frontendDistPath));
 // Debug endpoint to check uploads
 app.get('/api/debug/uploads', (req, res) => {
   try {
-    const uploadPath = path.resolve('data/uploads');
+    const uploadPath = path.resolve('uploads');
     if (!fs.existsSync(uploadPath)) {
       return res.json({ error: 'Directory does not exist', path: uploadPath });
     }
