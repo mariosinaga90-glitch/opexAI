@@ -50,7 +50,9 @@ COPY --from=frontend-builder /app/frontend/dist ./frontend/dist/
 # Create data and uploads directories
 RUN mkdir -p /app/backend/data /app/backend/uploads
 
-ENV NODE_ENV=production
+# Create symlinks to support legacy Coolify Start Command overrides
+RUN ln -s /app/backend/node_modules /app/node_modules && \
+    ln -s /app/backend/src /app/src
 ENV PORT=3001
 ENV HOST=0.0.0.0
 ENV DATABASE_PATH=/app/backend/data/opex.db
@@ -61,5 +63,7 @@ EXPOSE 3001
 
 VOLUME ["/app/backend/data", "/app/backend/uploads"]
 
+WORKDIR /app/backend
+
 # Push schema, seed data, then start the server
-CMD ["sh", "-c", "{ ./node_modules/.bin/drizzle-kit push --force && node src/db/seed.js && node src/index.js; } > /tmp/crash.log 2>&1 || node src/debug-server.js"]
+CMD ["sh", "-c", "cd /app/backend && { ./node_modules/.bin/drizzle-kit push --force && node src/db/seed.js && node src/index.js; } > /tmp/crash.log 2>&1 || node /app/backend/src/debug-server.js"]
