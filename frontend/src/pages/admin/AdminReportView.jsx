@@ -364,8 +364,9 @@ function AdminReportView() {
                  
                  if (imgAtt) {
                     try {
-                        const imgRes = await fetch(getFileUrl(imgAtt.filePath));
-                        if (!imgRes.ok) throw new Error("Gagal mengunduh gambar");
+                        const urlToFetch = getFileUrl(imgAtt.filePath);
+                        const imgRes = await fetch(urlToFetch);
+                        if (!imgRes.ok) throw new Error(`Status ${imgRes.status} on ${urlToFetch}`);
                         
                         const blob = await imgRes.blob();
                         const base64Data = await new Promise((resolve, reject) => {
