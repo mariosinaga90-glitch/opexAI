@@ -368,10 +368,16 @@ function AdminReportView() {
                         if (!imgRes.ok) throw new Error("Gagal mengunduh gambar");
                         
                         const blob = await imgRes.blob();
-                        const arrayBuffer = await blob.arrayBuffer();
+                        const base64Data = await new Promise((resolve, reject) => {
+                           const reader = new FileReader();
+                           reader.onloadend = () => resolve(reader.result);
+                           reader.onerror = reject;
+                           reader.readAsDataURL(blob);
+                        });
+                        
                         const ext = imgAtt.filePath.split('.').pop().toLowerCase() === 'png' ? 'png' : 'jpeg';
                         const imageId = workbook.addImage({
-                          buffer: arrayBuffer,
+                          base64: base64Data,
                           extension: ext,
                         });
                         
@@ -382,7 +388,7 @@ function AdminReportView() {
                         });
                     } catch(e) {
                         console.error('Failed to embed image', e);
-                        sheet.getCell(`J${row.number}`).value = "Gagal memuat gambar";
+                        sheet.getCell(`J${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
                     }
                  } else {
                     sheet.getCell(`J${row.number}`).value = "Bukan format gambar";
