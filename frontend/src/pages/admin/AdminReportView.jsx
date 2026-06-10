@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Check, AlertTriangle, FileText, Download, FileSpreadsheet } from 'lucide-react';
+import { ArrowLeft, Check, AlertTriangle, FileText, Download, FileSpreadsheet, Search, Filter } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import * as XLSX from 'xlsx';
 import { API_BASE_URL } from '../../config';
