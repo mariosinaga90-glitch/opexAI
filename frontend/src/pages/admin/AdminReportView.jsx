@@ -328,8 +328,17 @@ function AdminReportView() {
               { header: 'Role Team', key: 'team', width: 15 },
               { header: 'TO Cluster', key: 'toCluster', width: 20 },
               { header: 'Kategori', key: 'category', width: 20 },
+              { header: 'Dana Diajukan', key: 'reqAmount', width: 18 },
               { header: 'Total Terpakai', key: 'total', width: 18 },
-              { header: 'Tanggal Pengajuan', key: 'reqDate', width: 20 },
+              { header: 'Sisa Dana', key: 'remainingFund', width: 18 },
+              { header: 'Daftar Site', key: 'sites', width: 30 },
+              { header: 'Kendaraan (Jenis/Plat)', key: 'vehicle', width: 25 },
+              { header: 'KM Before-After', key: 'km', width: 20 },
+              { header: 'Detail Pekerjaan', key: 'detailDesc', width: 40 },
+              { header: 'Rincian Item', key: 'items', width: 50 },
+              { header: 'Catatan Karyawan', key: 'empNote', width: 30 },
+              { header: 'Catatan Admin', key: 'adminNote', width: 30 },
+              { header: 'Tanggal Laporan', key: 'reqDate', width: 20 },
               { header: 'Status', key: 'status', width: 15 },
               { header: 'Bukti / Nota', key: 'photo', width: 40 }
             ];
@@ -350,14 +359,23 @@ function AdminReportView() {
                 team: rep.team || '-',
                 toCluster: rep.toCluster || '-',
                 category: rep.categoryLabel || '-',
+                reqAmount: detail?.reqAmount || 0,
                 total: rep.totalUsed || 0,
+                remainingFund: detail ? (detail.reqAmount - rep.totalUsed) : 0,
+                sites: detail?.sites?.length > 0 ? detail.sites.map((s, idx) => `${idx + 1}. ${s}`).join('\n') : '-',
+                vehicle: detail?.vehicleType ? `${detail.vehicleType} / ${detail.plateNumber}` : '-',
+                km: detail?.kmBefore != null ? `${detail.kmBefore} - ${detail.kmAfter}` : '-',
+                detailDesc: detail?.detail || '-',
+                items: detail?.items?.length > 0 ? detail.items.map((it, idx) => `${idx + 1}. ${it.description} (${it.quantity} x Rp${it.unitPrice?.toLocaleString('id-ID')}) = Rp${(it.quantity * it.unitPrice)?.toLocaleString('id-ID')}`).join('\n') : '-',
+                empNote: detail?.employeeNote || '-',
+                adminNote: detail?.adminNote || '-',
                 reqDate: rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-',
                 status: rep.status || '-',
                 photo: ''
               });
               
               row.height = 100;
-              row.alignment = { vertical: 'middle' };
+              row.alignment = { vertical: 'middle', wrapText: true };
 
               if (detail && detail.attachments && detail.attachments.length > 0) {
                  const imgAtt = detail.attachments.find(a => {
@@ -386,19 +404,19 @@ function AdminReportView() {
                         });
                         
                         sheet.addImage(imageId, {
-                          tl: { col: 9, row: row.number - 1 },
+                          tl: { col: 18, row: row.number - 1 },
                           ext: { width: 120, height: 120 },
                           editAs: 'oneCell'
                         });
                     } catch(e) {
                         console.error('Failed to embed image', e);
-                        sheet.getCell(`J${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
+                        sheet.getCell(`S${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
                     }
                  } else {
-                    sheet.getCell(`J${row.number}`).value = "Bukan format gambar";
+                    sheet.getCell(`S${row.number}`).value = "Bukan format gambar";
                  }
               } else {
-                 sheet.getCell(`J${row.number}`).value = "Tidak ada bukti";
+                 sheet.getCell(`S${row.number}`).value = "Tidak ada bukti";
               }
             }
 
