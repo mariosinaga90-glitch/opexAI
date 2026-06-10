@@ -3,6 +3,7 @@ import cors from 'cors';
 import apiRoutes from './routes/index.js';
 
 import path from 'path';
+import fs from 'fs';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
