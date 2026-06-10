@@ -231,17 +231,20 @@ function AdminReportView() {
           <div className="form-group" style={{ marginBottom: '2rem' }}>
             <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Bukti Transaksi / File Tambahan</h3>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              {selectedReport.attachments?.map(att => (
-                <div key={att.id} style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
-                  {att.fileType && att.fileType.includes('pdf') ? (
-                    <a href={getFileUrl(att.filePath)} target="_blank" rel="noreferrer" className="btn btn-secondary">
-                      Lihat Dokumen PDF
-                    </a>
-                  ) : (
-                    <img src={getFileUrl(att.filePath)} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
-                  )}
-                </div>
-              ))}
+              {selectedReport.attachments?.map(att => {
+                const isPdf = att.fileType?.includes('pdf') || att.filePath?.toLowerCase().endsWith('.pdf');
+                return (
+                  <div key={att.id} style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
+                    {isPdf ? (
+                      <a href={getFileUrl(att.filePath)} target="_blank" rel="noreferrer" className="btn btn-secondary">
+                        Lihat Dokumen PDF
+                      </a>
+                    ) : (
+                      <img src={getFileUrl(att.filePath)} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                    )}
+                  </div>
+                );
+              })}
               {selectedReport.photo && (!selectedReport.attachments || selectedReport.attachments.length === 0) && (
                 <div style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
                   <img src={getFileUrl(selectedReport.photo)} alt="Bukti Laporan" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
