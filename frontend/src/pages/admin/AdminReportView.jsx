@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Check, AlertTriangle, FileText, Download, FileSpreadsheet, Search, Filter } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
 import { formatDateTime } from '../../utils/dateFormatter';
@@ -290,32 +291,108 @@ function AdminReportView() {
           <h1 className="page-title" style={{ fontSize: '1.8rem' }}>Review Laporan</h1>
           <p className="page-subtitle">Periksa laporan realisasi dan bukti nota dari karyawan.</p>
         </div>
-        <button className="btn btn-success" onClick={() => {
+        <button className="btn btn-success" onClick={async () => {
           if (!reports || reports.length === 0) {
             alert('Tidak ada data laporan untuk diekspor.');
             return;
           }
           try {
-            const excelData = reports.map(rep => ({
-              'ID Laporan': rep.id || '-',
-              'Terkait Pengajuan': rep.reqId || '-',
-              'Pembuat': rep.user || '-',
-              'Role Team': rep.team || '-',
-              'TO Cluster': rep.toCluster || '-',
-              'Kategori': rep.categoryLabel || '-',
-              'Total Terpakai': rep.totalUsed || 0,
-              'Tanggal Pengajuan': rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-',
-              'Status': rep.status || '-',
-            }));
-            const ws = XLSX.utils.json_to_sheet(excelData);
-            const colWidths = Object.keys(excelData[0]).map(key => ({ wch: Math.max(key.length, 18) }));
-            ws['!cols'] = colWidths;
-            const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, 'Laporan Realisasi');
-            XLSX.writeFile(wb, `Laporan_Realisasi_${new Date().toISOString().slice(0,10)}.xlsx`);
+            setLoading(true);
+            const filteredReps = reports.filter(rep => {
+              const matchesStatus = statusFilter === 'all' || rep.status?.toLowerCase() === statusFilter;
+              const matchesSearch = searchQuery === '' || 
+                rep.user?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                rep.id?.toString().includes(searchQuery) ||
+                rep.reqId?.toString().includes(searchQuery);
+              const matchesCluster = filterCluster === 'all' || rep.toCluster === filterCluster;
+              const matchesCategory = filterCategory === 'all' || rep.categoryLabel === filterCategory;
+              return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+            });
+
+            if (filteredReps.length === 0) {
+              alert('Tidak ada laporan yang sesuai filter.');
+              setLoading(false);
+              return;
+            }
+
+            const workbook = new ExcelJS.Workbook();
+            const sheet = workbook.addWorksheet('Laporan Realisasi');
+
+            sheet.columns = [
+              { header: 'ID Laporan', key: 'id', width: 15 },
+              { header: 'Terkait Pengajuan', key: 'reqId', width: 20 },
+              { header: 'Pembuat', key: 'user', width: 20 },
+              { header: 'Role Team', key: 'team', width: 15 },
+              { header: 'TO Cluster', key: 'toCluster', width: 20 },
+              { header: 'Kategori', key: 'category', width: 20 },
+              { header: 'Total Terpakai', key: 'total', width: 18 },
+              { header: 'Tanggal Pengajuan', key: 'reqDate', width: 20 },
+              { header: 'Status', key: 'status', width: 15 },
+              { header: 'Bukti / Nota', key: 'photo', width: 40 }
+            ];
+
+            // Setup Header Styling
+            sheet.getRow(1).font = { bold: true };
+            sheet.getRow(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+            for (let i = 0; i < filteredReps.length; i++) {
+              const rep = filteredReps[i];
+              const res = await fetch(`${API_BASE_URL}/admin/reports/${rep.id}`);
+              const detail = res.ok ? await res.json() : null;
+              
+              const row = sheet.addRow({
+                id: rep.id || '-',
+                reqId: rep.reqId || '-',
+                user: rep.user || '-',
+                team: rep.team || '-',
+                toCluster: rep.toCluster || '-',
+                category: rep.categoryLabel || '-',
+                total: rep.totalUsed || 0,
+                reqDate: rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-',
+                status: rep.status || '-',
+                photo: ''
+              });
+              
+              row.height = 100;
+              row.alignment = { vertical: 'middle' };
+
+              if (detail && detail.attachments && detail.attachments.length > 0) {
+                 const imgAtt = detail.attachments.find(a => a.fileType && !a.fileType.includes('pdf'));
+                 if (imgAtt) {
+                    try {
+                        const imgRes = await fetch(getFileUrl(imgAtt.filePath));
+                        const blob = await imgRes.blob();
+                        const arrayBuffer = await blob.arrayBuffer();
+                        const ext = imgAtt.filePath.split('.').pop().toLowerCase() === 'png' ? 'png' : 'jpeg';
+                        const imageId = workbook.addImage({
+                          buffer: arrayBuffer,
+                          extension: ext,
+                        });
+                        
+                        sheet.addImage(imageId, {
+                          tl: { col: 9, row: row.number - 1 },
+                          ext: { width: 120, height: 120 },
+                          editAs: 'oneCell'
+                        });
+                    } catch(e) {
+                        console.error('Failed to embed image', e);
+                        sheet.getCell(`J${row.number}`).value = "Gagal memuat gambar";
+                    }
+                 } else {
+                    sheet.getCell(`J${row.number}`).value = "Hanya format PDF/Dokumen";
+                 }
+              } else {
+                 sheet.getCell(`J${row.number}`).value = "Tidak ada bukti";
+              }
+            }
+
+            const buffer = await workbook.xlsx.writeBuffer();
+            saveAs(new Blob([buffer]), `Laporan_Realisasi_${new Date().toISOString().slice(0,10)}.xlsx`);
           } catch (err) {
             console.error('Error exporting excel:', err);
-            alert('Gagal mengekspor file Excel.');
+            alert('Gagal mengekspor file Excel. Cek koneksi jaringan Anda.');
+          } finally {
+            setLoading(false);
           }
         }}>
           <FileSpreadsheet size={18} style={{ marginRight: '8px' }} />
