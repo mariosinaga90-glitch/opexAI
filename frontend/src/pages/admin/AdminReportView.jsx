@@ -5,7 +5,7 @@ import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { API_BASE_URL } from '../../config';
 import { getFileUrl } from '../../utils/fileUrl';
-import { formatDateTime } from '../../utils/dateFormatter';
+import { formatDateTime, formatDate } from '../../utils/dateFormatter';
 
 function AdminReportView() {
   const [selectedReport, setSelectedReport] = useState(null);
@@ -213,7 +213,7 @@ function AdminReportView() {
                 {selectedReport.items?.map((item, i) => (
                   <tr key={i}>
                     <td>{i + 1}</td>
-                    <td>{item.transferDate ? formatDateTime(item.transferDate) : '-'}</td>
+                    <td>{item.transferDate ? formatDate(item.transferDate) : '-'}</td>
                     <td>{item.categoryLabel || item.category || '-'}</td>
                     <td>{item.team ? item.team.toUpperCase() : '-'}</td>
                     <td className="font-medium">{item.description}</td>

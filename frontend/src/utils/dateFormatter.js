@@ -11,3 +11,15 @@ export const formatDateTime = (dateString) => {
     minute: '2-digit'
   });
 };
+
+export const formatDate = (dateString) => {
+  if (!dateString) return '-';
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return dateString;
+  
+  return date.toLocaleDateString('id-ID', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+};
