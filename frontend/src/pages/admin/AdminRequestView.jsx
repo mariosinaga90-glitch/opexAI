@@ -248,14 +248,14 @@ function AdminRequestView() {
                         Lihat Dokumen PDF
                       </a>
                     ) : (
-                      <img src={getFileUrl(att.filePath)} alt="Bukti" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                      <img src={getFileUrl(att.filePath)} alt="Bukti" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                     )}
                   </div>
                 );
               })}
               {selectedRequest.photo && (!selectedRequest.attachments || selectedRequest.attachments.length === 0) && (
                 <div style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
-                  <img src={getFileUrl(selectedRequest.photo)} alt="Lampiran" crossOrigin="anonymous" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                  <img src={getFileUrl(selectedRequest.photo)} alt="Lampiran" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                 </div>
               )}
             </div>
