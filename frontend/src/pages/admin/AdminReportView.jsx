@@ -357,10 +357,16 @@ function AdminReportView() {
               row.alignment = { vertical: 'middle' };
 
               if (detail && detail.attachments && detail.attachments.length > 0) {
-                 const imgAtt = detail.attachments.find(a => a.fileType && !a.fileType.includes('pdf'));
+                 const imgAtt = detail.attachments.find(a => {
+                    const extension = a.filePath?.split('.').pop().toLowerCase();
+                    return ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension);
+                 });
+                 
                  if (imgAtt) {
                     try {
                         const imgRes = await fetch(getFileUrl(imgAtt.filePath));
+                        if (!imgRes.ok) throw new Error("Gagal mengunduh gambar");
+                        
                         const blob = await imgRes.blob();
                         const arrayBuffer = await blob.arrayBuffer();
                         const ext = imgAtt.filePath.split('.').pop().toLowerCase() === 'png' ? 'png' : 'jpeg';
@@ -379,7 +385,7 @@ function AdminReportView() {
                         sheet.getCell(`J${row.number}`).value = "Gagal memuat gambar";
                     }
                  } else {
-                    sheet.getCell(`J${row.number}`).value = "Hanya format PDF/Dokumen";
+                    sheet.getCell(`J${row.number}`).value = "Bukan format gambar";
                  }
               } else {
                  sheet.getCell(`J${row.number}`).value = "Tidak ada bukti";
