@@ -23,6 +23,24 @@ app.use('/uploads', express.static(path.resolve('data/uploads')));
 const frontendDistPath = path.resolve('../frontend/dist');
 app.use(express.static(frontendDistPath));
 
+// Debug endpoint to check uploads
+app.get('/api/debug/uploads', (req, res) => {
+  try {
+    const uploadPath = path.resolve('data/uploads');
+    if (!fs.existsSync(uploadPath)) {
+      return res.json({ error: 'Directory does not exist', path: uploadPath });
+    }
+    const files = fs.readdirSync(uploadPath);
+    const fileStats = files.map(file => {
+      const stats = fs.statSync(path.join(uploadPath, file));
+      return { file, size: stats.size, time: stats.mtime };
+    });
+    res.json({ path: uploadPath, count: files.length, files: fileStats });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Routes
 app.use('/api', apiRoutes);
 
