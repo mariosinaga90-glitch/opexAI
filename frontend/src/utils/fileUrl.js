@@ -8,16 +8,23 @@ export const getFileUrl = (path) => {
     cleanPath = cleanPath.replace(/http:\/\/localhost:3001/g, '');
   }
   
+  // Clean up any double slashes in the path just in case
+  cleanPath = cleanPath.replace(/\/\//g, '/');
+  
   // If it's already an absolute URL (other than localhost), return it
   if (cleanPath.startsWith('http')) return cleanPath;
   
-  // In development, API_BASE_URL might be http://localhost:3001/api
-  // We need to serve from http://localhost:3001/uploads/...
+  // If API_BASE_URL is absolute (e.g. https://domain.com or https://domain.com/api)
   if (API_BASE_URL.startsWith('http')) {
-    const baseUrl = API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4) : API_BASE_URL;
-    return `${baseUrl}${cleanPath}`;
+    try {
+      const url = new URL(API_BASE_URL);
+      // Always serve from the root origin (e.g., https://domain.com/uploads/...)
+      return `${url.origin}${cleanPath.startsWith('/') ? '' : '/'}${cleanPath}`;
+    } catch (e) {
+      // Fallback below
+    }
   }
   
-  // In production, it's just a relative path, so return it directly
-  return cleanPath;
+  // For relative API_BASE_URL (like /api), return the clean path
+  return cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
 };
