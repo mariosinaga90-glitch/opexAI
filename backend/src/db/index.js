@@ -4,8 +4,15 @@ import * as schema from './schema.js';
 import path from 'path';
 import fs from 'fs';
 
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Ensure data directory exists
-const dbPath = process.env.DATABASE_PATH || './data/opex.db';
+// Calculate absolute db path relative to this file: backend/src/db/index.js -> backend/data/opex.db
+const defaultDbPath = path.resolve(__dirname, '../../../data/opex.db');
+const dbPath = process.env.DATABASE_PATH || defaultDbPath;
 const dataDir = path.dirname(path.resolve(dbPath));
 if (!fs.existsSync(dataDir)) {
   fs.mkdirSync(dataDir, { recursive: true });

@@ -4,6 +4,10 @@ import apiRoutes from './routes/index.js';
 
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,16 +22,16 @@ app.use(cors({
 app.use(express.json());
 
 // Serve static files for uploads
-app.use('/uploads', express.static(path.resolve('uploads')));
+app.use('/uploads', express.static(path.resolve(__dirname, '../../uploads')));
 
 // Serve frontend static files in production
-const frontendDistPath = path.resolve('../frontend/dist');
+const frontendDistPath = path.resolve(__dirname, '../../../frontend/dist');
 app.use(express.static(frontendDistPath));
 
 // Debug endpoint to check uploads
 app.get('/api/debug/uploads', (req, res) => {
   try {
-    const uploadPath = path.resolve('uploads');
+    const uploadPath = path.resolve(__dirname, '../../uploads');
     if (!fs.existsSync(uploadPath)) {
       return res.json({ error: 'Directory does not exist', path: uploadPath });
     }
@@ -48,8 +52,10 @@ app.get('/api/debug/mounts', (req, res) => {
     const mounts = fs.readFileSync('/proc/mounts', 'utf8');
     const isDataMounted = mounts.includes('/app/backend/data');
     const isUploadsMounted = mounts.includes('/app/backend/uploads');
+    const actualDbPath = process.env.DATABASE_PATH || './data/opex.db';
     
     res.json({
+      databasePath: path.resolve(actualDbPath),
       databaseAman: isDataMounted ? "AMAN (Sudah dipasang)" : "BAHAYA (Belum dipasang)",
       fotoAman: isUploadsMounted ? "AMAN (Sudah dipasang)" : "BAHAYA (Belum dipasang)",
       rawMounts: mounts.split('\n').filter(line => line.includes('/app'))
