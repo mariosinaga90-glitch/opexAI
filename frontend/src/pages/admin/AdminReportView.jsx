@@ -402,19 +402,19 @@ function AdminReportView() {
                         });
                         
                         sheet.addImage(imageId, {
-                          tl: { col: 19, row: row.number - 1 },
+                          tl: { col: 17, row: row.number - 1 },
                           ext: { width: 120, height: 120 },
                           editAs: 'oneCell'
                         });
                     } catch(e) {
                         console.error('Failed to embed image', e);
-                        sheet.getCell(`T${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
+                        sheet.getCell(`R${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
                     }
                  } else {
-                    sheet.getCell(`T${row.number}`).value = "Bukan format gambar";
+                    sheet.getCell(`R${row.number}`).value = "Bukan format gambar";
                  }
               } else {
-                 sheet.getCell(`T${row.number}`).value = "Tidak ada bukti";
+                 sheet.getCell(`R${row.number}`).value = "Tidak ada bukti";
               }
             }
 
