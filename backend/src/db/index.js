@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 // Ensure data directory exists
 // Calculate absolute db path relative to this file: backend/src/db/index.js -> backend/data/opex.db
-const defaultDbPath = path.resolve(__dirname, '../../../data/opex.db');
+const defaultDbPath = path.resolve(__dirname, '../../data/opex.db');
 const dbPath = process.env.DATABASE_PATH || defaultDbPath;
 const dataDir = path.dirname(path.resolve(dbPath));
 if (!fs.existsSync(dataDir)) {
