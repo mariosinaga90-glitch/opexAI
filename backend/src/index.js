@@ -42,6 +42,23 @@ app.get('/api/debug/uploads', (req, res) => {
   }
 });
 
+// Debug endpoint to check persistent mounts
+app.get('/api/debug/mounts', (req, res) => {
+  try {
+    const mounts = fs.readFileSync('/proc/mounts', 'utf8');
+    const isDataMounted = mounts.includes('/app/backend/data');
+    const isUploadsMounted = mounts.includes('/app/backend/uploads');
+    
+    res.json({
+      databaseAman: isDataMounted ? "AMAN (Sudah dipasang)" : "BAHAYA (Belum dipasang)",
+      fotoAman: isUploadsMounted ? "AMAN (Sudah dipasang)" : "BAHAYA (Belum dipasang)",
+      rawMounts: mounts.split('\n').filter(line => line.includes('/app'))
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Routes
 app.use('/api', apiRoutes);
 
