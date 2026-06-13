@@ -10,6 +10,7 @@ function AdminBackupPowerView() {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [previewReport, setPreviewReport] = useState(null);
 
   useEffect(() => {
     fetchReports();
@@ -239,9 +240,14 @@ function AdminBackupPowerView() {
                         </div>
                       </td>
                       <td>
-                        <button className="btn-icon btn-small" onClick={() => handleDelete(rep.id)} title="Hapus Laporan">
-                          <Trash2 size={16} color="var(--danger-color)" />
-                        </button>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button className="btn-icon btn-small" onClick={() => setPreviewReport(rep)} title="Preview Laporan">
+                            <ImageIcon size={16} />
+                          </button>
+                          <button className="btn-icon btn-small" onClick={() => handleDelete(rep.id)} title="Hapus Laporan">
+                            <Trash2 size={16} color="var(--danger-color)" />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -251,6 +257,39 @@ function AdminBackupPowerView() {
           </div>
         )}
       </div>
+
+      {previewReport && (
+        <div className="modal-overlay" style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setPreviewReport(null)}>
+          <div className="modal-content animate-fade-in-up" style={{ backgroundColor: 'var(--bg-card)', padding: '2rem', borderRadius: '12px', width: '100%', maxWidth: '800px', maxHeight: '90vh', overflowY: 'auto' }} onClick={e => e.stopPropagation()}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2 className="section-title" style={{ margin: 0 }}>Preview Backup Power</h2>
+              <button className="btn-icon" onClick={() => setPreviewReport(null)}>✕</button>
+            </div>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1.5rem', borderRadius: '8px' }}>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{previewReport.ticketNo}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{previewReport.siteId} - {previewReport.siteName}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{previewReport.backupDate ? new Date(previewReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Pemadaman</p><p className="font-medium">{previewReport.plnOffTime || '-'}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{previewReport.backupStartTime || '-'}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{previewReport.plnOnTime || '-'}</p></div>
+              <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{previewReport.outageCause || '-'}</p></div>
+            </div>
+
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Foto Dokumentasi</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+              {previewReport.photoPlnOff ? <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN Off</p><img src={getFileUrl(previewReport.photoPlnOff)} alt="PLN Off" style={{ width: '100%', borderRadius: '8px', border: '1px solid #ddd' }} /></div> : <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>PLN Off</p><p>-</p></div>}
+              {previewReport.photoRhBefore ? <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH Before</p><img src={getFileUrl(previewReport.photoRhBefore)} alt="RH Before" style={{ width: '100%', borderRadius: '8px', border: '1px solid #ddd' }} /></div> : <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Before</p><p>-</p></div>}
+              {previewReport.photoPlnOn ? <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN On</p><img src={getFileUrl(previewReport.photoPlnOn)} alt="PLN On" style={{ width: '100%', borderRadius: '8px', border: '1px solid #ddd' }} /></div> : <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>PLN On</p><p>-</p></div>}
+              {previewReport.photoRhAfter ? <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH After</p><img src={getFileUrl(previewReport.photoRhAfter)} alt="RH After" style={{ width: '100%', borderRadius: '8px', border: '1px solid #ddd' }} /></div> : <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH After</p><p>-</p></div>}
+            </div>
+            
+            <div style={{ marginTop: '2rem', textAlign: 'right' }}>
+              <button className="btn" onClick={() => setPreviewReport(null)}>Tutup</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

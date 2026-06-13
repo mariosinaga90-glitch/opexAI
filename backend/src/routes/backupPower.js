@@ -11,6 +11,7 @@ router.get('/', async (req, res) => {
   try {
     const data = await db.select({
       id: backupPowerReports.id,
+      userId: backupPowerReports.userId,
       ticketNo: backupPowerReports.ticketNo,
       siteId: backupPowerReports.siteId,
       siteName: backupPowerReports.siteName,
