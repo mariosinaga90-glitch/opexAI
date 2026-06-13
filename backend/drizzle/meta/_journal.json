@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1781135492290,
+      "tag": "0000_faulty_revanche",
+      "breakpoints": true
+    }
+  ]
+}

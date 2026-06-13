@@ -7,6 +7,7 @@ import userRoutes from './admin/users.js';
 import uploadRoutes from './upload.js';
 import empRequestRoutes from './employee/requests.js';
 import empReportRoutes from './employee/reports.js';
+import backupPowerRoutes from './backupPower.js';
 
 const router = Router();
 
@@ -20,5 +21,7 @@ router.use('/upload', uploadRoutes);
 
 router.use('/employee/requests', empRequestRoutes);
 router.use('/employee/reports', empReportRoutes);
+
+router.use('/backup-power', backupPowerRoutes);
 
 export default router;

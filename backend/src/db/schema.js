@@ -95,3 +95,25 @@ export const attachments = sqliteTable('attachments', {
   fileSize: integer('fileSize'),
   uploadedAt: integer('uploadedAt', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
+
+export const backupPowerReports = sqliteTable('backup_power_reports', {
+  id: text('id').primaryKey(),
+  userId: text('userId').notNull().references(() => users.id),
+  ticketNo: text('ticketNo').notNull(),
+  siteId: text('siteId').notNull(),
+  siteName: text('siteName').notNull(),
+  nop: text('nop'),
+  cluster: text('cluster'),
+  plnOffTime: text('plnOffTime'),
+  rhBefore: real('rhBefore'),
+  backupStartTime: text('backupStartTime'),
+  plnOnTime: text('plnOnTime'),
+  rhAfter: real('rhAfter'),
+  backupEndTime: text('backupEndTime'),
+  outageCause: text('outageCause'),
+  photoPlnOff: text('photoPlnOff'),
+  photoRhBefore: text('photoRhBefore'),
+  photoPlnOn: text('photoPlnOn'),
+  photoRhAfter: text('photoRhAfter'),
+  createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+});

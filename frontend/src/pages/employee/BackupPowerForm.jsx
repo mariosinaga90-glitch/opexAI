@@ -1,0 +1,342 @@
+import React, { useState, useEffect } from 'react';
+import { Save, FileText, ArrowLeft, Image as ImageIcon, Loader2 } from 'lucide-react';
+
+const API_BASE_URL = '/api';
+
+function BackupPowerForm() {
+  const [reports, setReports] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [activeTab, setActiveTab] = useState('list');
+  const [selectedReport, setSelectedReport] = useState(null);
+  
+  // Upload states
+  const [uploadingField, setUploadingField] = useState(null);
+
+  const initialForm = {
+    ticketNo: '',
+    siteId: '',
+    siteName: '',
+    nop: '',
+    cluster: '',
+    plnOffTime: '',
+    rhBefore: '',
+    backupStartTime: '',
+    plnOnTime: '',
+    rhAfter: '',
+    backupEndTime: '',
+    outageCause: '',
+    photoPlnOff: '',
+    photoRhBefore: '',
+    photoPlnOn: '',
+    photoRhAfter: ''
+  };
+
+  const [formData, setFormData] = useState(initialForm);
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
+
+  const fetchReports = async () => {
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const res = await fetch(`${API_BASE_URL}/backup-power`);
+      const data = await res.json();
+      // Filter only for this user
+      const userReports = data.filter(r => r.userId === user.id);
+      setReports(userReports);
+    } catch (err) {
+      console.error('Failed to fetch backup power reports:', err);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleFileUpload = async (e, fieldName) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingField(fieldName);
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) {
+        setFormData({ ...formData, [fieldName]: data.url });
+      } else {
+        alert('Upload gagal');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Upload error');
+    } finally {
+      setUploadingField(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      const payload = {
+        userId: user.id,
+        ...formData,
+        rhBefore: formData.rhBefore ? Number(formData.rhBefore) : null,
+        rhAfter: formData.rhAfter ? Number(formData.rhAfter) : null,
+      };
+
+      const res = await fetch(`${API_BASE_URL}/backup-power`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        alert('Laporan Backup Power berhasil disubmit!');
+        setFormData(initialForm);
+        setActiveTab('list');
+        fetchReports();
+      } else {
+        const err = await res.json();
+        alert('Gagal submit: ' + (err.error || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error('Submit error:', err);
+      alert('Terjadi kesalahan jaringan.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '-';
+    return new Date(dateString).toLocaleString('id-ID', {
+      day: '2-digit', month: 'short', year: 'numeric',
+      hour: '2-digit', minute: '2-digit'
+    });
+  };
+
+  const getFileUrl = (path) => {
+    if (!path) return '';
+    if (path.startsWith('http')) return path;
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+    return `/${cleanPath}`;
+  };
+
+  const renderUploadBox = (field, label) => (
+    <div className="form-group">
+      <label className="form-label">{label}</label>
+      {formData[field] ? (
+        <div style={{ position: 'relative', marginTop: '0.5rem', width: '100%', height: '150px', backgroundColor: '#f1f5f9', borderRadius: '8px', overflow: 'hidden' }}>
+          <img src={getFileUrl(formData[field])} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <button 
+            type="button" 
+            onClick={() => setFormData({...formData, [field]: ''})}
+            style={{ position: 'absolute', top: 5, right: 5, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            ✕
+          </button>
+        </div>
+      ) : (
+        <div style={{ position: 'relative', width: '100%', height: '150px', border: '2px dashed var(--border-color)', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.01)', cursor: 'pointer' }}>
+          {uploadingField === field ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+              <Loader2 size={24} className="spin" color="var(--primary-color)" />
+              <span className="text-muted" style={{ fontSize: '0.85rem' }}>Uploading...</span>
+            </div>
+          ) : (
+            <>
+              <ImageIcon size={32} color="var(--text-muted)" style={{ marginBottom: '0.5rem' }} />
+              <span className="text-muted" style={{ fontSize: '0.85rem' }}>Klik / Tap untuk Foto</span>
+              <input 
+                type="file" 
+                accept="image/*" 
+                capture="environment"
+                onChange={(e) => handleFileUpload(e, field)}
+                style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }}
+              />
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  if (selectedReport) {
+    return (
+      <div className="glass-panel animate-fade-in-up" style={{ padding: '2rem' }}>
+        <button className="btn-icon" onClick={() => setSelectedReport(null)} style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <ArrowLeft size={16} /> Kembali
+        </button>
+        <h2 className="section-title">Detail Log Backup Power</h2>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem', backgroundColor: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px' }}>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{selectedReport.ticketNo}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{selectedReport.siteId} - {selectedReport.siteName}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Cluster</p><p className="font-medium">{selectedReport.cluster}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Pemadaman</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{selectedReport.backupStartTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{selectedReport.plnOnTime || '-'}</p></div>
+        </div>
+
+        <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Foto Dokumentasi</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+          {selectedReport.photoPlnOff && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN Off</p><img src={getFileUrl(selectedReport.photoPlnOff)} alt="PLN Off" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+          {selectedReport.photoRhBefore && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH Before</p><img src={getFileUrl(selectedReport.photoRhBefore)} alt="RH Before" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+          {selectedReport.photoPlnOn && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN On</p><img src={getFileUrl(selectedReport.photoPlnOn)} alt="PLN On" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+          {selectedReport.photoRhAfter && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH After</p><img src={getFileUrl(selectedReport.photoRhAfter)} alt="RH After" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-fade-in-up">
+      <div className="dashboard-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1 className="dashboard-title">Report Backup Power</h1>
+          <p className="dashboard-subtitle">Catat log pemadaman dan penggunaan genset di site.</p>
+        </div>
+      </div>
+
+      <div className="tabs" style={{ marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
+        <button className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`} onClick={() => setActiveTab('list')}>Histori Laporan</button>
+        <button className={`tab-btn ${activeTab === 'new' ? 'active' : ''}`} onClick={() => setActiveTab('new')}>+ Laporan Baru</button>
+      </div>
+
+      {activeTab === 'list' && (
+        <div className="glass-panel" style={{ padding: '1.5rem' }}>
+          <div className="table-responsive">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>No Ticket</th>
+                  <th>Site Name</th>
+                  <th>PLN Off</th>
+                  <th>Backup Start</th>
+                  <th>Dibuat Pada</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reports.length === 0 ? (
+                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada histori laporan Backup Power.</td></tr>
+                ) : (
+                  reports.map(rep => (
+                    <tr key={rep.id}>
+                      <td className="font-medium">{rep.ticketNo}</td>
+                      <td>{rep.siteName}</td>
+                      <td>{rep.plnOffTime || '-'}</td>
+                      <td>{rep.backupStartTime || '-'}</td>
+                      <td>{formatDate(rep.createdAt)}</td>
+                      <td>
+                        <button className="btn-icon btn-small" onClick={() => setSelectedReport(rep)}>
+                          <FileText size={16} /> Lihat
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'new' && (
+        <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '2rem' }}>
+          <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Informasi Site & Waktu</h3>
+          
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">No Ticket</label>
+              <input type="text" className="form-control" name="ticketNo" value={formData.ticketNo} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Site ID</label>
+              <input type="text" className="form-control" name="siteId" value={formData.siteId} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Site Name</label>
+              <input type="text" className="form-control" name="siteName" value={formData.siteName} onChange={handleInputChange} required />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">NOP</label>
+              <input type="text" className="form-control" name="nop" value={formData.nop} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Cluster</label>
+              <input type="text" className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Penyebab Pemadaman</label>
+              <input type="text" className="form-control" name="outageCause" value={formData.outageCause} onChange={handleInputChange} placeholder="Contoh: Gardu PLN meledak" />
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Log Jam & Mesin</h3>
+          
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">PLN Off (Jam)</label>
+              <input type="time" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Waktu Mulai Backup (Jam)</label>
+              <input type="time" className="form-control" name="backupStartTime" value={formData.backupStartTime} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">RH Sebelum Backup (Angka)</label>
+              <input type="number" step="any" className="form-control" name="rhBefore" value={formData.rhBefore} onChange={handleInputChange} />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">PLN On (Jam)</label>
+              <input type="time" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Waktu Selesai Backup (Jam)</label>
+              <input type="time" className="form-control" name="backupEndTime" value={formData.backupEndTime} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">RH Sesudah Backup (Angka)</label>
+              <input type="number" step="any" className="form-control" name="rhAfter" value={formData.rhAfter} onChange={handleInputChange} />
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Dokumentasi Foto</h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            {renderUploadBox('photoPlnOff', 'Foto Ketika PLN Off')}
+            {renderUploadBox('photoRhBefore', 'Foto RH Sebelum Backup')}
+            {renderUploadBox('photoPlnOn', 'Foto Ketika PLN On')}
+            {renderUploadBox('photoRhAfter', 'Foto RH Sesudah Backup')}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
+            <button type="submit" className="btn btn-primary" disabled={isSubmitting} style={{ padding: '0.8rem 2rem', fontSize: '1rem' }}>
+              {isSubmitting ? (
+                <><Loader2 size={18} className="spin" style={{ marginRight: '8px' }} /> Menyimpan...</>
+              ) : (
+                <><Save size={18} style={{ marginRight: '8px' }} /> Submit Laporan</>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+export default BackupPowerForm;

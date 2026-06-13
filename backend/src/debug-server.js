@@ -1,5 +1,5 @@
-import http from 'http';
-import fs from 'fs';
+const http = require('http');
+const fs = require('fs');
 
 // Baca file log error yang dihasilkan dari crash
 const errorLog = fs.existsSync('/tmp/crash.log') 

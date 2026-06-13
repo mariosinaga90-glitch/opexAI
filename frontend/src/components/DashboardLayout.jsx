@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging } from 'lucide-react';
 import '../pages/Dashboard.css';
 
 function DashboardLayout({ role }) {
@@ -28,12 +28,14 @@ function DashboardLayout({ role }) {
     { name: 'Dashboard', path: '/employee', icon: LayoutDashboard },
     { name: 'Pengajuan', path: '/employee#pengajuan', icon: FileText },
     { name: 'Laporan', path: '/employee#laporan', icon: CheckSquare },
+    { name: 'Report Backup Power', path: '/employee/backup-power', icon: BatteryCharging },
   ];
 
   const adminNav = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     { name: 'Daftar Pengajuan', path: '/admin#pengajuan', icon: FileText },
     { name: 'Review Laporan', path: '/admin#laporan', icon: CheckSquare },
+    { name: 'Data Backup Power', path: '/admin/backup-power', icon: BatteryCharging },
     { name: 'Manajemen Pengguna', path: '/admin#users', icon: Users },
     { name: 'Pengaturan', path: '/admin#settings', icon: Settings },
   ];
