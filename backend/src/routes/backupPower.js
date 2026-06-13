@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
       ticketNo: backupPowerReports.ticketNo,
       siteId: backupPowerReports.siteId,
       siteName: backupPowerReports.siteName,
+      backupDate: backupPowerReports.backupDate,
       nop: backupPowerReports.nop,
       cluster: backupPowerReports.cluster,
       plnOffTime: backupPowerReports.plnOffTime,
@@ -45,7 +46,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { 
-      userId, ticketNo, siteId, siteName, nop, cluster, 
+      userId, ticketNo, siteId, siteName, backupDate, nop, cluster, 
       plnOffTime, rhBefore, backupStartTime, plnOnTime, rhAfter, backupEndTime, outageCause,
       photoPlnOff, photoRhBefore, photoPlnOn, photoRhAfter
     } = req.body;
@@ -58,6 +59,7 @@ router.post('/', async (req, res) => {
       ticketNo,
       siteId,
       siteName,
+      backupDate,
       nop,
       cluster,
       plnOffTime,

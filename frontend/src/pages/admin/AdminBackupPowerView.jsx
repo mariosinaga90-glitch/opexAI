@@ -62,6 +62,7 @@ function AdminBackupPowerView() {
         { header: 'No Ticket', key: 'ticketNo', width: 20 },
         { header: 'Site ID', key: 'siteId', width: 15 },
         { header: 'Site Name', key: 'siteName', width: 30 },
+        { header: 'Tanggal Backup', key: 'backupDate', width: 15 },
         { header: 'NOP', key: 'nop', width: 15 },
         { header: 'Cluster', key: 'cluster', width: 20 },
         { header: 'Penyebab', key: 'outageCause', width: 25 },
@@ -108,6 +109,7 @@ function AdminBackupPowerView() {
           ticketNo: rep.ticketNo || '-',
           siteId: rep.siteId || '-',
           siteName: rep.siteName || '-',
+          backupDate: rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-',
           nop: rep.nop || '-',
           cluster: rep.cluster || '-',
           outageCause: rep.outageCause || '-',
@@ -125,10 +127,10 @@ function AdminBackupPowerView() {
         row.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
 
         const photoFields = [
-          { key: 'photoPlnOff', colIndex: 15 },    // col P (0-indexed)
-          { key: 'photoRhBefore', colIndex: 16 },  // col Q
-          { key: 'photoPlnOn', colIndex: 17 },     // col R
-          { key: 'photoRhAfter', colIndex: 18 }    // col S
+          { key: 'photoPlnOff', colIndex: 16 },    // shifted to accommodate Tanggal Backup
+          { key: 'photoRhBefore', colIndex: 17 },  
+          { key: 'photoPlnOn', colIndex: 18 },     
+          { key: 'photoRhAfter', colIndex: 19 }    
         ];
 
         for (const p of photoFields) {
@@ -208,6 +210,7 @@ function AdminBackupPowerView() {
                 <tr>
                   <th>No Ticket</th>
                   <th>Site Name</th>
+                  <th>Tanggal</th>
                   <th>Pembuat</th>
                   <th>PLN Off</th>
                   <th>Backup Start</th>
@@ -223,6 +226,7 @@ function AdminBackupPowerView() {
                     <tr key={rep.id}>
                       <td className="font-medium">{rep.ticketNo}</td>
                       <td>{rep.siteId} - {rep.siteName}</td>
+                      <td>{rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-'}</td>
                       <td>{rep.user}</td>
                       <td>{rep.plnOffTime || '-'}</td>
                       <td>{rep.backupStartTime || '-'}</td>

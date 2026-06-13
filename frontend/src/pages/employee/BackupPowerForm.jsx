@@ -16,6 +16,7 @@ function BackupPowerForm() {
     ticketNo: '',
     siteId: '',
     siteName: '',
+    backupDate: '',
     nop: '',
     cluster: '',
     plnOffTime: '',
@@ -180,6 +181,7 @@ function BackupPowerForm() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{selectedReport.ticketNo}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{selectedReport.siteId} - {selectedReport.siteName}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Cluster</p><p className="font-medium">{selectedReport.cluster}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{selectedReport.backupDate ? new Date(selectedReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Pemadaman</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{selectedReport.backupStartTime || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{selectedReport.plnOnTime || '-'}</p></div>
@@ -218,6 +220,7 @@ function BackupPowerForm() {
                 <tr>
                   <th>No Ticket</th>
                   <th>Site Name</th>
+                  <th>Tanggal</th>
                   <th>PLN Off</th>
                   <th>Backup Start</th>
                   <th>Dibuat Pada</th>
@@ -232,6 +235,7 @@ function BackupPowerForm() {
                     <tr key={rep.id}>
                       <td className="font-medium">{rep.ticketNo}</td>
                       <td>{rep.siteName}</td>
+                      <td>{rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-'}</td>
                       <td>{rep.plnOffTime || '-'}</td>
                       <td>{rep.backupStartTime || '-'}</td>
                       <td>{formatDate(rep.createdAt)}</td>
@@ -265,6 +269,10 @@ function BackupPowerForm() {
             <div className="form-group">
               <label className="form-label">Site Name</label>
               <input type="text" className="form-control" name="siteName" value={formData.siteName} onChange={handleInputChange} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tanggal Backup Power</label>
+              <input type="date" className="form-control" name="backupDate" value={formData.backupDate} onChange={handleInputChange} required />
             </div>
           </div>
 

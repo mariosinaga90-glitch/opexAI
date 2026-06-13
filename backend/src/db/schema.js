@@ -102,6 +102,7 @@ export const backupPowerReports = sqliteTable('backup_power_reports', {
   ticketNo: text('ticketNo').notNull(),
   siteId: text('siteId').notNull(),
   siteName: text('siteName').notNull(),
+  backupDate: text('backupDate'),
   nop: text('nop'),
   cluster: text('cluster'),
   plnOffTime: text('plnOffTime'),
