@@ -225,6 +225,8 @@ function BackupPowerForm() {
                 <tr>
                   <th>No Ticket</th>
                   <th>Site Name</th>
+                  <th>NOP</th>
+                  <th>Cluster</th>
                   <th>Tanggal</th>
                   <th>PLN Off</th>
                   <th>Backup Start</th>
@@ -240,6 +242,8 @@ function BackupPowerForm() {
                     <tr key={rep.id}>
                       <td className="font-medium">{rep.ticketNo}</td>
                       <td>{rep.siteName}</td>
+                      <td>{rep.nop || '-'}</td>
+                      <td>{rep.cluster || '-'}</td>
                       <td>{rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-'}</td>
                       <td>{rep.plnOffTime || '-'}</td>
                       <td>{rep.backupStartTime || '-'}</td>

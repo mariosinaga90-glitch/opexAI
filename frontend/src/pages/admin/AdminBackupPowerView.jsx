@@ -245,6 +245,8 @@ function AdminBackupPowerView() {
                 <tr>
                   <th>No Ticket</th>
                   <th>Site Name</th>
+                  <th>NOP</th>
+                  <th>Cluster</th>
                   <th>Tanggal</th>
                   <th>Pembuat</th>
                   <th>PLN Off</th>
@@ -261,6 +263,8 @@ function AdminBackupPowerView() {
                     <tr key={rep.id}>
                       <td className="font-medium">{rep.ticketNo}</td>
                       <td>{rep.siteId} - {rep.siteName}</td>
+                      <td>{rep.nop || '-'}</td>
+                      <td>{rep.cluster || '-'}</td>
                       <td>{rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-'}</td>
                       <td>{rep.user}</td>
                       <td>{rep.plnOffTime || '-'}</td>
