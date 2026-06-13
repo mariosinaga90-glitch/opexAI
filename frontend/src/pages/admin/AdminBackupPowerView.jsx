@@ -8,6 +8,11 @@ const API_BASE_URL = '/api';
 function AdminBackupPowerView() {
   const [reports, setReports] = useState([]);
   const [search, setSearch] = useState('');
+  const [filterNop, setFilterNop] = useState('');
+  const [filterCluster, setFilterCluster] = useState('');
+  const [filterDateFrom, setFilterDateFrom] = useState('');
+  const [filterDateTo, setFilterDateTo] = useState('');
+  
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [previewReport, setPreviewReport] = useState(null);
@@ -169,11 +174,32 @@ function AdminBackupPowerView() {
     }
   };
 
-  const filteredReports = reports.filter(r => 
-    (r.siteName || '').toLowerCase().includes(search.toLowerCase()) ||
-    (r.ticketNo || '').toLowerCase().includes(search.toLowerCase()) ||
-    (r.user || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredReports = reports.filter(r => {
+    const matchesSearch = search === '' || 
+      (r.siteName || '').toLowerCase().includes(search.toLowerCase()) ||
+      (r.ticketNo || '').toLowerCase().includes(search.toLowerCase()) ||
+      (r.user || '').toLowerCase().includes(search.toLowerCase());
+    
+    const matchesNop = filterNop === '' || (r.nop || '').toLowerCase().includes(filterNop.toLowerCase());
+    const matchesCluster = filterCluster === '' || (r.cluster || '').toLowerCase().includes(filterCluster.toLowerCase());
+    
+    let matchesDate = true;
+    if (filterDateFrom || filterDateTo) {
+      if (!r.backupDate) {
+        matchesDate = false;
+      } else {
+        const repDate = new Date(r.backupDate).getTime();
+        if (filterDateFrom && repDate < new Date(filterDateFrom).getTime()) matchesDate = false;
+        if (filterDateTo) {
+          const endTo = new Date(filterDateTo);
+          endTo.setHours(23, 59, 59, 999);
+          if (repDate > endTo.getTime()) matchesDate = false;
+        }
+      }
+    }
+
+    return matchesSearch && matchesNop && matchesCluster && matchesDate;
+  });
 
   if (previewReport) {
     return (
@@ -223,8 +249,9 @@ function AdminBackupPowerView() {
       </div>
 
       <div className="glass-panel" style={{ padding: '1.5rem' }}>
-        <div style={{ marginBottom: '1.5rem', display: 'flex', gap: '1rem' }}>
-          <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1, maxWidth: '400px' }}>
+        <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {/* Top Search Bar */}
+          <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', maxWidth: '400px' }}>
             <Search size={18} className="text-muted" />
             <input 
               type="text" 
@@ -233,6 +260,31 @@ function AdminBackupPowerView() {
               onChange={(e) => setSearch(e.target.value)}
               style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%' }}
             />
+          </div>
+
+          {/* Filters Row */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
+            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>NOP</label>
+              <input type="text" className="form-control" placeholder="Semua NOP" value={filterNop} onChange={(e) => setFilterNop(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Cluster</label>
+              <input type="text" className="form-control" placeholder="Semua Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
+              <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
+              <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
+            </div>
+            { (filterNop || filterCluster || filterDateFrom || filterDateTo || search) && (
+              <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
+                <button className="btn" onClick={() => { setFilterNop(''); setFilterCluster(''); setFilterDateFrom(''); setFilterDateTo(''); setSearch(''); }}>Reset</button>
+              </div>
+            )}
           </div>
         </div>
 

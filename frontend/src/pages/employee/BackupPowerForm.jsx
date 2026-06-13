@@ -9,6 +9,12 @@ function BackupPowerForm() {
   const [activeTab, setActiveTab] = useState('list');
   const [selectedReport, setSelectedReport] = useState(null);
   
+  // Filter states
+  const [filterNop, setFilterNop] = useState('');
+  const [filterCluster, setFilterCluster] = useState('');
+  const [filterDateFrom, setFilterDateFrom] = useState('');
+  const [filterDateTo, setFilterDateTo] = useState('');
+  
   // Upload states
   const [uploadingField, setUploadingField] = useState(null);
 
@@ -169,6 +175,27 @@ function BackupPowerForm() {
     </div>
   );
 
+  const filteredReports = reports.filter(r => {
+    const matchesNop = filterNop === '' || (r.nop || '').toLowerCase().includes(filterNop.toLowerCase());
+    const matchesCluster = filterCluster === '' || (r.cluster || '').toLowerCase().includes(filterCluster.toLowerCase());
+    let matchesDate = true;
+    if (filterDateFrom || filterDateTo) {
+      if (!r.backupDate) {
+        matchesDate = false;
+      } else {
+        const repDate = new Date(r.backupDate).getTime();
+        if (filterDateFrom && repDate < new Date(filterDateFrom).getTime()) matchesDate = false;
+        // set end of day for DateTo
+        if (filterDateTo) {
+          const endTo = new Date(filterDateTo);
+          endTo.setHours(23, 59, 59, 999);
+          if (repDate > endTo.getTime()) matchesDate = false;
+        }
+      }
+    }
+    return matchesNop && matchesCluster && matchesDate;
+  });
+
   if (selectedReport) {
     return (
       <div className="glass-panel animate-fade-in-up" style={{ padding: '2rem' }}>
@@ -219,6 +246,30 @@ function BackupPowerForm() {
 
       {activeTab === 'list' && (
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
+            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>NOP</label>
+              <input type="text" className="form-control" placeholder="Semua NOP" value={filterNop} onChange={(e) => setFilterNop(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Cluster</label>
+              <input type="text" className="form-control" placeholder="Semua Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
+              <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
+            </div>
+            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
+              <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
+            </div>
+            { (filterNop || filterCluster || filterDateFrom || filterDateTo) && (
+              <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
+                <button className="btn" onClick={() => { setFilterNop(''); setFilterCluster(''); setFilterDateFrom(''); setFilterDateTo(''); }}>Reset</button>
+              </div>
+            )}
+          </div>
+
           <div className="table-responsive">
             <table className="data-table">
               <thead>
@@ -235,10 +286,10 @@ function BackupPowerForm() {
                 </tr>
               </thead>
               <tbody>
-                {reports.length === 0 ? (
-                  <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada histori laporan Backup Power.</td></tr>
+                {filteredReports.length === 0 ? (
+                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada histori laporan Backup Power.</td></tr>
                 ) : (
-                  reports.map(rep => (
+                  filteredReports.map(rep => (
                     <tr key={rep.id}>
                       <td className="font-medium">{rep.ticketNo}</td>
                       <td>{rep.siteName}</td>
