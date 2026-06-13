@@ -180,11 +180,16 @@ function BackupPowerForm() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem', backgroundColor: 'var(--bg-card)', padding: '1.5rem', borderRadius: '8px' }}>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{selectedReport.ticketNo}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{selectedReport.siteId} - {selectedReport.siteName}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{selectedReport.nop || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Cluster</p><p className="font-medium">{selectedReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{selectedReport.backupDate ? new Date(selectedReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Pemadaman</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{selectedReport.outageCause || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{selectedReport.backupStartTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Sebelum Backup</p><p className="font-medium">{selectedReport.rhBefore || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{selectedReport.plnOnTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Selesai Backup</p><p className="font-medium">{selectedReport.backupEndTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Sesudah Backup</p><p className="font-medium">{selectedReport.rhAfter || '-'}</p></div>
         </div>
 
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Foto Dokumentasi</h3>
