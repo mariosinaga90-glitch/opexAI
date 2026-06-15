@@ -8,8 +8,8 @@ function EmployeeProfileView() {
     name: '',
     email: '',
     role: '',
-    nop: '',
-    toCluster: '',
+    cluster: '', // NOP
+    microCluster: '', // TO Cluster
     team: '', // Tim / Divisi
     vehicleType: '',
     plateNumber: '',
@@ -53,8 +53,8 @@ function EmployeeProfileView() {
         body: JSON.stringify({
           name: user.name,
           email: user.email,
-          nop: user.nop,
-          toCluster: user.toCluster,
+          cluster: user.cluster,
+          microCluster: user.microCluster,
           team: user.team,
           phoneNumber: user.phoneNumber,
           nik: user.nik,
@@ -279,8 +279,8 @@ function EmployeeProfileView() {
                   </label>
                   <select 
                     className="form-control" 
-                    name="nop"
-                    value={user.nop || ''} 
+                    name="cluster"
+                    value={user.cluster || ''} 
                     onChange={handleChange}
                   >
                     <option value="">Pilih NOP...</option>
@@ -296,8 +296,8 @@ function EmployeeProfileView() {
                   </label>
                   <select 
                     className="form-control" 
-                    name="toCluster"
-                    value={user.toCluster || ''} 
+                    name="microCluster"
+                    value={user.microCluster || ''} 
                     onChange={handleChange}
                   >
                     <option value="">Pilih TO Cluster...</option>

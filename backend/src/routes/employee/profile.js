@@ -16,8 +16,8 @@ router.put('/', async (req, res) => {
     const {
       name,
       email,
-      toCluster,
-      nop,
+      cluster,
+      microCluster,
       team,
       phoneNumber,
       nik,
@@ -40,8 +40,8 @@ router.put('/', async (req, res) => {
       .set({
         name,
         email,
-        toCluster,
-        nop,
+        cluster,
+        microCluster,
         team,
         phoneNumber,
         nik,
