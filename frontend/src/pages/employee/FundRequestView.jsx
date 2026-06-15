@@ -389,7 +389,14 @@ function FundRequestView({ onBack }) {
               <div className="form-grid">
                 <div className="form-group">
                   <label className="form-label">Role Team</label>
-                  <select className="form-control" required value={item.team} onChange={e => updateItem(index, 'team', e.target.value)}>
+                  <select 
+                    className="form-control" 
+                    required 
+                    value={item.team} 
+                    onChange={e => updateItem(index, 'team', e.target.value)}
+                    disabled
+                    style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}
+                  >
                     <option value="">Pilih Role...</option>
                     <option value="TS">TS</option>
                     <option value="MBP">MBP</option>
@@ -398,7 +405,14 @@ function FundRequestView({ onBack }) {
                 </div>
                 <div className="form-group">
                   <label className="form-label">TO Cluster</label>
-                  <select className="form-control" required value={item.toCluster} onChange={e => updateItem(index, 'toCluster', e.target.value)}>
+                  <select 
+                    className="form-control" 
+                    required 
+                    value={item.toCluster} 
+                    onChange={e => updateItem(index, 'toCluster', e.target.value)}
+                    disabled
+                    style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}
+                  >
                     <option value="">Pilih TO Cluster...</option>
                     <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
                     <option value="TO Karawang">TO Karawang</option>
@@ -407,7 +421,14 @@ function FundRequestView({ onBack }) {
                 </div>
                 <div className="form-group">
                   <label className="form-label">NOP</label>
-                  <select className="form-control" required value={item.nop} onChange={e => updateItem(index, 'nop', e.target.value)}>
+                  <select 
+                    className="form-control" 
+                    required 
+                    value={item.nop} 
+                    onChange={e => updateItem(index, 'nop', e.target.value)}
+                    disabled
+                    style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}
+                  >
                     <option value="">Pilih NOP...</option>
                     <option value="Karawang">Karawang</option>
                     <option value="Serang">Serang</option>
