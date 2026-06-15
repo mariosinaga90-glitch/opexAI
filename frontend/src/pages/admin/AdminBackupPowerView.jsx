@@ -177,6 +177,7 @@ function AdminBackupPowerView() {
   const filteredReports = reports.filter(r => {
     const matchesSearch = search === '' || 
       (r.siteName || '').toLowerCase().includes(search.toLowerCase()) ||
+      (r.siteId || '').toLowerCase().includes(search.toLowerCase()) ||
       (r.ticketNo || '').toLowerCase().includes(search.toLowerCase()) ||
       (r.user || '').toLowerCase().includes(search.toLowerCase());
     
@@ -255,7 +256,7 @@ function AdminBackupPowerView() {
             <Search size={18} className="text-muted" />
             <input 
               type="text" 
-              placeholder="Cari Ticket, Site, atau Karyawan..." 
+              placeholder="Cari No Ticket, Site ID, atau Karyawan..." 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               style={{ border: 'none', outline: 'none', background: 'transparent', width: '100%' }}

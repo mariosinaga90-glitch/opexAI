@@ -11,6 +11,7 @@ function BackupPowerForm() {
   const [selectedReport, setSelectedReport] = useState(null);
   
   // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   
@@ -178,6 +179,11 @@ function BackupPowerForm() {
   );
 
   const filteredReports = reports.filter(r => {
+    const matchesSearch = searchQuery === '' || 
+      (r.ticketNo || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (r.siteId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (r.siteName || '').toLowerCase().includes(searchQuery.toLowerCase());
+      
     let matchesDate = true;
     if (filterDateFrom || filterDateTo) {
       if (!r.backupDate) {
@@ -193,7 +199,7 @@ function BackupPowerForm() {
         }
       }
     }
-    return matchesDate;
+    return matchesSearch && matchesDate;
   });
 
   if (selectedReport) {
@@ -247,6 +253,10 @@ function BackupPowerForm() {
       {activeTab === 'list' && (
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
+            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Cari No Ticket / Site ID</label>
+              <input type="text" className="form-control" placeholder="Ketik kata kunci..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+            </div>
             <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
               <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
@@ -255,9 +265,9 @@ function BackupPowerForm() {
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
               <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
             </div>
-            { (filterDateFrom || filterDateTo) && (
+            { (searchQuery || filterDateFrom || filterDateTo) && (
               <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
-                <button className="btn" onClick={() => { setFilterDateFrom(''); setFilterDateTo(''); }}>Reset</button>
+                <button className="btn" onClick={() => { setSearchQuery(''); setFilterDateFrom(''); setFilterDateTo(''); }}>Reset</button>
               </div>
             )}
           </div>
