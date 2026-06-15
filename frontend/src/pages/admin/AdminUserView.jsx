@@ -140,13 +140,13 @@ function AdminUserView() {
           <h3 style={{ fontSize: '1.1rem', marginTop: '1rem', marginBottom: '1rem', color: 'var(--primary)' }}>Struktur Organisasi</h3>
           <div className="form-grid">
             <div className="form-group">
-              <label className="form-label">Cluster</label>
-              <input type="text" className="form-control" placeholder="Contoh: Commercial" 
+              <label className="form-label">NOP</label>
+              <input type="text" className="form-control" placeholder="Contoh: NOP-123" 
                 value={formData.cluster} onChange={e => setFormData({...formData, cluster: e.target.value})} />
             </div>
             <div className="form-group">
-              <label className="form-label">Mikro Cluster</label>
-              <input type="text" className="form-control" placeholder="Contoh: B2B" 
+              <label className="form-label">TO Cluster</label>
+              <input type="text" className="form-control" placeholder="Contoh: TO Kab. Bekasi" 
                 value={formData.microCluster} onChange={e => setFormData({...formData, microCluster: e.target.value})} />
             </div>
             <div className="form-group">
@@ -208,7 +208,7 @@ function AdminUserView() {
               <tr>
                 <th>Nama & Email</th>
                 <th>Role</th>
-                <th>Cluster / Mikro</th>
+                <th>NOP / TO Cluster</th>
                 <th>Tim</th>
                 <th>Aksi</th>
               </tr>

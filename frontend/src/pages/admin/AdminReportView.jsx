@@ -121,7 +121,7 @@ function AdminReportView() {
                 <p className="font-medium">{selectedReport.team}</p>
               </div>
               <div>
-                <p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>TO NOP</p>
                 <p className="font-medium">{selectedReport.toCluster}</p>
               </div>
               <div>
@@ -326,7 +326,7 @@ function AdminReportView() {
               { header: 'Terkait Pengajuan', key: 'reqId', width: 20 },
               { header: 'Pembuat', key: 'user', width: 20 },
               { header: 'Role Team', key: 'team', width: 15 },
-              { header: 'TO Cluster', key: 'toCluster', width: 20 },
+              { header: 'TO NOP', key: 'toCluster', width: 20 },
               { header: 'Kategori', key: 'category', width: 20 },
               { header: 'Total Terpakai', key: 'total', width: 18 },
               { header: 'Daftar Site', key: 'sites', width: 30 },
@@ -464,7 +464,7 @@ function AdminReportView() {
               value={filterCluster}
               onChange={(e) => setFilterCluster(e.target.value)}
             >
-              <option value="all">Semua TO Cluster</option>
+              <option value="all">Semua TO NOP</option>
               <option value="TO Kab. Bekasi">Kab. Bekasi</option>
               <option value="TO Karawang">Karawang</option>
               <option value="TO Purwakarta">Purwakarta</option>

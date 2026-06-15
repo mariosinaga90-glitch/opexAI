@@ -212,7 +212,7 @@ function BackupPowerForm() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{selectedReport.ticketNo}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{selectedReport.siteId} - {selectedReport.siteName}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{selectedReport.nop || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Cluster</p><p className="font-medium">{selectedReport.cluster}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{selectedReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{selectedReport.backupDate ? new Date(selectedReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{selectedReport.outageCause || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
@@ -256,8 +256,8 @@ function BackupPowerForm() {
               <input type="text" className="form-control" placeholder="Semua NOP" value={filterNop} onChange={(e) => setFilterNop(e.target.value)} />
             </div>
             <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
-              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Cluster</label>
-              <input type="text" className="form-control" placeholder="Semua Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>TO Cluster</label>
+              <input type="text" className="form-control" placeholder="Semua TO Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
             </div>
             <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
@@ -281,7 +281,7 @@ function BackupPowerForm() {
                   <th>No Ticket</th>
                   <th>Site Name</th>
                   <th>NOP</th>
-                  <th>Cluster</th>
+                  <th>TO Cluster</th>
                   <th>Tanggal</th>
                   <th>PLN Off</th>
                   <th>Backup Start</th>
@@ -360,7 +360,7 @@ function BackupPowerForm() {
               <input type="text" className="form-control" name="nop" value={formData.nop} onChange={handleInputChange} />
             </div>
             <div className="form-group">
-              <label className="form-label">Cluster</label>
+              <label className="form-label">NOP</label>
               <input type="text" className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange} />
             </div>
             <div className="form-group">

@@ -70,7 +70,7 @@ function AdminBackupPowerView() {
         { header: 'Site Name', key: 'siteName', width: 30 },
         { header: 'Tanggal Backup', key: 'backupDate', width: 15 },
         { header: 'NOP', key: 'nop', width: 15 },
-        { header: 'Cluster', key: 'cluster', width: 20 },
+        { header: 'NOP', key: 'cluster', width: 20 },
         { header: 'Penyebab', key: 'outageCause', width: 25 },
         { header: 'PLN Off', key: 'plnOffTime', width: 15 },
         { header: 'Backup Start', key: 'backupStartTime', width: 15 },
@@ -213,7 +213,7 @@ function AdminBackupPowerView() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{previewReport.ticketNo}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{previewReport.siteId} - {previewReport.siteName}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{previewReport.nop || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Cluster</p><p className="font-medium">{previewReport.cluster}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{previewReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{previewReport.backupDate ? new Date(previewReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{previewReport.outageCause || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{previewReport.plnOffTime || '-'}</p></div>
@@ -269,8 +269,8 @@ function AdminBackupPowerView() {
               <input type="text" className="form-control" placeholder="Semua NOP" value={filterNop} onChange={(e) => setFilterNop(e.target.value)} />
             </div>
             <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
-              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Cluster</label>
-              <input type="text" className="form-control" placeholder="Semua Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>TO Cluster</label>
+              <input type="text" className="form-control" placeholder="Semua TO Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
             </div>
             <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
@@ -296,7 +296,7 @@ function AdminBackupPowerView() {
                   <th>No Ticket</th>
                   <th>Site Name</th>
                   <th>NOP</th>
-                  <th>Cluster</th>
+                  <th>TO Cluster</th>
                   <th>Tanggal</th>
                   <th>Pembuat</th>
                   <th>PLN Off</th>
@@ -331,7 +331,7 @@ function AdminBackupPowerView() {
                   <th>No Ticket</th>
                   <th>Site Name</th>
                   <th>NOP</th>
-                  <th>Cluster</th>
+                  <th>TO Cluster</th>
                   <th>Tanggal</th>
                   <th>Pembuat</th>
                   <th>PLN Off</th>
