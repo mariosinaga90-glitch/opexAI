@@ -150,8 +150,12 @@ function AdminUserView() {
             </div>
             <div className="form-group">
               <label className="form-label">TO Cluster</label>
-              <input type="text" className="form-control" placeholder="Contoh: TO Kab. Bekasi" 
-                value={formData.microCluster} onChange={e => setFormData({...formData, microCluster: e.target.value})} />
+              <select className="form-control" value={formData.microCluster} onChange={e => setFormData({...formData, microCluster: e.target.value})}>
+                <option value="">Pilih TO Cluster</option>
+                <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
+                <option value="TO Karawang">TO Karawang</option>
+                <option value="TO Purwakarta">TO Purwakarta</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Tim</label>
