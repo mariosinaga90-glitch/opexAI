@@ -18,7 +18,8 @@ function FundReportView() {
   const [requestedAmount, setRequestedAmount] = useState(0);
   const [requestSites, setRequestSites] = useState([]);
   
-  const [items, setItems] = useState([{ id: 1, description: '', team: '', toCluster: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', transferDate: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [items, setItems] = useState([{ id: 1, description: '', team: '', toCluster: '', nop: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', transferDate: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadUrl, setUploadUrl] = useState('');
   const [reportDate, setReportDate] = useState(new Date().toISOString().slice(0,10));
@@ -31,6 +32,7 @@ function FundReportView() {
     setLoading(true);
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
+      setCurrentUser(user);
       const headers = { 'X-User-Id': user.id };
 
       let historyData = [];
@@ -111,8 +113,9 @@ function FundReportView() {
             kmBefore: data.kmBefore || 0,
             kmAfter: data.kmAfter || 0,
             detail: data.detail || '',
-            team: '',
-            toCluster: '',
+            team: user.team || '',
+            toCluster: user.microCluster || '',
+            nop: user.cluster || '',
             transferDate: '',
           })));
         }
@@ -122,7 +125,7 @@ function FundReportView() {
     }
   };
 
-  const addItem = () => setItems([...items, { id: Date.now(), description: '', team: '', toCluster: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', transferDate: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
+  const addItem = () => setItems([...items, { id: Date.now(), description: '', team: currentUser.team || '', toCluster: currentUser.microCluster || '', nop: currentUser.cluster || '', category: '', categoryLabel: '', vehicleType: currentUser.vehicleType || '', plateNumber: currentUser.plateNumber || '', detail: '', transferDate: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
   const removeItem = (id) => { if (items.length > 1) setItems(items.filter(item => item.id !== id)); };
 
   const updateItem = (index, field, value) => {
@@ -442,16 +445,30 @@ function FundReportView() {
               <div className="form-grid">
                 <div className="form-group">
                   <label className="form-label">Role Team</label>
-                  <select className="form-control" required value={item.team} onChange={(e) => updateItem(index, 'team', e.target.value)}>
+                  <select 
+                    className="form-control" 
+                    required 
+                    value={item.team} 
+                    onChange={(e) => updateItem(index, 'team', e.target.value)}
+                    disabled
+                    style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}
+                  >
                     <option value="">Pilih Role...</option>
-                    <option value="ts">TS</option>
-                    <option value="mbp">MBP</option>
-                    <option value="pm">PM</option>
+                    <option value="TS">TS</option>
+                    <option value="MBP">MBP</option>
+                    <option value="PM">PM</option>
                   </select>
                 </div>
                 <div className="form-group">
                   <label className="form-label">TO Cluster</label>
-                  <select className="form-control" required value={item.toCluster} onChange={e => updateItem(index, 'toCluster', e.target.value)}>
+                  <select 
+                    className="form-control" 
+                    required 
+                    value={item.toCluster} 
+                    onChange={e => updateItem(index, 'toCluster', e.target.value)}
+                    disabled
+                    style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}
+                  >
                     <option value="">Pilih TO Cluster...</option>
                     <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
                     <option value="TO Karawang">TO Karawang</option>
@@ -460,7 +477,14 @@ function FundReportView() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">NOP</label>
-                  <select className="form-control" required value={item.nop} onChange={e => updateItem(index, 'nop', e.target.value)}>
+                  <select 
+                    className="form-control" 
+                    required 
+                    value={item.nop} 
+                    onChange={e => updateItem(index, 'nop', e.target.value)}
+                    disabled
+                    style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}
+                  >
                     <option value="">Pilih NOP...</option>
                     <option value="Karawang">Karawang</option>
                     <option value="Serang">Serang</option>
@@ -491,8 +515,8 @@ function FundReportView() {
                   <label className="form-label">Jenis Kendaraan</label>
                   <select className="form-control" value={item.vehicleType} onChange={e => updateItem(index, 'vehicleType', e.target.value)}>
                     <option value="">Pilih Kendaraan...</option>
-                    <option value="mobil">Mobil</option>
-                    <option value="motor">Motor</option>
+                    <option value="Mobil">Mobil</option>
+                    <option value="Motor">Motor</option>
                   </select>
                 </div>
                 <div className="form-group">
