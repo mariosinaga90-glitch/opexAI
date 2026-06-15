@@ -21,7 +21,8 @@ function FundRequestView({ onBack }) {
   const [requestDate, setRequestDate] = useState(new Date().toISOString().split('T')[0]);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [dateFilter, setDateFilter] = useState('all');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const fetchHistory = async () => {
     setLoading(true);
@@ -557,17 +558,24 @@ function FundRequestView({ onBack }) {
               <option value="revision">Revision</option>
               <option value="completed">Completed</option>
             </select>
-            <select 
-              className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
-              value={dateFilter}
-              onChange={(e) => setDateFilter(e.target.value)}
-            >
-              <option value="all">Semua Waktu</option>
-              <option value="this_month">Bulan Ini</option>
-              <option value="last_3_months">3 Bulan Terakhir</option>
-              <option value="this_year">Tahun Ini</option>
-            </select>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'rgba(30, 41, 59, 0.7)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+              <span className="text-muted" style={{ fontSize: '0.85rem' }}>Dari:</span>
+              <input 
+                type="date" 
+                className="form-control" 
+                style={{ width: 'auto', border: 'none', background: 'transparent', padding: '0.2rem' }}
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+              <span className="text-muted" style={{ fontSize: '0.85rem' }}>Sampai:</span>
+              <input 
+                type="date" 
+                className="form-control" 
+                style={{ width: 'auto', border: 'none', background: 'transparent', padding: '0.2rem' }}
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
           </div>
         </div>
         <div className="table-responsive">
@@ -603,18 +611,20 @@ function FundRequestView({ onBack }) {
                     req.id?.toString().includes(searchQuery) ||
                     req.title?.toLowerCase().includes(searchQuery.toLowerCase());
                   const matchesDate = (() => {
-                    if (dateFilter === 'all') return true;
+                    if (!startDate && !endDate) return true;
                     if (!req.createdAt) return false;
-                    const date = new Date(req.createdAt);
-                    const now = new Date();
-                    if (dateFilter === 'this_month') {
-                      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
-                    } else if (dateFilter === 'last_3_months') {
-                      const threeMonthsAgo = new Date();
-                      threeMonthsAgo.setMonth(now.getMonth() - 3);
-                      return date >= threeMonthsAgo;
-                    } else if (dateFilter === 'this_year') {
-                      return date.getFullYear() === now.getFullYear();
+                    const date = new Date(req.createdAt).setHours(0,0,0,0);
+                    
+                    if (startDate && endDate) {
+                      const start = new Date(startDate).setHours(0,0,0,0);
+                      const end = new Date(endDate).setHours(23,59,59,999);
+                      return date >= start && date <= end;
+                    } else if (startDate) {
+                      const start = new Date(startDate).setHours(0,0,0,0);
+                      return date >= start;
+                    } else if (endDate) {
+                      const end = new Date(endDate).setHours(23,59,59,999);
+                      return date <= end;
                     }
                     return true;
                   })();
