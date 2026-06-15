@@ -121,7 +121,7 @@ function AdminDashboardOverview() {
               value={filterCluster}
               onChange={(e) => setFilterCluster(e.target.value)}
             >
-              <option value="all">Semua NOP</option>
+              <option value="all">Semua TO Cluster</option>
               <option value="TO Kab. Bekasi">Kab. Bekasi</option>
               <option value="TO Karawang">Karawang</option>
               <option value="TO Purwakarta">Purwakarta</option>
@@ -149,7 +149,7 @@ function AdminDashboardOverview() {
               <tr>
                 <th>ID</th>
                 <th>Pengaju & Role</th>
-                <th>NOP</th>
+                <th>TO Cluster</th>
                 <th>Kategori</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>

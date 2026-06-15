@@ -121,7 +121,7 @@ function AdminRequestView() {
                 <p className="font-medium">{selectedRequest.team}</p>
               </div>
               <div>
-                <p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p>
                 <p className="font-medium">{selectedRequest.toCluster}</p>
               </div>
             </div>
@@ -329,7 +329,7 @@ function AdminRequestView() {
               { header: 'Pengaju', key: 'user', width: 20 },
               { header: 'Email', key: 'email', width: 25 },
               { header: 'Role Team', key: 'team', width: 15 },
-              { header: 'NOP', key: 'toCluster', width: 20 },
+              { header: 'TO Cluster', key: 'toCluster', width: 20 },
               { header: 'Kategori', key: 'category', width: 20 },
               { header: 'Judul', key: 'title', width: 30 },
               { header: 'Jumlah', key: 'amount', width: 18 },
@@ -452,7 +452,7 @@ function AdminRequestView() {
               value={filterCluster}
               onChange={(e) => setFilterCluster(e.target.value)}
             >
-              <option value="all">Semua NOP</option>
+              <option value="all">Semua TO Cluster</option>
               <option value="TO Kab. Bekasi">Kab. Bekasi</option>
               <option value="TO Karawang">Karawang</option>
               <option value="TO Purwakarta">Purwakarta</option>
@@ -481,7 +481,7 @@ function AdminRequestView() {
               <tr>
                 <th>ID</th>
                 <th>Pengaju & Role</th>
-                <th>NOP</th>
+                <th>TO Cluster</th>
                 <th>Kategori</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
