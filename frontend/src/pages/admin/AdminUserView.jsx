@@ -191,8 +191,11 @@ function AdminUserView() {
             </div>
             <div className="form-group">
               <label className="form-label">Jenis Kendaraan</label>
-              <input type="text" className="form-control" placeholder="Contoh: Motor / Mobil" 
-                value={formData.vehicleType} onChange={e => setFormData({...formData, vehicleType: e.target.value})} />
+              <select className="form-control" value={formData.vehicleType} onChange={e => setFormData({...formData, vehicleType: e.target.value})}>
+                <option value="">Pilih Kendaraan...</option>
+                <option value="Mobil">Mobil</option>
+                <option value="Motor">Motor</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Plat No</label>

@@ -229,14 +229,16 @@ function EmployeeProfileView() {
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                   <Car size={16} className="text-primary" /> Jenis Kendaraan
                 </label>
-                <input 
-                  type="text" 
+                <select 
                   className="form-control" 
                   name="vehicleType"
                   value={user.vehicleType || ''} 
                   onChange={handleChange}
-                  placeholder="Contoh: Motor / Mobil"
-                />
+                >
+                  <option value="">Pilih Kendaraan...</option>
+                  <option value="Mobil">Mobil</option>
+                  <option value="Motor">Motor</option>
+                </select>
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
