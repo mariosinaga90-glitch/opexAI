@@ -159,8 +159,12 @@ function AdminUserView() {
             </div>
             <div className="form-group">
               <label className="form-label">Tim</label>
-              <input type="text" className="form-control" placeholder="Contoh: Sales" 
-                value={formData.team} onChange={e => setFormData({...formData, team: e.target.value})} />
+              <select className="form-control" value={formData.team} onChange={e => setFormData({...formData, team: e.target.value})}>
+                <option value="">Pilih Tim</option>
+                <option value="TS">TS</option>
+                <option value="MBP">MBP</option>
+                <option value="PM">PM</option>
+              </select>
             </div>
           </div>
 
