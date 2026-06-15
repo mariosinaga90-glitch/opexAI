@@ -25,8 +25,7 @@ function FundReportView() {
   const [reportDate, setReportDate] = useState(new Date().toISOString().slice(0,10));
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterCluster, setFilterCluster] = useState('all');
-  const [filterCategory, setFilterCategory] = useState('all');
+  const [dateFilter, setDateFilter] = useState('all');
 
   const fetchData = async () => {
     setLoading(true);
@@ -619,28 +618,13 @@ function FundReportView() {
             <select 
               className="form-control" 
               style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
-              value={filterCluster}
-              onChange={(e) => setFilterCluster(e.target.value)}
+              value={dateFilter}
+              onChange={(e) => setDateFilter(e.target.value)}
             >
-              <option value="all">Semua TO Cluster</option>
-              <option value="TO Kab. Bekasi">Kab. Bekasi</option>
-              <option value="TO Karawang">Karawang</option>
-              <option value="TO Purwakarta">Purwakarta</option>
-            </select>
-            <select 
-              className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-            >
-              <option value="all">Semua Kategori</option>
-              <option value="BBM Mobil">BBM Mobil</option>
-              <option value="BBM Motor">BBM Motor</option>
-              <option value="BBM Genset">BBM Genset</option>
-              <option value="Parkir - Toll">Parkir - Toll</option>
-              <option value="Material">Material</option>
-              <option value="Ormas">Ormas</option>
-              <option value="Kebutuhan Homebase/DOP">Kebutuhan Homebase/DOP</option>
+              <option value="all">Semua Waktu</option>
+              <option value="this_month">Bulan Ini</option>
+              <option value="last_3_months">3 Bulan Terakhir</option>
+              <option value="this_year">Tahun Ini</option>
             </select>
           </div>
         </div>
@@ -679,9 +663,23 @@ function FundReportView() {
                     rep.id?.toString().includes(searchQuery) ||
                     rep.reqId?.toString().includes(searchQuery) ||
                     rep.requestId?.toString().includes(searchQuery);
-                  const matchesCluster = filterCluster === 'all' || rep.toCluster === filterCluster;
-                  const matchesCategory = filterCategory === 'all' || rep.categoryLabel === filterCategory;
-                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                  const matchesDate = (() => {
+                    if (dateFilter === 'all') return true;
+                    if (!rep.createdAt) return false;
+                    const date = new Date(rep.createdAt);
+                    const now = new Date();
+                    if (dateFilter === 'this_month') {
+                      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+                    } else if (dateFilter === 'last_3_months') {
+                      const threeMonthsAgo = new Date();
+                      threeMonthsAgo.setMonth(now.getMonth() - 3);
+                      return date >= threeMonthsAgo;
+                    } else if (dateFilter === 'this_year') {
+                      return date.getFullYear() === now.getFullYear();
+                    }
+                    return true;
+                  })();
+                  return matchesStatus && matchesSearch && matchesDate;
                 });
 
                 if (filteredReps.length === 0) {
