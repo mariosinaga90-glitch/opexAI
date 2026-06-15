@@ -11,8 +11,6 @@ function BackupPowerForm() {
   const [selectedReport, setSelectedReport] = useState(null);
   
   // Filter states
-  const [filterNop, setFilterNop] = useState('');
-  const [filterCluster, setFilterCluster] = useState('');
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   
@@ -180,8 +178,6 @@ function BackupPowerForm() {
   );
 
   const filteredReports = reports.filter(r => {
-    const matchesNop = filterNop === '' || (r.nop || '').toLowerCase().includes(filterNop.toLowerCase());
-    const matchesCluster = filterCluster === '' || (r.cluster || '').toLowerCase().includes(filterCluster.toLowerCase());
     let matchesDate = true;
     if (filterDateFrom || filterDateTo) {
       if (!r.backupDate) {
@@ -197,7 +193,7 @@ function BackupPowerForm() {
         }
       }
     }
-    return matchesNop && matchesCluster && matchesDate;
+    return matchesDate;
   });
 
   if (selectedReport) {
@@ -251,14 +247,6 @@ function BackupPowerForm() {
       {activeTab === 'list' && (
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
-            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
-              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>NOP</label>
-              <input type="text" className="form-control" placeholder="Semua NOP" value={filterNop} onChange={(e) => setFilterNop(e.target.value)} />
-            </div>
-            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
-              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>TO Cluster</label>
-              <input type="text" className="form-control" placeholder="Semua TO Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
-            </div>
             <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
               <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
@@ -267,9 +255,9 @@ function BackupPowerForm() {
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
               <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
             </div>
-            { (filterNop || filterCluster || filterDateFrom || filterDateTo) && (
+            { (filterDateFrom || filterDateTo) && (
               <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
-                <button className="btn" onClick={() => { setFilterNop(''); setFilterCluster(''); setFilterDateFrom(''); setFilterDateTo(''); }}>Reset</button>
+                <button className="btn" onClick={() => { setFilterDateFrom(''); setFilterDateTo(''); }}>Reset</button>
               </div>
             )}
           </div>
