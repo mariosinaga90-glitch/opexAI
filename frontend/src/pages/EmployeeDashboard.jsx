@@ -17,8 +17,6 @@ function EmployeeDashboardOverview() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
-  const [filterCluster, setFilterCluster] = useState('all');
-  const [filterNop, setFilterNop] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   
   const activeRequestsCount = rawComparisonData.filter(d => d.requestStatus === 'Pending' || d.requestStatus === 'Revision').length;
@@ -228,28 +226,7 @@ function EmployeeDashboardOverview() {
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
             </select>
-            <select 
-              className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
-              value={filterCluster}
-              onChange={(e) => setFilterCluster(e.target.value)}
-            >
-              <option value="all">Semua TO Cluster</option>
-              <option value="TO Kab. Bekasi">Kab. Bekasi</option>
-              <option value="TO Karawang">Karawang</option>
-              <option value="TO Purwakarta">Purwakarta</option>
-            </select>
-            <select 
-              className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
-              value={filterNop}
-              onChange={(e) => setFilterNop(e.target.value)}
-            >
-              <option value="all">Semua NOP</option>
-              <option value="Karawang">Karawang</option>
-              <option value="Serang">Serang</option>
-              <option value="Tangerang">Tangerang</option>
-            </select>
+
             <select 
               className="form-control" 
               style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
@@ -302,10 +279,8 @@ function EmployeeDashboardOverview() {
                   const matchesSearch = searchQuery === '' || 
                     data.id?.toString().includes(searchQuery) ||
                     data.title?.toLowerCase().includes(searchQuery.toLowerCase());
-                  const matchesCluster = filterCluster === 'all' || data.toCluster === filterCluster;
-                  const matchesNop = filterNop === 'all' || data.nop === filterNop;
                   const matchesCategory = filterCategory === 'all' || data.categoryLabel === filterCategory;
-                  return matchesStatus && matchesSearch && matchesCluster && matchesNop && matchesCategory;
+                  return matchesStatus && matchesSearch && matchesCategory;
                 });
 
                 if (filteredData.length === 0) {
