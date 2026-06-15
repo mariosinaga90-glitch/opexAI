@@ -214,7 +214,7 @@ function AdminBackupPowerView() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{previewReport.ticketNo}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{previewReport.siteId} - {previewReport.siteName}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{previewReport.nop || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{previewReport.cluster}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p><p className="font-medium">{previewReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{previewReport.backupDate ? new Date(previewReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{previewReport.outageCause || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{previewReport.plnOffTime || '-'}</p></div>

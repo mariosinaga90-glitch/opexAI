@@ -214,7 +214,7 @@ function BackupPowerForm() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Ticket No</p><p className="font-medium">{selectedReport.ticketNo}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Site</p><p className="font-medium">{selectedReport.siteId} - {selectedReport.siteName}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{selectedReport.nop || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p><p className="font-medium">{selectedReport.cluster}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p><p className="font-medium">{selectedReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{selectedReport.backupDate ? new Date(selectedReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{selectedReport.outageCause || '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
@@ -361,7 +361,7 @@ function BackupPowerForm() {
               <input type="text" className="form-control" name="nop" value={formData.nop} onChange={handleInputChange} />
             </div>
             <div className="form-group">
-              <label className="form-label">NOP</label>
+              <label className="form-label">TO Cluster</label>
               <input type="text" className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange} />
             </div>
             <div className="form-group">
