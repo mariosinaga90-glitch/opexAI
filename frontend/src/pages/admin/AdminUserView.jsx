@@ -141,8 +141,12 @@ function AdminUserView() {
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">NOP</label>
-              <input type="text" className="form-control" placeholder="Contoh: NOP-123" 
-                value={formData.cluster} onChange={e => setFormData({...formData, cluster: e.target.value})} />
+              <select className="form-control" value={formData.cluster} onChange={e => setFormData({...formData, cluster: e.target.value})}>
+                <option value="">Pilih NOP</option>
+                <option value="Karawang">Karawang</option>
+                <option value="Serang">Serang</option>
+                <option value="Tangerang">Tangerang</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">TO Cluster</label>
