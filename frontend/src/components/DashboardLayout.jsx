@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User } from 'lucide-react';
 import '../pages/Dashboard.css';
 
 function DashboardLayout({ role }) {
@@ -10,18 +10,30 @@ function DashboardLayout({ role }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (!storedUser) {
-      navigate('/');
-    } else {
-      const parsedUser = JSON.parse(storedUser);
-      // Optional: Check if role matches route
-      if (parsedUser.role !== role) {
-        navigate(`/${parsedUser.role}`);
+    const syncUser = () => {
+      const storedUser = localStorage.getItem('user');
+      if (!storedUser) {
+        navigate('/');
       } else {
-        setUser(parsedUser);
+        const parsedUser = JSON.parse(storedUser);
+        // Optional: Check if role matches route
+        if (parsedUser.role !== role) {
+          navigate(`/${parsedUser.role}`);
+        } else {
+          setUser(parsedUser);
+        }
       }
-    }
+    };
+
+    syncUser();
+
+    window.addEventListener('user-updated', syncUser);
+    window.addEventListener('storage', syncUser);
+
+    return () => {
+      window.removeEventListener('user-updated', syncUser);
+      window.removeEventListener('storage', syncUser);
+    };
   }, [navigate, role]);
 
   const employeeNav = [
@@ -29,6 +41,7 @@ function DashboardLayout({ role }) {
     { name: 'Pengajuan', path: '/employee#pengajuan', icon: FileText },
     { name: 'Laporan', path: '/employee#laporan', icon: CheckSquare },
     { name: 'Report Backup Power', path: '/employee/backup-power', icon: BatteryCharging },
+    { name: 'Edit Profil', path: '/employee#profile', icon: User },
   ];
 
   const adminNav = [

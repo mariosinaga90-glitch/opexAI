@@ -5,6 +5,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { formatDateTime } from '../utils/dateFormatter';
 import FundRequestView from './employee/FundRequestView';
 import FundReportView from './employee/FundReportView';
+import EmployeeProfileView from './employee/EmployeeProfileView';
 
 import { API_BASE_URL } from '../config';
 
@@ -413,6 +414,8 @@ function EmployeeDashboard() {
         return <FundRequestView />;
       case '#laporan':
         return <FundReportView />;
+      case '#profile':
+        return <EmployeeProfileView />;
       default:
         return <EmployeeDashboardOverview />;
     }
