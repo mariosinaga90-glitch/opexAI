@@ -167,9 +167,9 @@ function AdminUserView() {
               </select>
             </div>
             <div className="form-group">
-              <label className="form-label">Tim</label>
+              <label className="form-label">Role</label>
               <select className="form-control" value={formData.team} onChange={e => setFormData({...formData, team: e.target.value})}>
-                <option value="">Pilih Tim</option>
+                <option value="">Pilih Role</option>
                 <option value="TS">TS</option>
                 <option value="MBP">MBP</option>
                 <option value="PM">PM</option>
@@ -254,7 +254,7 @@ function AdminUserView() {
                 <th>Nama & Email</th>
                 <th>Role</th>
                 <th>NOP / TO Cluster</th>
-                <th>Tim</th>
+                <th>Role</th>
                 <th>Aksi</th>
               </tr>
             </thead>
