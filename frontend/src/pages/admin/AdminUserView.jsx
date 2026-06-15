@@ -12,7 +12,8 @@ function AdminUserView() {
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: '', email: '', password: '', role: 'employee',
-    cluster: '', microCluster: '', team: ''
+    cluster: '', microCluster: '', team: '',
+    vehicleType: '', plateNumber: '', phoneNumber: '', nik: ''
   });
 
   const fetchUsers = async () => {
@@ -56,7 +57,11 @@ function AdminUserView() {
   const closeForm = () => {
     setIsFormOpen(false);
     setEditingUserId(null);
-    setFormData({ name: '', email: '', password: '', role: 'employee', cluster: '', microCluster: '', team: '' });
+    setFormData({ 
+      name: '', email: '', password: '', role: 'employee', 
+      cluster: '', microCluster: '', team: '',
+      vehicleType: '', plateNumber: '', phoneNumber: '', nik: ''
+    });
   };
 
   const handleEditClick = (user) => {
@@ -67,7 +72,11 @@ function AdminUserView() {
       role: user.role || 'employee',
       cluster: user.cluster || '',
       microCluster: user.microCluster || '',
-      team: user.team || ''
+      team: user.team || '',
+      vehicleType: user.vehicleType || '',
+      plateNumber: user.plateNumber || '',
+      phoneNumber: user.phoneNumber || '',
+      nik: user.nik || ''
     });
     setEditingUserId(user.id);
     setIsFormOpen(true);
@@ -165,6 +174,30 @@ function AdminUserView() {
                 <option value="MBP">MBP</option>
                 <option value="PM">PM</option>
               </select>
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '1.1rem', marginTop: '1rem', marginBottom: '1rem', color: 'var(--primary)' }}>Detail Pribadi & Kendaraan</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">No HP</label>
+              <input type="text" className="form-control" placeholder="Contoh: 081234567890" 
+                value={formData.phoneNumber} onChange={e => setFormData({...formData, phoneNumber: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">NIK KTP</label>
+              <input type="text" className="form-control" placeholder="Contoh: 3201234567890001" 
+                value={formData.nik} onChange={e => setFormData({...formData, nik: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Jenis Kendaraan</label>
+              <input type="text" className="form-control" placeholder="Contoh: Motor / Mobil" 
+                value={formData.vehicleType} onChange={e => setFormData({...formData, vehicleType: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Plat No</label>
+              <input type="text" className="form-control" placeholder="Contoh: B 1234 ABC" 
+                value={formData.plateNumber} onChange={e => setFormData({...formData, plateNumber: e.target.value})} />
             </div>
           </div>
 

@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
 // Create user
 router.post('/', async (req, res) => {
   try {
-    const { name, email, password, role, cluster, microCluster, team } = req.body;
+    const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
     
     // Simplistic creation without real hashing for now
     await db.insert(users).values({
@@ -32,6 +32,10 @@ router.post('/', async (req, res) => {
       cluster,
       microCluster,
       team,
+      vehicleType,
+      plateNumber,
+      phoneNumber,
+      nik,
     });
 
     res.json({ success: true, message: 'User created' });
@@ -45,10 +49,10 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role, cluster, microCluster, team } = req.body;
+    const { name, email, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
     
     await db.update(users)
-      .set({ name, email, role, cluster, microCluster, team })
+      .set({ name, email, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik })
       .where(eq(users.id, id));
 
     res.json({ success: true, message: 'User updated' });

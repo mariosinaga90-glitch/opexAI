@@ -10,6 +10,10 @@ export const users = sqliteTable('users', {
   cluster: text('cluster'),
   microCluster: text('microCluster'),
   team: text('team'),
+  vehicleType: text('vehicleType'),
+  plateNumber: text('plateNumber'),
+  phoneNumber: text('phoneNumber'),
+  nik: text('nik'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 
