@@ -232,7 +232,7 @@ function EmployeeDashboardOverview() {
               value={filterCluster}
               onChange={(e) => setFilterCluster(e.target.value)}
             >
-              <option value="all">Semua TO NOP</option>
+              <option value="all">Semua NOP</option>
               <option value="TO Kab. Bekasi">Kab. Bekasi</option>
               <option value="TO Karawang">Karawang</option>
               <option value="TO Purwakarta">Purwakarta</option>

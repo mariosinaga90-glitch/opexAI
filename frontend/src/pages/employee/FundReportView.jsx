@@ -450,9 +450,9 @@ function FundReportView() {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label className="form-label">TO NOP</label>
+                  <label className="form-label">NOP</label>
                   <select className="form-control" required value={item.toCluster} onChange={e => updateItem(index, 'toCluster', e.target.value)}>
-                    <option value="">Pilih TO NOP...</option>
+                    <option value="">Pilih NOP...</option>
                     <option value="bekasi">TO Kab. Bekasi</option>
                     <option value="karawang">TO Karawang</option>
                     <option value="purwakarta">TO Purwakarta</option>
@@ -589,7 +589,7 @@ function FundReportView() {
               value={filterCluster}
               onChange={(e) => setFilterCluster(e.target.value)}
             >
-              <option value="all">Semua TO NOP</option>
+              <option value="all">Semua NOP</option>
               <option value="TO Kab. Bekasi">Kab. Bekasi</option>
               <option value="TO Karawang">Karawang</option>
               <option value="TO Purwakarta">Purwakarta</option>
