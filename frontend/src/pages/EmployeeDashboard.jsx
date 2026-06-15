@@ -160,7 +160,10 @@ function EmployeeDashboardOverview() {
         </div>
         <div style={{ width: '100%', height: 350, marginBottom: '1rem' }}>
           {loading ? (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>Memuat grafik...</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', height: '100%', padding: '1rem', justifyContent: 'center' }}>
+              <div className="skeleton" style={{ width: '40%', height: '20px' }}></div>
+              <div className="skeleton" style={{ width: '100%', flex: 1, borderRadius: '8px', minHeight: '200px' }}></div>
+            </div>
           ) : comparisonData.length === 0 ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>Belum ada data untuk ditampilkan.</div>
           ) : (
@@ -266,7 +269,17 @@ function EmployeeDashboardOverview() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Memuat data perbandingan...</td></tr>
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={`skel-row-${idx}`}>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '150px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '100px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                  </tr>
+                ))
               ) : comparisonData.length === 0 ? (
                 <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada data pengajuan.</td></tr>
               ) : (() => {
@@ -331,22 +344,37 @@ function EmployeeDashboardOverview() {
               </tr>
             </thead>
             <tbody>
-              {recentRequests.map((req, index) => (
-                <tr key={index}>
-                  <td><span className="text-muted">{req.id}</span></td>
-                  <td className="font-medium">{req.title}</td>
-                  <td>{req.createdAt ? formatDateTime(req.createdAt) : '-'}</td>
-                  <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
-                  <td>
-                    <span className={`status-badge status-${req.status?.toLowerCase()}`}>
-                      {req.status}
-                    </span>
-                  </td>
-                  <td>
-                    <button className="btn-icon" onClick={() => navigate('/employee#pengajuan')}>Detail</button>
-                  </td>
-                </tr>
-              ))}
+              {loading ? (
+                Array.from({ length: 3 }).map((_, idx) => (
+                  <tr key={`skel-recent-${idx}`}>
+                    <td><div className="skeleton skeleton-text" style={{ width: '40px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '150px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '70px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                  </tr>
+                ))
+              ) : recentRequests.length === 0 ? (
+                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada pengajuan.</td></tr>
+              ) : (
+                recentRequests.map((req, index) => (
+                  <tr key={index}>
+                    <td><span className="text-muted">{req.id}</span></td>
+                    <td className="font-medium">{req.title}</td>
+                    <td>{req.createdAt ? formatDateTime(req.createdAt) : '-'}</td>
+                    <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
+                    <td>
+                      <span className={`status-badge status-${req.status?.toLowerCase()}`}>
+                        {req.status}
+                      </span>
+                    </td>
+                    <td>
+                      <button className="btn-icon" onClick={() => navigate('/employee#pengajuan')}>Detail</button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

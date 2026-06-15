@@ -204,26 +204,29 @@
   margin: 0 auto;
 }
 
-.page-header {
+.page-header, .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 2.5rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.page-title {
-  font-size: 2.2rem;
+.page-title, .dashboard-title {
+  font-size: 1.8rem;
+  font-weight: 700;
   margin-bottom: 0.5rem;
-  background: linear-gradient(to right, #F8FAFC, #94A3B8);
+  background: linear-gradient(to right, #F8FAFC, #C7D2FE);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.02em;
 }
 
-.page-subtitle {
+.page-subtitle, .dashboard-subtitle {
   color: var(--text-muted);
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .stats-grid {
@@ -517,8 +520,8 @@
 .form-control:focus {
   outline: none;
   border-color: var(--primary);
-  background: rgba(15, 23, 42, 0.8);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  background: rgba(15, 23, 42, 0.85);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
 }
 
 .form-control::placeholder {
@@ -680,3 +683,73 @@ textarea.form-control {
     padding: 0 1.5rem;
   }
 }
+
+/* Form Section Headers */
+.form-section-header {
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  width: 100%;
+}
+
+.form-section-title {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+/* Button Warning */
+.btn-warning {
+  background: linear-gradient(135deg, var(--accent-amber), #D97706);
+  color: #0b1120;
+  font-weight: 600;
+}
+
+.btn-warning:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Tabs & Tab Buttons styling */
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  background: rgba(15, 23, 42, 0.4);
+  padding: 0.35rem;
+  border-radius: 10px;
+  width: fit-content;
+  border: 1px solid var(--border-color);
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.55rem 1.3rem;
+  border-radius: 7px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.tab-btn.active {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
+}
+

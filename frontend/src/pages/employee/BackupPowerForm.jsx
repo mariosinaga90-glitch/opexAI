@@ -5,6 +5,7 @@ const API_BASE_URL = '/api';
 
 function BackupPowerForm() {
   const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('list');
   const [selectedReport, setSelectedReport] = useState(null);
@@ -45,6 +46,7 @@ function BackupPowerForm() {
   }, []);
 
   const fetchReports = async () => {
+    setLoading(true);
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
       const res = await fetch(`${API_BASE_URL}/backup-power`);
@@ -54,6 +56,8 @@ function BackupPowerForm() {
       setReports(userReports);
     } catch (err) {
       console.error('Failed to fetch backup power reports:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -239,7 +243,7 @@ function BackupPowerForm() {
         </div>
       </div>
 
-      <div className="tabs" style={{ marginBottom: '2rem', display: 'flex', gap: '1rem' }}>
+      <div className="tabs" style={{ marginBottom: '2rem' }}>
         <button className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`} onClick={() => setActiveTab('list')}>Histori Laporan</button>
         <button className={`tab-btn ${activeTab === 'new' ? 'active' : ''}`} onClick={() => setActiveTab('new')}>+ Laporan Baru</button>
       </div>
@@ -286,7 +290,21 @@ function BackupPowerForm() {
                 </tr>
               </thead>
               <tbody>
-                {filteredReports.length === 0 ? (
+                {loading ? (
+                  Array.from({ length: 4 }).map((_, idx) => (
+                    <tr key={`skel-rep-${idx}`}>
+                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '150px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '85px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '110px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                    </tr>
+                  ))
+                ) : filteredReports.length === 0 ? (
                   <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada histori laporan Backup Power.</td></tr>
                 ) : (
                   filteredReports.map(rep => (

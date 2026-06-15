@@ -7,27 +7,27 @@ const Hero = ({ onOpenLogin }) => {
       <div className="container hero-container">
         <div className="hero-content animate-fade-in-up">
           <div className="badge">✨ OpexTac Internal Tool</div>
-          <h1>Modernize Your<br/>Operational Funds</h1>
+          <h1>Modernisasi<br/>Dana Operasional</h1>
           <p className="hero-subtitle delay-1">
-            Streamline requests, track real-time approvals, and manage expense reports seamlessly for your entire team. Built for speed, clarity, and accountability.
+            Permudah pengajuan, lacak persetujuan secara real-time, dan kelola laporan pengeluaran serta log backup power dengan mudah. Dibuat untuk kecepatan dan transparansi.
           </p>
           <div className="hero-cta delay-2">
-            <button className="btn btn-primary btn-lg" onClick={onOpenLogin}>Login to App</button>
-            <button className="btn btn-secondary btn-lg" onClick={() => window.location.href = '#features'}>View Features</button>
+            <button className="btn btn-primary btn-lg" onClick={onOpenLogin}>Login Aplikasi</button>
+            <button className="btn btn-secondary btn-lg" onClick={() => window.location.href = '#features'}>Lihat Fitur</button>
           </div>
           
           <div className="stats delay-3">
             <div className="stat-item">
               <span className="stat-value">100+</span>
-              <span className="stat-label">Employees</span>
+              <span className="stat-label">Karyawan</span>
             </div>
             <div className="stat-item">
               <span className="stat-value">&lt; 2s</span>
-              <span className="stat-label">Load Time</span>
+              <span className="stat-label">Waktu Muat</span>
             </div>
             <div className="stat-item">
               <span className="stat-value">Real-time</span>
-              <span className="stat-label">Approvals</span>
+              <span className="stat-label">Persetujuan</span>
             </div>
           </div>
         </div>
@@ -50,11 +50,11 @@ const Hero = ({ onOpenLogin }) => {
               <div className="mockup-main">
                 <div className="mockup-cards">
                   <div className="mockup-card glass-panel">
-                    <div className="card-title">Pending Requests</div>
+                    <div className="card-title">Pengajuan Pending</div>
                     <div className="card-value highlight">12</div>
                   </div>
                   <div className="mockup-card glass-panel">
-                    <div className="card-title">Approved Funds</div>
+                    <div className="card-title">Dana Disetujui</div>
                     <div className="card-value">Rp 24.5M</div>
                   </div>
                 </div>

@@ -158,7 +158,22 @@ function AdminDashboardOverview() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                Array.from({ length: 4 }).map((_, idx) => (
+                  <tr key={`skel-pending-${idx}`}>
+                    <td><div className="skeleton skeleton-text" style={{ width: '40px' }}></div></td>
+                    <td>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                        <div className="skeleton skeleton-text" style={{ width: '100px' }}></div>
+                        <div className="skeleton skeleton-text" style={{ width: '60px' }}></div>
+                      </div>
+                    </td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '85px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                  </tr>
+                ))
               ) : pendingRequests.length === 0 ? (
                 <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada pengajuan pending.</td></tr>
               ) : (() => {
@@ -203,7 +218,12 @@ function AdminDashboardOverview() {
         {/* Pie Chart Card */}
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Sebaran Kategori</h2>
-          {statsData.requestsByCategory && statsData.requestsByCategory.length > 0 ? (
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 320 }}>
+              <div className="skeleton" style={{ width: 140, height: 140, borderRadius: '50%' }}></div>
+              <div className="skeleton skeleton-text" style={{ width: '50%', marginTop: '1.5rem' }}></div>
+            </div>
+          ) : statsData.requestsByCategory && statsData.requestsByCategory.length > 0 ? (
             <div style={{ width: '100%', height: 320 }}>
               <ResponsiveContainer>
                 <PieChart>
@@ -240,7 +260,12 @@ function AdminDashboardOverview() {
         {/* Realisasi Dana Pie Chart */}
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
           <h2 className="section-title" style={{ marginBottom: '1.5rem' }}>Realisasi vs Pengajuan</h2>
-          {statsData.fundsOverview && statsData.fundsOverview.length > 0 ? (
+          {loading ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 320 }}>
+              <div className="skeleton" style={{ width: 140, height: 140, borderRadius: '50%' }}></div>
+              <div className="skeleton skeleton-text" style={{ width: '50%', marginTop: '1.5rem' }}></div>
+            </div>
+          ) : statsData.fundsOverview && statsData.fundsOverview.length > 0 ? (
             <div style={{ width: '100%', height: 320 }}>
               <ResponsiveContainer>
                 <PieChart>

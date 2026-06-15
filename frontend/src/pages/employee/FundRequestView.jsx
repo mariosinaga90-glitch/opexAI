@@ -330,21 +330,21 @@ function FundRequestView({ onBack }) {
             />
           </div>
 
-          <div style={{ marginTop: '3rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: '600' }}>Daftar Site</h3>
+          <div className="form-section-header">
+            <h3 className="form-section-title">Daftar Site</h3>
             <button type="button" className="btn btn-secondary btn-sm" onClick={addSite}>
               <Plus size={16} style={{ marginRight: '4px' }} /> Tambah Site
             </button>
           </div>
 
           {sites.map((site, index) => (
-            <div key={site.id} className="dynamic-list-item" style={{ padding: '1.5rem', marginBottom: '1rem' }}>
+            <div key={site.id} className="dynamic-list-item">
               {sites.length > 1 && (
                 <button type="button" className="remove-item-btn" onClick={() => removeSite(site.id)}>
                   <Trash2 size={18} />
                 </button>
               )}
-              <h4 style={{ marginBottom: '1rem', color: 'var(--text-muted)' }}>Site #{index + 1}</h4>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: '600' }}>Site #{index + 1}</h4>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Nama / ID Site</label>
                 <input type="text" className="form-control" placeholder="Contoh: BKS001 - Site Tambun" required value={site.siteName} onChange={e => {
@@ -356,8 +356,8 @@ function FundRequestView({ onBack }) {
             </div>
           ))}
 
-          <div style={{ marginTop: '3rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: '600' }}>Rincian Estimasi Kebutuhan</h3>
+          <div className="form-section-header">
+            <h3 className="form-section-title">Rincian Estimasi Kebutuhan</h3>
           </div>
 
           {items.map((item, index) => (
@@ -551,7 +551,16 @@ function FundRequestView({ onBack }) {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={`skel-req-${idx}`}>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '200px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                  </tr>
+                ))
               ) : history.length === 0 ? (
                 <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada pengajuan.</td></tr>
               ) : (() => {

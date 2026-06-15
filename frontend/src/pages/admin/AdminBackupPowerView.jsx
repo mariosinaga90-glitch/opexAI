@@ -289,7 +289,40 @@ function AdminBackupPowerView() {
         </div>
 
         {loading ? (
-          <div style={{ textAlign: 'center', padding: '3rem' }}><div className="loader"></div><p>Memuat data...</p></div>
+          <div className="table-responsive">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>No Ticket</th>
+                  <th>Site Name</th>
+                  <th>NOP</th>
+                  <th>Cluster</th>
+                  <th>Tanggal</th>
+                  <th>Pembuat</th>
+                  <th>PLN Off</th>
+                  <th>Backup Start</th>
+                  <th>Foto</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={`skel-bp-${idx}`}>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '150px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '100px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <div className="table-responsive">
             <table className="data-table">
@@ -309,7 +342,7 @@ function AdminBackupPowerView() {
               </thead>
               <tbody>
                 {filteredReports.length === 0 ? (
-                  <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data ditemukan.</td></tr>
+                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data ditemukan.</td></tr>
                 ) : (
                   filteredReports.map(rep => (
                     <tr key={rep.id}>

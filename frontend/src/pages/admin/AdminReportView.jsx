@@ -274,7 +274,7 @@ function AdminReportView() {
             <AlertTriangle size={18} style={{ marginRight: '6px' }} />
             Tolak (Reject)
           </button>
-          <button className="btn btn-warning" onClick={() => handleAction('revision')} style={{ color: '#000' }}>
+          <button className="btn btn-warning" onClick={() => handleAction('revision')}>
             <AlertTriangle size={18} style={{ marginRight: '6px' }} />
             Minta Revisi
           </button>
@@ -503,10 +503,27 @@ function AdminReportView() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
-              ) : reports.length === 0 ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
-              ) : (() => {
+                  Array.from({ length: 5 }).map((_, idx) => (
+                    <tr key={`skel-admin-rep-${idx}`}>
+                      <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                      <td>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                          <div className="skeleton skeleton-text" style={{ width: '100px' }}></div>
+                          <div className="skeleton skeleton-text" style={{ width: '60px' }}></div>
+                        </div>
+                      </td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '110px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '110px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                    </tr>
+                  ))
+                ) : reports.length === 0 ? (
+                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
+                ) : (() => {
                 const filteredReps = reports.filter(rep => {
                   const matchesStatus = statusFilter === 'all' || rep.status?.toLowerCase() === statusFilter;
                   const matchesSearch = searchQuery === '' || 

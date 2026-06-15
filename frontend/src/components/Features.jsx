@@ -4,23 +4,23 @@ import './Features.css';
 
 const featuresData = [
   {
-    title: 'Structured Requests',
-    description: 'Easy form submission for operational funds. Track status from pending to completed in real-time.',
+    title: 'Pengajuan Terstruktur',
+    description: 'Formulir mudah untuk dana operasional. Lacak status dari pengajuan hingga selesai secara real-time.',
     icon: FileText
   },
   {
-    title: 'Real-time Approval Workflow',
-    description: 'Admin role management for quick approvals or rejections, eliminating bottlenecks.',
+    title: 'Alur Persetujuan Real-time',
+    description: 'Manajemen persetujuan cepat oleh Admin untuk menghilangkan hambatan proses operasional.',
     icon: Zap
   },
   {
-    title: 'Comprehensive Reporting',
-    description: 'Upload receipts and track every penny spent with detailed expense itemization.',
+    title: 'Laporan Komprehensif',
+    description: 'Unggah bukti pembayaran dan pantau setiap pengeluaran dengan rincian yang lengkap.',
     icon: BarChart3
   },
   {
-    title: 'Role-based Dashboards',
-    description: 'Tailored views for Employees and Admins. See exactly what you need, when you need it.',
+    title: 'Dashboard Berbasis Peran',
+    description: 'Tampilan khusus untuk Karyawan dan Admin. Lihat tepat apa yang Anda butuhkan.',
     icon: ShieldCheck
   }
 ];
@@ -30,8 +30,8 @@ const Features = () => {
     <section id="features" className="features">
       <div className="container">
         <div className="features-header text-center animate-fade-in-up">
-          <h2 className="section-title">Core Features</h2>
-          <p className="section-subtitle">Everything you need to manage internal funds efficiently.</p>
+          <h2 className="section-title">Fitur Utama</h2>
+          <p className="section-subtitle">Semua yang Anda butuhkan untuk mengelola operasional dengan efisien.</p>
         </div>
         
         <div className="features-grid">

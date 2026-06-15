@@ -432,8 +432,8 @@ function FundReportView() {
             <textarea className="form-control" rows="3" placeholder="Jelaskan secara singkat penggunaan dana..." value={summary} onChange={(e) => setSummary(e.target.value)} required></textarea>
           </div>
 
-          <div style={{ marginTop: '3rem', marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ fontSize: '1.2rem', fontWeight: '600' }}>Rincian Laporan (Sesuai Nota)</h3>
+          <div className="form-section-header">
+            <h3 className="form-section-title">Rincian Laporan (Sesuai Nota)</h3>
           </div>
 
           {items.map((item, index) => (
@@ -626,7 +626,17 @@ function FundReportView() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Loading data...</td></tr>
+                Array.from({ length: 5 }).map((_, idx) => (
+                  <tr key={`skel-rep-${idx}`}>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '100px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
+                  </tr>
+                ))
               ) : history.length === 0 ? (
                 <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada laporan.</td></tr>
               ) : (() => {
