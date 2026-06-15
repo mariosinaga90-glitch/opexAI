@@ -121,6 +121,7 @@ router.post('/', async (req, res) => {
         description: item.description || item.desc,
         team: item.team,
         toCluster: item.toCluster,
+        nop: item.nop,
         category: item.category,
         detail: item.detail,
         transferDate: item.transferDate,

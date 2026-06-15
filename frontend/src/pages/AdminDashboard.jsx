@@ -23,6 +23,7 @@ function AdminDashboardOverview() {
   const [searchName, setSearchName] = useState('');
   const [filterTeam, setFilterTeam] = useState('all');
   const [filterCluster, setFilterCluster] = useState('all');
+  const [filterNop, setFilterNop] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const [loading, setLoading] = useState(true);
 
@@ -129,6 +130,17 @@ function AdminDashboardOverview() {
             <select 
               className="form-control" 
               style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterNop}
+              onChange={(e) => setFilterNop(e.target.value)}
+            >
+              <option value="all">Semua NOP</option>
+              <option value="Karawang">Karawang</option>
+              <option value="Serang">Serang</option>
+              <option value="Tangerang">Tangerang</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
@@ -150,6 +162,7 @@ function AdminDashboardOverview() {
                 <th>ID</th>
                 <th>Pengaju & Role</th>
                 <th>TO Cluster</th>
+                <th>NOP</th>
                 <th>Kategori</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
@@ -181,8 +194,9 @@ function AdminDashboardOverview() {
                   const matchesName = req.user?.toLowerCase().includes(searchName.toLowerCase()) || false;
                   const matchesTeam = filterTeam === 'all' || req.team === filterTeam;
                   const matchesCluster = filterCluster === 'all' || req.toCluster === filterCluster;
+                  const matchesNop = filterNop === 'all' || req.nop === filterNop;
                   const matchesCategory = filterCategory === 'all' || req.categoryLabel === filterCategory;
-                  return matchesName && matchesTeam && matchesCluster && matchesCategory;
+                  return matchesName && matchesTeam && matchesCluster && matchesNop && matchesCategory;
                 });
                 
                 if (filteredReqs.length === 0) {
@@ -198,7 +212,8 @@ function AdminDashboardOverview() {
                         <span className="team-badge" style={{ width: 'fit-content' }}>{req.team}</span>
                       </div>
                     </td>
-                    <td>{req.toCluster}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{req.toCluster || '-'}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{req.nop || '-'}</td>
                     <td>{req.categoryLabel}</td>
                     <td>{req.createdAt ? formatDateTime(req.createdAt) : req.date ? formatDateTime(req.date) : '-'}</td>
                     <td>Rp {req.amount?.toLocaleString('id-ID')}</td>

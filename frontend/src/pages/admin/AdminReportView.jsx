@@ -15,6 +15,7 @@ function AdminReportView() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCluster, setFilterCluster] = useState('all');
+  const [filterNop, setFilterNop] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const printRef = useRef(null);
 
@@ -123,6 +124,10 @@ function AdminReportView() {
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p>
                 <p className="font-medium">{selectedReport.toCluster}</p>
+              </div>
+              <div>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p>
+                <p className="font-medium">{selectedReport.nop}</p>
               </div>
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Pengajuan</p>
@@ -327,6 +332,7 @@ function AdminReportView() {
               { header: 'Pembuat', key: 'user', width: 20 },
               { header: 'Role Team', key: 'team', width: 15 },
               { header: 'TO Cluster', key: 'toCluster', width: 20 },
+              { header: 'NOP', key: 'nop', width: 15 },
               { header: 'Kategori', key: 'category', width: 20 },
               { header: 'Total Terpakai', key: 'total', width: 18 },
               { header: 'Daftar Site', key: 'sites', width: 30 },
@@ -472,6 +478,17 @@ function AdminReportView() {
             <select 
               className="form-control" 
               style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterNop}
+              onChange={(e) => setFilterNop(e.target.value)}
+            >
+              <option value="all">Semua NOP</option>
+              <option value="Karawang">Karawang</option>
+              <option value="Serang">Serang</option>
+              <option value="Tangerang">Tangerang</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
@@ -493,6 +510,8 @@ function AdminReportView() {
                 <th>ID Laporan</th>
                 <th>Terkait Pengajuan</th>
                 <th>Pembuat & Role</th>
+                <th>TO Cluster</th>
+                <th>NOP</th>
                 <th>Kategori</th>
                 <th>Total Terpakai</th>
                 <th>Tanggal Pengajuan</th>
@@ -531,8 +550,9 @@ function AdminReportView() {
                     rep.id?.toString().includes(searchQuery) ||
                     rep.reqId?.toString().includes(searchQuery);
                   const matchesCluster = filterCluster === 'all' || rep.toCluster === filterCluster;
+                  const matchesNop = filterNop === 'all' || rep.nop === filterNop;
                   const matchesCategory = filterCategory === 'all' || rep.categoryLabel === filterCategory;
-                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesNop && matchesCategory;
                 });
 
                 if (filteredReps.length === 0) {
@@ -549,7 +569,9 @@ function AdminReportView() {
                         <span className="team-badge" style={{ width: 'fit-content' }}>{rep.team || '-'}</span>
                       </div>
                     </td>
-                    <td>{rep.categoryLabel}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{rep.toCluster || '-'}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{rep.nop || '-'}</td>
+                    <td>{rep.categoryLabel || rep.category || '-'}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
                     <td>{rep.requestDate ? formatDateTime(rep.requestDate) : '-'}</td>
                     <td>{rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-'}</td>

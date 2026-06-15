@@ -34,12 +34,12 @@ router.get('/', async (req, res) => {
     };
 
     const enriched = await Promise.all(requests.map(async (r) => {
-      const firstItem = await db.select({ toCluster: requestItems.toCluster })
+      const firstItem = await db.select({ toCluster: requestItems.toCluster, nop: requestItems.nop })
         .from(requestItems)
         .where(eq(requestItems.requestId, r.id))
         .get();
       const raw = firstItem?.toCluster || '';
-      return { ...r, toCluster: clusterLabels[raw] || raw || '-' };
+      return { ...r, toCluster: clusterLabels[raw] || raw || '-', nop: firstItem?.nop || '-' };
     }));
 
     res.json(enriched);

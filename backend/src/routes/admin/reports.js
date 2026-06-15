@@ -31,7 +31,7 @@ router.get('/', async (req, res) => {
     };
 
     const enriched = await Promise.all(reports.map(async (r) => {
-      const firstItem = await db.select({ toCluster: reportItems.toCluster })
+      const firstItem = await db.select({ toCluster: reportItems.toCluster, nop: reportItems.nop })
         .from(reportItems)
         .where(eq(reportItems.reportId, r.id))
         .get();
@@ -42,6 +42,7 @@ router.get('/', async (req, res) => {
       return { 
         ...r, 
         toCluster: clusterLabels[raw] || raw || '-',
+        nop: firstItem?.nop || '-',
         requestDate: reqData?.requestDate || null
       };
     }));

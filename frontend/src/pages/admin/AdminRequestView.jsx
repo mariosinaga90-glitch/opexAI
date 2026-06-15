@@ -15,6 +15,7 @@ function AdminRequestView() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCluster, setFilterCluster] = useState('all');
+  const [filterNop, setFilterNop] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   const printRef = useRef(null);
 
@@ -123,6 +124,10 @@ function AdminRequestView() {
               <div>
                 <p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p>
                 <p className="font-medium">{selectedRequest.toCluster}</p>
+              </div>
+              <div>
+                <p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p>
+                <p className="font-medium">{selectedRequest.nop}</p>
               </div>
             </div>
           </div>
@@ -330,6 +335,7 @@ function AdminRequestView() {
               { header: 'Email', key: 'email', width: 25 },
               { header: 'Role Team', key: 'team', width: 15 },
               { header: 'TO Cluster', key: 'toCluster', width: 20 },
+              { header: 'NOP', key: 'nop', width: 15 },
               { header: 'Kategori', key: 'category', width: 20 },
               { header: 'Judul', key: 'title', width: 30 },
               { header: 'Jumlah', key: 'amount', width: 18 },
@@ -460,6 +466,17 @@ function AdminRequestView() {
             <select 
               className="form-control" 
               style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterNop}
+              onChange={(e) => setFilterNop(e.target.value)}
+            >
+              <option value="all">Semua NOP</option>
+              <option value="Karawang">Karawang</option>
+              <option value="Serang">Serang</option>
+              <option value="Tangerang">Tangerang</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
@@ -482,6 +499,7 @@ function AdminRequestView() {
                 <th>ID</th>
                 <th>Pengaju & Role</th>
                 <th>TO Cluster</th>
+                <th>NOP</th>
                 <th>Kategori</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
@@ -518,8 +536,9 @@ function AdminRequestView() {
                     req.id?.toString().includes(searchQuery) ||
                     req.title?.toLowerCase().includes(searchQuery.toLowerCase());
                   const matchesCluster = filterCluster === 'all' || req.toCluster === filterCluster;
+                  const matchesNop = filterNop === 'all' || req.nop === filterNop;
                   const matchesCategory = filterCategory === 'all' || req.categoryLabel === filterCategory;
-                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesNop && matchesCategory;
                 });
                 
                 if (filteredReqs.length === 0) {
@@ -535,8 +554,9 @@ function AdminRequestView() {
                         <span className="team-badge" style={{ width: 'fit-content' }}>{req.team || '-'}</span>
                       </div>
                     </td>
-                    <td>{req.toCluster || '-'}</td>
-                    <td>{req.categoryLabel}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{req.toCluster || '-'}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{req.nop || '-'}</td>
+                    <td>{req.categoryLabel || req.category || '-'}</td>
                     <td>{req.createdAt ? formatDateTime(req.createdAt) : req.date ? formatDateTime(req.date) : '-'}</td>
                     <td>Rp {req.amount?.toLocaleString('id-ID')}</td>
                     <td>

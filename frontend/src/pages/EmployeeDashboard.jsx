@@ -14,9 +14,10 @@ function EmployeeDashboardOverview() {
   const [rawComparisonData, setRawComparisonData] = useState([]);
   const [dateFilter, setDateFilter] = useState('all');
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
   const [filterCluster, setFilterCluster] = useState('all');
+  const [filterNop, setFilterNop] = useState('all');
   const [filterCategory, setFilterCategory] = useState('all');
   
   const activeRequestsCount = rawComparisonData.filter(d => d.requestStatus === 'Pending' || d.requestStatus === 'Revision').length;
@@ -240,6 +241,17 @@ function EmployeeDashboardOverview() {
             <select 
               className="form-control" 
               style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              value={filterNop}
+              onChange={(e) => setFilterNop(e.target.value)}
+            >
+              <option value="all">Semua NOP</option>
+              <option value="Karawang">Karawang</option>
+              <option value="Serang">Serang</option>
+              <option value="Tangerang">Tangerang</option>
+            </select>
+            <select 
+              className="form-control" 
+              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
@@ -260,6 +272,8 @@ function EmployeeDashboardOverview() {
               <tr>
                 <th>ID Pengajuan</th>
                 <th>Judul Pengajuan</th>
+                <th>TO Cluster</th>
+                <th>NOP</th>
                 <th>Tanggal Pengajuan</th>
                 <th>Dana Diajukan</th>
                 <th>Dana Terpakai</th>
@@ -273,7 +287,6 @@ function EmployeeDashboardOverview() {
                   <tr key={`skel-row-${idx}`}>
                     <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '150px' }}></div></td>
-                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '100px' }}></div></td>
@@ -289,18 +302,21 @@ function EmployeeDashboardOverview() {
                     data.id?.toString().includes(searchQuery) ||
                     data.title?.toLowerCase().includes(searchQuery.toLowerCase());
                   const matchesCluster = filterCluster === 'all' || data.toCluster === filterCluster;
+                  const matchesNop = filterNop === 'all' || data.nop === filterNop;
                   const matchesCategory = filterCategory === 'all' || data.categoryLabel === filterCategory;
-                  return matchesStatus && matchesSearch && matchesCluster && matchesCategory;
+                  return matchesStatus && matchesSearch && matchesCluster && matchesNop && matchesCategory;
                 });
 
                 if (filteredData.length === 0) {
-                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data perbandingan ditemukan.</td></tr>;
+                  return <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data perbandingan ditemukan.</td></tr>;
                 }
 
                 return filteredData.map((data, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{data.id}</span></td>
                     <td className="font-medium">{data.title}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{data.toCluster || '-'}</td>
+                    <td style={{ color: 'var(--text-secondary)' }}>{data.nop || '-'}</td>
                     <td>{data.createdAt ? formatDateTime(data.createdAt) : data.date ? formatDateTime(data.date) : '-'}</td>
                     <td>Rp {data.requestedAmount.toLocaleString('id-ID')}</td>
                     <td>Rp {data.reportedAmount.toLocaleString('id-ID')}</td>

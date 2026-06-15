@@ -387,6 +387,15 @@ function FundRequestView({ onBack }) {
                   </select>
                 </div>
                 <div className="form-group">
+                  <label className="form-label">NOP</label>
+                  <select className="form-control" required value={item.nop} onChange={e => updateItem(index, 'nop', e.target.value)}>
+                    <option value="">Pilih NOP...</option>
+                    <option value="Karawang">Karawang</option>
+                    <option value="Serang">Serang</option>
+                    <option value="Tangerang">Tangerang</option>
+                  </select>
+                </div>
+                <div className="form-group">
                   <label className="form-label">Kategori Kebutuhan</label>
                   <select id={`cat-select-${index}`} className="form-control" required value={item.category} onChange={e => updateItem(index, 'category', e.target.value)}>
                     <option value="">Pilih Kategori...</option>
