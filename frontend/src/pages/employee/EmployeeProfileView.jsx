@@ -259,15 +259,19 @@ function EmployeeProfileView() {
             <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
               <div className="form-group">
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Users size={16} className="text-primary" /> Tim / Divisi
+                  <Users size={16} className="text-primary" /> Role
                 </label>
-                <input 
-                  type="text" 
+                <select 
                   className="form-control" 
                   name="team"
                   value={user.team || ''} 
                   onChange={handleChange}
-                />
+                >
+                  <option value="">Pilih Role...</option>
+                  <option value="TS">TS</option>
+                  <option value="MBP">MBP</option>
+                  <option value="PM">PM</option>
+                </select>
               </div>
               <div className="form-group">
                   <label className="form-label">
@@ -306,7 +310,7 @@ function EmployeeProfileView() {
 
             <div className="form-group">
               <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Shield size={16} className="text-primary" /> Role / Posisi
+                <Shield size={16} className="text-primary" /> Role Akun
               </label>
               <input 
                 type="text" 
@@ -315,7 +319,7 @@ function EmployeeProfileView() {
                 disabled 
                 style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8' }}
               />
-              <small className="text-muted" style={{ display: 'block', marginTop: '0.25rem' }}>Role tidak dapat diubah sendiri.</small>
+              <small className="text-muted" style={{ display: 'block', marginTop: '0.25rem' }}>Role Akun tidak dapat diubah sendiri.</small>
             </div>
 
             <div className="form-actions" style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
