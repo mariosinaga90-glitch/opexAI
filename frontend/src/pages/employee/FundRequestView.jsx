@@ -13,7 +13,8 @@ function FundRequestView({ onBack }) {
   const printRef = useRef(null);
 
   // Form State
-  const [items, setItems] = useState([{ id: 1, description: '', team: '', toCluster: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', transferDate: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
+  const [currentUser, setCurrentUser] = useState({});
+  const [items, setItems] = useState([{ id: 1, description: '', team: '', toCluster: '', nop: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', transferDate: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
   const [sites, setSites] = useState([{ id: 1, siteName: '' }]);
   const [uploadUrl, setUploadUrl] = useState('');
   const [isUploading, setIsUploading] = useState(false);
@@ -56,6 +57,24 @@ function FundRequestView({ onBack }) {
   };
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    setCurrentUser(user);
+    
+    // Autofill first item if empty
+    setItems(prev => {
+      if (prev.length === 1 && !prev[0].team && !prev[0].toCluster) {
+        return [{ 
+          ...prev[0], 
+          team: user.team || '', 
+          toCluster: user.microCluster || '', 
+          nop: user.cluster || '',
+          vehicleType: user.vehicleType || '',
+          plateNumber: user.plateNumber || ''
+        }];
+      }
+      return prev;
+    });
+
     fetchHistory();
   }, []);
 
@@ -63,7 +82,7 @@ function FundRequestView({ onBack }) {
   const removeSite = (id) => { if (sites.length > 1) setSites(sites.filter(site => site.id !== id)); };
 
   const addItem = () => {
-    setItems([...items, { id: Date.now(), description: '', team: '', toCluster: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
+    setItems([...items, { id: Date.now(), description: '', team: currentUser.team || '', toCluster: currentUser.microCluster || '', nop: currentUser.cluster || '', category: '', categoryLabel: '', vehicleType: currentUser.vehicleType || '', plateNumber: currentUser.plateNumber || '', detail: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
   };
 
   const removeItem = (id) => { if (items.length > 1) setItems(items.filter(item => item.id !== id)); };
@@ -372,9 +391,9 @@ function FundRequestView({ onBack }) {
                   <label className="form-label">Role Team</label>
                   <select className="form-control" required value={item.team} onChange={e => updateItem(index, 'team', e.target.value)}>
                     <option value="">Pilih Role...</option>
-                    <option value="ts">TS</option>
-                    <option value="mbp">MBP</option>
-                    <option value="pm">PM</option>
+                    <option value="TS">TS</option>
+                    <option value="MBP">MBP</option>
+                    <option value="PM">PM</option>
                   </select>
                 </div>
                 <div className="form-group">
@@ -419,8 +438,8 @@ function FundRequestView({ onBack }) {
                   <label className="form-label">Jenis Kendaraan</label>
                   <select className="form-control" value={item.vehicleType} onChange={e => updateItem(index, 'vehicleType', e.target.value)}>
                     <option value="">Pilih Kendaraan...</option>
-                    <option value="mobil">Mobil</option>
-                    <option value="motor">Motor</option>
+                    <option value="Mobil">Mobil</option>
+                    <option value="Motor">Motor</option>
                   </select>
                 </div>
                 <div className="form-group">
