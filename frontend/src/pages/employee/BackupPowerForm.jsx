@@ -358,11 +358,21 @@ function BackupPowerForm() {
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">NOP</label>
-              <input type="text" className="form-control" name="nop" value={formData.nop} onChange={handleInputChange} />
+              <select className="form-control" name="nop" value={formData.nop} onChange={handleInputChange}>
+                <option value="">Pilih NOP...</option>
+                <option value="Karawang">Karawang</option>
+                <option value="Serang">Serang</option>
+                <option value="Tangerang">Tangerang</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">TO Cluster</label>
-              <input type="text" className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange} />
+              <select className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange}>
+                <option value="">Pilih TO Cluster...</option>
+                <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
+                <option value="TO Karawang">TO Karawang</option>
+                <option value="TO Purwakarta">TO Purwakarta</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Penyebab Pemadaman</label>
