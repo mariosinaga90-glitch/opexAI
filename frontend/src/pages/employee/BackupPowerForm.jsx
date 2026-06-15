@@ -277,6 +277,7 @@ function BackupPowerForm() {
               <thead>
                 <tr>
                   <th>No Ticket</th>
+                  <th>Site ID</th>
                   <th>Site Name</th>
                   <th>NOP</th>
                   <th>TO Cluster</th>
@@ -292,6 +293,7 @@ function BackupPowerForm() {
                   Array.from({ length: 4 }).map((_, idx) => (
                     <tr key={`skel-rep-${idx}`}>
                       <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
+                      <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '150px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
@@ -303,11 +305,12 @@ function BackupPowerForm() {
                     </tr>
                   ))
                 ) : filteredReports.length === 0 ? (
-                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada histori laporan Backup Power.</td></tr>
+                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada histori laporan Backup Power.</td></tr>
                 ) : (
                   filteredReports.map(rep => (
                     <tr key={rep.id}>
                       <td className="font-medium">{rep.ticketNo}</td>
+                      <td>{rep.siteId || '-'}</td>
                       <td>{rep.siteName}</td>
                       <td>{rep.nop || '-'}</td>
                       <td>{rep.cluster || '-'}</td>
