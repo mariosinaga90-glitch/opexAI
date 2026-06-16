@@ -8,8 +8,8 @@ const API_BASE_URL = '/api';
 function AdminBackupPowerView() {
   const [reports, setReports] = useState([]);
   const [search, setSearch] = useState('');
-  const [filterNop, setFilterNop] = useState('');
-  const [filterCluster, setFilterCluster] = useState('');
+  const [filterNop, setFilterNop] = useState('all');
+  const [filterCluster, setFilterCluster] = useState('all');
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   
@@ -181,8 +181,8 @@ function AdminBackupPowerView() {
       (r.ticketNo || '').toLowerCase().includes(search.toLowerCase()) ||
       (r.user || '').toLowerCase().includes(search.toLowerCase());
     
-    const matchesNop = filterNop === '' || (r.nop || '').toLowerCase().includes(filterNop.toLowerCase());
-    const matchesCluster = filterCluster === '' || (r.cluster || '').toLowerCase().includes(filterCluster.toLowerCase());
+    const matchesNop = filterNop === 'all' || r.nop === filterNop;
+    const matchesCluster = filterCluster === 'all' || r.cluster === filterCluster;
     
     let matchesDate = true;
     if (filterDateFrom || filterDateTo) {
@@ -267,11 +267,21 @@ function AdminBackupPowerView() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
             <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>NOP</label>
-              <input type="text" className="form-control" placeholder="Semua NOP" value={filterNop} onChange={(e) => setFilterNop(e.target.value)} />
+              <select className="form-control" value={filterNop} onChange={(e) => setFilterNop(e.target.value)}>
+                <option value="all">Semua NOP</option>
+                <option value="Karawang">Karawang</option>
+                <option value="Serang">Serang</option>
+                <option value="Tangerang">Tangerang</option>
+              </select>
             </div>
             <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>TO Cluster</label>
-              <input type="text" className="form-control" placeholder="Semua TO Cluster" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)} />
+              <select className="form-control" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)}>
+                <option value="all">Semua TO Cluster</option>
+                <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
+                <option value="TO Karawang">TO Karawang</option>
+                <option value="TO Purwakarta">TO Purwakarta</option>
+              </select>
             </div>
             <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
@@ -281,9 +291,9 @@ function AdminBackupPowerView() {
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
               <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
             </div>
-            { (filterNop || filterCluster || filterDateFrom || filterDateTo || search) && (
+            { (filterNop !== 'all' || filterCluster !== 'all' || filterDateFrom || filterDateTo || search) && (
               <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
-                <button className="btn" onClick={() => { setFilterNop(''); setFilterCluster(''); setFilterDateFrom(''); setFilterDateTo(''); setSearch(''); }}>Reset</button>
+                <button className="btn" onClick={() => { setFilterNop('all'); setFilterCluster('all'); setFilterDateFrom(''); setFilterDateTo(''); setSearch(''); }}>Reset</button>
               </div>
             )}
           </div>
