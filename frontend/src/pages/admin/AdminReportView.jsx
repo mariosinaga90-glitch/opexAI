@@ -508,13 +508,11 @@ function AdminReportView() {
             <thead>
               <tr>
                 <th>ID Laporan</th>
-                <th>Terkait Pengajuan</th>
                 <th>Pembuat & Role</th>
                 <th>TO Cluster</th>
                 <th>NOP</th>
                 <th>Kategori</th>
                 <th>Total Terpakai</th>
-                <th>Tanggal Pengajuan</th>
                 <th>Tanggal Pelaporan</th>
                 <th>Status</th>
                 <th>Aksi</th>
@@ -525,7 +523,6 @@ function AdminReportView() {
                   Array.from({ length: 5 }).map((_, idx) => (
                     <tr key={`skel-admin-rep-${idx}`}>
                       <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
-                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                           <div className="skeleton skeleton-text" style={{ width: '100px' }}></div>
@@ -536,12 +533,11 @@ function AdminReportView() {
                       <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '110px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '110px' }}></div></td>
-                      <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
                     </tr>
                   ))
                 ) : reports.length === 0 ? (
-                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
+                  <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>
                 ) : (() => {
                 const filteredReps = reports.filter(rep => {
                   const matchesStatus = statusFilter === 'all' || rep.status?.toLowerCase() === statusFilter;
@@ -556,13 +552,12 @@ function AdminReportView() {
                 });
 
                 if (filteredReps.length === 0) {
-                  return <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>;
+                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>;
                 }
 
                 return filteredReps.map((rep, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
-                    <td><span className="text-primary">{rep.reqId}</span></td>
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                         <span className="font-medium">{rep.user}</span>
@@ -573,7 +568,6 @@ function AdminReportView() {
                     <td style={{ color: 'var(--text-secondary)' }}>{rep.nop || '-'}</td>
                     <td>{rep.categoryLabel || rep.category || '-'}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
-                    <td>{rep.requestDate ? formatDateTime(rep.requestDate) : '-'}</td>
                     <td>{rep.date || rep.createdAt ? formatDateTime(rep.date || rep.createdAt) : '-'}</td>
                     <td>
                       <span className={`status-badge status-${rep.status === 'Revision' ? 'warning' : 'pending'}`}>

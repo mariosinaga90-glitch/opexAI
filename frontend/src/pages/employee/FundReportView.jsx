@@ -641,8 +641,6 @@ function FundReportView() {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Terkait Pengajuan</th>
-                <th>Tanggal Pengajuan</th>
                 <th>Tanggal Pelaporan</th>
                 <th>Total Terpakai</th>
                 <th>Status</th>
@@ -654,8 +652,6 @@ function FundReportView() {
                 Array.from({ length: 5 }).map((_, idx) => (
                   <tr key={`skel-rep-${idx}`}>
                     <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
-                    <td><div className="skeleton skeleton-text" style={{ width: '90px' }}></div></td>
-                    <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '100px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
@@ -663,7 +659,7 @@ function FundReportView() {
                   </tr>
                 ))
               ) : history.length === 0 ? (
-                <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada laporan.</td></tr>
+                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada laporan.</td></tr>
               ) : (() => {
                 const filteredReps = history.filter(rep => {
                   const matchesStatus = statusFilter === 'all' || rep.status?.toLowerCase() === statusFilter;
@@ -693,14 +689,12 @@ function FundReportView() {
                 });
 
                 if (filteredReps.length === 0) {
-                  return <tr><td colSpan="7" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>;
+                  return <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada laporan ditemukan.</td></tr>;
                 }
 
                 return filteredReps.map((rep, index) => (
                   <tr key={index}>
                     <td><span className="text-muted">{rep.id}</span></td>
-                    <td><span className="text-primary">{rep.reqId || rep.requestId}</span></td>
-                    <td>{rep.requestDate ? formatDateTime(rep.requestDate) : '-'}</td>
                     <td>{rep.createdAt ? formatDateTime(rep.createdAt) : rep.date ? formatDateTime(rep.date) : '-'}</td>
                     <td>Rp {rep.totalUsed?.toLocaleString('id-ID')}</td>
                     <td>
