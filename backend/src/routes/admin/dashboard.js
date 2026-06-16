@@ -25,6 +25,30 @@ router.get('/stats', async (req, res) => {
     const reqAmount = totalRequestedSum[0]?.total || 0;
     const repAmount = totalReportedSum[0]?.total || 0;
 
+    // Trend Data (last 7 days)
+    const allReqsForTrend = await db.select({ createdAt: fundRequests.createdAt }).from(fundRequests);
+    const dateMap = {};
+    allReqsForTrend.forEach(req => {
+      if (req.createdAt) {
+        const d = new Date(req.createdAt);
+        if (!isNaN(d.getTime())) {
+          const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+          dateMap[dateStr] = (dateMap[dateStr] || 0) + 1;
+        }
+      }
+    });
+    
+    const requestsByDate = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      requestsByDate.push({
+        date: `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`,
+        value: dateMap[dateStr] || 0
+      });
+    }
+
     res.json({
       totalRequests: totalRequestsRes[0].count,
       pendingReview: pendingReviewRes[0].count,
@@ -34,7 +58,8 @@ router.get('/stats', async (req, res) => {
       fundsOverview: [
         { name: 'Nominal Realisasi', value: repAmount },
         { name: 'Belum Terealisasi', value: Math.max(0, reqAmount - repAmount) }
-      ]
+      ],
+      requestsByDate
     });
   } catch (error) {
     console.error(error);

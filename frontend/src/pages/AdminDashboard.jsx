@@ -7,7 +7,7 @@ import AdminRequestView from './admin/AdminRequestView';
 import AdminReportView from './admin/AdminReportView';
 import AdminUserView from './admin/AdminUserView';
 import AdminSettingsView from './admin/AdminSettingsView';
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 function AdminDashboardOverview() {
   const navigate = useNavigate();
@@ -88,7 +88,42 @@ function AdminDashboardOverview() {
         })}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      {/* Trend Chart Full Width */}
+      <div className="glass-panel animate-fade-in-up" style={{ padding: '1.75rem', marginBottom: '1.5rem', animationDelay: '0.1s' }}>
+        <h2 className="section-title" style={{ marginBottom: '1.5rem', fontSize: '1.15rem' }}>Tren Pengajuan (7 Hari Terakhir)</h2>
+        {loading ? (
+           <div className="skeleton" style={{ width: '100%', height: 280, borderRadius: '12px' }}></div>
+        ) : statsData.requestsByDate && statsData.requestsByDate.length > 0 ? (
+          <div style={{ width: '100%', height: 280 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={statsData.requestsByDate} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis dataKey="date" stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} dy={10} />
+                <YAxis stroke="var(--text-muted)" fontSize={12} tickLine={false} axisLine={false} dx={-10} allowDecimals={false} />
+                <Tooltip 
+                  cursor={{ fill: 'rgba(255,255,255,0.04)' }}
+                  contentStyle={{ 
+                    backgroundColor: 'rgba(9, 13, 22, 0.95)', 
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                    backdropFilter: 'blur(10px)',
+                    color: 'var(--text-main)'
+                  }}
+                  itemStyle={{ color: 'var(--primary)', fontWeight: 'bold' }}
+                />
+                <Bar dataKey="value" name="Jumlah Pengajuan" fill="var(--primary)" radius={[6, 6, 0, 0]} maxBarSize={50} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        ) : (
+          <div style={{ height: 280, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+            Belum ada data pengajuan dalam 7 hari terakhir.
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1.5rem', alignItems: 'start', animationDelay: '0.2s' }} className="animate-fade-in-up">
         {/* Pending Requests Table */}
         <div className="data-section glass-panel">
         <div className="section-header" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'stretch' }}>
@@ -98,18 +133,17 @@ function AdminDashboardOverview() {
           </div>
           
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-            <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: '1', minWidth: '200px', backgroundColor: 'rgba(30, 41, 59, 0.7)', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <div className="search-wrapper" style={{ flex: '1', minWidth: '200px' }}>
               <input 
                 type="text" 
                 placeholder="Cari nama pengaju..." 
-                style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
               />
             </div>
             <select 
               className="form-control" 
-              style={{ width: 'auto', minWidth: '150px', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto', minWidth: '150px' }}
               value={filterTeam}
               onChange={(e) => setFilterTeam(e.target.value)}
             >
@@ -120,7 +154,7 @@ function AdminDashboardOverview() {
             </select>
             <select 
               className="form-control" 
-              style={{ width: 'auto', minWidth: '150px', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto', minWidth: '150px' }}
               value={filterCluster}
               onChange={(e) => setFilterCluster(e.target.value)}
             >
@@ -131,7 +165,7 @@ function AdminDashboardOverview() {
             </select>
             <select 
               className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto' }}
               value={filterNop}
               onChange={(e) => setFilterNop(e.target.value)}
             >
@@ -142,7 +176,7 @@ function AdminDashboardOverview() {
             </select>
             <select 
               className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >
@@ -242,7 +276,7 @@ function AdminDashboardOverview() {
             </div>
           ) : statsData.requestsByCategory && statsData.requestsByCategory.length > 0 ? (
             (() => {
-              const CATEGORY_COLORS = ['#6366F1', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', '#EC4899', '#14B8A6', '#F43F5E'];
+              const CATEGORY_COLORS = ['#6366F1', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6', '#EC4899', '#06B6D4', '#F43F5E'];
               const categoryTotal = statsData.requestsByCategory.reduce((acc, curr) => acc + curr.value, 0);
               const activeCategory = activeCategoryIndex !== -1 ? statsData.requestsByCategory[activeCategoryIndex] : null;
               const categoryCenterValue = activeCategory ? activeCategory.value : categoryTotal;
@@ -250,17 +284,18 @@ function AdminDashboardOverview() {
 
               return (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ position: 'relative', width: '210px', height: 210, margin: '0 auto' }}>
-                    <PieChart width={210} height={210}>
+                  <div style={{ position: 'relative', width: '220px', height: 220, margin: '0 auto', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.25))' }}>
+                    <PieChart width={220} height={220}>
                       <Pie
                         data={statsData.requestsByCategory}
                         cx="50%"
                         cy="50%"
-                        innerRadius={68}
-                        outerRadius={90}
-                        paddingAngle={3}
+                        innerRadius={72}
+                        outerRadius={96}
+                        paddingAngle={4}
                         dataKey="value"
-                        stroke="none"
+                        stroke="var(--bg-color)"
+                        strokeWidth={2}
                         onMouseEnter={(data, index) => setActiveCategoryIndex(index)}
                         onMouseLeave={() => setActiveCategoryIndex(-1)}
                       >
@@ -272,11 +307,11 @@ function AdminDashboardOverview() {
                               fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]}
                               style={{
                                 outline: 'none',
-                                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                transform: isHovered ? 'scale(1.06)' : 'scale(1)',
                                 transformOrigin: '50% 50%',
                                 cursor: 'pointer',
-                                opacity: activeCategoryIndex === -1 ? 1 : (isHovered ? 1 : 0.45)
+                                opacity: activeCategoryIndex === -1 ? 1 : (isHovered ? 1 : 0.4)
                               }}
                             />
                           );
@@ -288,28 +323,27 @@ function AdminDashboardOverview() {
                             const data = payload[0].payload;
                             return (
                               <div style={{
-                                backgroundColor: 'rgba(15, 23, 42, 0.96)',
-                                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                                  borderRadius: '10px',
-                                  padding: '0.6rem 0.85rem',
-                                  boxShadow: 'var(--shadow-md)',
-                                  backdropFilter: 'blur(8px)',
-                                  pointerEvents: 'none'
-                                }}>
-                                  <p style={{ margin: 0, fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
-                                    {data.name}
-                                  </p>
-                                  <p style={{ margin: '0.2rem 0 0 0', fontSize: '1.05rem', fontWeight: 700, color: payload[0].color || 'var(--primary)' }}>
-                                    {data.value} Tiket
-                                  </p>
-                                </div>
-                              );
-                            }
-                            return null;
-                          }}
-                        />
-                      </PieChart>
-
+                                backgroundColor: 'rgba(9, 13, 22, 0.95)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '12px',
+                                padding: '0.75rem 1rem',
+                                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                                backdropFilter: 'blur(10px)',
+                                pointerEvents: 'none'
+                              }}>
+                                <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                                  {data.name}
+                                </p>
+                                <p style={{ margin: '0.3rem 0 0 0', fontSize: '1.1rem', fontWeight: 700, color: payload[0].color || 'var(--primary)' }}>
+                                  {data.value} Tiket
+                                </p>
+                              </div>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    </PieChart>
 
                     {/* Center KPI Information */}
                     <div style={{
@@ -319,34 +353,35 @@ function AdminDashboardOverview() {
                       transform: 'translate(-50%, -50%)',
                       textAlign: 'center',
                       pointerEvents: 'none',
-                      width: 120,
+                      width: 130,
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center'
                     }}>
                       <span style={{ 
-                        fontSize: '1.8rem', 
+                        fontSize: '2rem', 
                         fontWeight: '800', 
                         color: 'var(--text-main)', 
                         lineHeight: '1.1',
-                        transition: 'all 0.15s ease' 
+                        transition: 'all 0.2s ease',
+                        textShadow: '0 2px 10px rgba(0,0,0,0.3)'
                       }}>
                         {categoryCenterValue}
                       </span>
                       <span style={{ 
                         display: 'block', 
-                        fontSize: '0.72rem', 
+                        fontSize: '0.75rem', 
                         color: 'var(--text-muted)', 
                         textTransform: 'uppercase', 
-                        letterSpacing: '0.04em',
-                        marginTop: '0.3rem',
+                        letterSpacing: '0.05em',
+                        marginTop: '0.4rem',
                         fontWeight: '600',
                         width: '100%',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        transition: 'all 0.15s ease'
+                        transition: 'all 0.2s ease'
                       }}>
                         {categoryCenterLabel}
                       </span>
@@ -354,13 +389,16 @@ function AdminDashboardOverview() {
                   </div>
 
                   {/* Interactive Legend Grid */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(2, 1fr)',
-                    gap: '0.65rem 0.85rem',
-                    marginTop: '1.25rem',
-                    borderTop: '1px solid var(--border-color)',
-                    paddingTop: '1.25rem'
+                  <div className="custom-scrollbar" style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.75rem',
+                    marginTop: '1.5rem',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                    paddingTop: '1.5rem',
+                    maxHeight: '220px',
+                    overflowY: 'auto',
+                    paddingRight: '0.5rem'
                   }}>
                     {statsData.requestsByCategory.map((entry, index) => {
                       const isHovered = index === activeCategoryIndex;
@@ -371,29 +409,36 @@ function AdminDashboardOverview() {
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '0.5rem',
-                            fontSize: '0.8rem',
-                            color: isHovered ? 'var(--text-main)' : 'var(--text-muted)',
+                            gap: '0.6rem',
+                            fontSize: '0.85rem',
+                            color: isHovered ? 'var(--text-main)' : 'var(--text-secondary)',
                             cursor: 'pointer',
-                            transition: 'all 0.15s ease',
-                            fontWeight: isHovered ? '600' : '500'
+                            transition: 'all 0.2s ease',
+                            fontWeight: isHovered ? '600' : '500',
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '6px',
+                            backgroundColor: isHovered ? 'rgba(255, 255, 255, 0.03)' : 'transparent'
                           }}
                           onMouseEnter={() => setActiveCategoryIndex(index)}
                           onMouseLeave={() => setActiveCategoryIndex(-1)}
+                          title={`${entry.name}: ${entry.value}`}
                         >
                           <span style={{
-                            width: '7px',
-                            height: '7px',
+                            width: '8px',
+                            height: '8px',
                             borderRadius: '50%',
                             backgroundColor: color,
-                            boxShadow: isHovered ? `0 0 8px ${color}` : 'none',
+                            boxShadow: isHovered ? `0 0 10px ${color}` : 'none',
                             transform: isHovered ? 'scale(1.3)' : 'scale(1)',
-                            transition: 'all 0.15s ease',
+                            transition: 'all 0.2s ease',
                             flexShrink: 0
                           }} />
-                          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {entry.name}: <strong style={{ color: 'var(--text-main)', marginLeft: '2px' }}>{entry.value}</strong>
+                          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {entry.name}
                           </span>
+                          <strong style={{ color: isHovered ? 'var(--text-main)' : 'var(--text-muted)' }}>
+                            {entry.value}
+                          </strong>
                         </div>
                       );
                     })}
@@ -431,17 +476,18 @@ function AdminDashboardOverview() {
 
               return (
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ position: 'relative', width: '210px', height: 210, margin: '0 auto' }}>
-                    <PieChart width={210} height={210}>
+                  <div style={{ position: 'relative', width: '220px', height: 220, margin: '0 auto', filter: 'drop-shadow(0px 8px 16px rgba(0,0,0,0.25))' }}>
+                    <PieChart width={220} height={220}>
                       <Pie
                         data={statsData.fundsOverview}
                         cx="50%"
                         cy="50%"
-                        innerRadius={68}
-                        outerRadius={90}
+                        innerRadius={72}
+                        outerRadius={96}
                         paddingAngle={5}
                         dataKey="value"
-                        stroke="none"
+                        stroke="var(--bg-color)"
+                        strokeWidth={2}
                         onMouseEnter={(data, index) => setActiveFundIndex(index)}
                         onMouseLeave={() => setActiveFundIndex(-1)}
                       >
@@ -453,11 +499,11 @@ function AdminDashboardOverview() {
                               fill={FUND_COLORS[index % FUND_COLORS.length]}
                               style={{
                                 outline: 'none',
-                                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                                transform: isHovered ? 'scale(1.04)' : 'scale(1)',
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                transform: isHovered ? 'scale(1.06)' : 'scale(1)',
                                 transformOrigin: '50% 50%',
                                 cursor: 'pointer',
-                                opacity: activeFundIndex === -1 ? 1 : (isHovered ? 1 : 0.45)
+                                opacity: activeFundIndex === -1 ? 1 : (isHovered ? 1 : 0.4)
                               }}
                             />
                           );
@@ -469,18 +515,18 @@ function AdminDashboardOverview() {
                             const data = payload[0].payload;
                             return (
                               <div style={{
-                                backgroundColor: 'rgba(15, 23, 42, 0.96)',
-                                border: '1px solid rgba(255, 255, 255, 0.15)',
-                                borderRadius: '10px',
-                                padding: '0.6rem 0.85rem',
-                                boxShadow: 'var(--shadow-md)',
-                                backdropFilter: 'blur(8px)',
+                                backgroundColor: 'rgba(9, 13, 22, 0.95)',
+                                border: '1px solid rgba(255, 255, 255, 0.1)',
+                                borderRadius: '12px',
+                                padding: '0.75rem 1rem',
+                                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                                backdropFilter: 'blur(10px)',
                                 pointerEvents: 'none'
                               }}>
-                                <p style={{ margin: 0, fontSize: '0.78rem', fontWeight: 600, color: 'var(--text-muted)' }}>
+                                <p style={{ margin: 0, fontSize: '0.8rem', fontWeight: 600, color: 'var(--text-muted)' }}>
                                   {data.name}
                                 </p>
-                                <p style={{ margin: '0.2rem 0 0 0', fontSize: '1.05rem', fontWeight: 700, color: payload[0].color || 'var(--primary)' }}>
+                                <p style={{ margin: '0.3rem 0 0 0', fontSize: '1.1rem', fontWeight: 700, color: payload[0].color || 'var(--primary)' }}>
                                   Rp {data.value.toLocaleString('id-ID')}
                                 </p>
                               </div>
@@ -499,34 +545,35 @@ function AdminDashboardOverview() {
                       transform: 'translate(-50%, -50%)',
                       textAlign: 'center',
                       pointerEvents: 'none',
-                      width: 125,
+                      width: 130,
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'center',
                       alignItems: 'center'
                     }}>
                       <span style={{ 
-                        fontSize: '1.8rem', 
+                        fontSize: '2rem', 
                         fontWeight: '800', 
                         color: 'var(--text-main)', 
                         lineHeight: '1.1',
-                        transition: 'all 0.15s ease' 
+                        transition: 'all 0.2s ease',
+                        textShadow: '0 2px 10px rgba(0,0,0,0.3)'
                       }}>
                         {fundCenterValue}
                       </span>
                       <span style={{ 
                         display: 'block', 
-                        fontSize: '0.72rem', 
+                        fontSize: '0.75rem', 
                         color: 'var(--text-muted)', 
                         textTransform: 'uppercase', 
-                        letterSpacing: '0.04em',
-                        marginTop: '0.3rem',
+                        letterSpacing: '0.05em',
+                        marginTop: '0.4rem',
                         fontWeight: '600',
                         width: '100%',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         whiteSpace: 'nowrap',
-                        transition: 'all 0.15s ease'
+                        transition: 'all 0.2s ease'
                       }}>
                         {fundCenterLabel}
                       </span>
@@ -534,13 +581,16 @@ function AdminDashboardOverview() {
                   </div>
 
                   {/* Interactive Legend Grid */}
-                  <div style={{
+                  <div className="custom-scrollbar" style={{
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '0.65rem',
-                    marginTop: '1.25rem',
-                    borderTop: '1px solid var(--border-color)',
-                    paddingTop: '1.25rem'
+                    gap: '0.75rem',
+                    marginTop: '1.5rem',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+                    paddingTop: '1.5rem',
+                    maxHeight: '220px',
+                    overflowY: 'auto',
+                    paddingRight: '0.5rem'
                   }}>
                     {statsData.fundsOverview.map((entry, index) => {
                       const isHovered = index === activeFundIndex;
@@ -552,29 +602,33 @@ function AdminDashboardOverview() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            fontSize: '0.8rem',
-                            color: isHovered ? 'var(--text-main)' : 'var(--text-muted)',
+                            fontSize: '0.85rem',
+                            color: isHovered ? 'var(--text-main)' : 'var(--text-secondary)',
                             cursor: 'pointer',
-                            transition: 'all 0.15s ease',
-                            fontWeight: isHovered ? '600' : '500'
+                            transition: 'all 0.2s ease',
+                            fontWeight: isHovered ? '600' : '500',
+                            padding: '0.25rem 0.5rem',
+                            borderRadius: '6px',
+                            backgroundColor: isHovered ? 'rgba(255, 255, 255, 0.03)' : 'transparent'
                           }}
                           onMouseEnter={() => setActiveFundIndex(index)}
                           onMouseLeave={() => setActiveFundIndex(-1)}
+                          title={`${entry.name}: Rp ${entry.value.toLocaleString('id-ID')}`}
                         >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                             <span style={{
-                              width: '7px',
-                              height: '7px',
+                              width: '8px',
+                              height: '8px',
                               borderRadius: '50%',
                               backgroundColor: color,
-                              boxShadow: isHovered ? `0 0 8px ${color}` : 'none',
+                              boxShadow: isHovered ? `0 0 10px ${color}` : 'none',
                               transform: isHovered ? 'scale(1.3)' : 'scale(1)',
-                              transition: 'all 0.15s ease',
+                              transition: 'all 0.2s ease',
                               flexShrink: 0
                             }} />
                             <span>{entry.name}</span>
                           </div>
-                          <strong style={{ color: 'var(--text-main)' }}>
+                          <strong style={{ color: isHovered ? 'var(--text-main)' : 'var(--text-muted)' }}>
                             Rp {entry.value.toLocaleString('id-ID')}
                           </strong>
                         </div>

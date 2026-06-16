@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
 function AdminUserView() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -226,7 +227,58 @@ function AdminUserView() {
         </button>
       </div>
 
-      <div className="data-section glass-panel">
+      {/* Stats Charts */}
+      {!loading && users.length > 0 && (
+        <div className="animate-fade-in-up" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginBottom: '1.5rem', animationDelay: '0.1s' }}>
+          {(() => {
+            const clusterMap = {};
+            const teamMap = {};
+            users.forEach(u => {
+              if (u.role === 'admin') return; // Skip admin counts for stats
+              const c = u.cluster || 'Belum Set';
+              const t = u.team || 'Belum Set';
+              clusterMap[c] = (clusterMap[c] || 0) + 1;
+              teamMap[t] = (teamMap[t] || 0) + 1;
+            });
+            const clusterData = Object.keys(clusterMap).map(k => ({ name: k, value: clusterMap[k] }));
+            const teamData = Object.keys(teamMap).map(k => ({ name: k, value: teamMap[k] }));
+            const COLORS = ['#6366F1', '#10B981', '#F59E0B', '#3B82F6', '#8B5CF6'];
+
+            return (
+              <>
+                <div className="glass-panel" style={{ padding: '1.5rem' }}>
+                  <h3 className="section-title" style={{ fontSize: '1rem', marginBottom: '1rem' }}>Sebaran Karyawan by NOP</h3>
+                  <div style={{ width: '100%', height: 220 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={clusterData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                          {clusterData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: 'rgba(9, 13, 22, 0.95)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="glass-panel" style={{ padding: '1.5rem' }}>
+                  <h3 className="section-title" style={{ fontSize: '1rem', marginBottom: '1rem' }}>Sebaran Karyawan by Role</h3>
+                  <div style={{ width: '100%', height: 220 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie data={teamData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                          {teamData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />)}
+                        </Pie>
+                        <Tooltip contentStyle={{ backgroundColor: 'rgba(9, 13, 22, 0.95)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+        </div>
+      )}
+
+      <div className="data-section glass-panel animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
         <div className="section-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '300px', backgroundColor: 'rgba(30, 41, 59, 0.7)', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)' }}>
             <Search size={18} className="text-muted" />
