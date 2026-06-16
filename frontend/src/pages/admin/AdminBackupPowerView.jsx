@@ -311,8 +311,6 @@ function AdminBackupPowerView() {
                   <th>TO Cluster</th>
                   <th>Tanggal</th>
                   <th>Pembuat</th>
-                  <th>PLN Off</th>
-                  <th>Backup Start</th>
                   <th>Foto</th>
                   <th>Aksi</th>
                 </tr>
@@ -327,8 +325,6 @@ function AdminBackupPowerView() {
                     <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '100px' }}></div></td>
-                    <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
-                    <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
                   </tr>
@@ -348,15 +344,13 @@ function AdminBackupPowerView() {
                   <th>TO Cluster</th>
                   <th>Tanggal</th>
                   <th>Pembuat</th>
-                  <th>PLN Off</th>
-                  <th>Backup Start</th>
                   <th>Foto</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredReports.length === 0 ? (
-                  <tr><td colSpan="11" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data ditemukan.</td></tr>
+                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada data ditemukan.</td></tr>
                 ) : (
                   filteredReports.map(rep => (
                     <tr key={rep.id}>
@@ -367,8 +361,6 @@ function AdminBackupPowerView() {
                       <td>{rep.cluster || '-'}</td>
                       <td>{rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-'}</td>
                       <td>{rep.user}</td>
-                      <td>{rep.plnOffTime || '-'}</td>
-                      <td>{rep.backupStartTime || '-'}</td>
                       <td>
                         <div style={{ display: 'flex', gap: '0.25rem' }}>
                           {rep.photoPlnOff ? <ImageIcon size={16} color="green" /> : <ImageIcon size={16} color="#ccc" />}

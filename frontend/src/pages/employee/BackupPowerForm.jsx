@@ -282,8 +282,6 @@ function BackupPowerForm() {
                   <th>NOP</th>
                   <th>TO Cluster</th>
                   <th>Tanggal</th>
-                  <th>PLN Off</th>
-                  <th>Backup Start</th>
                   <th>Dibuat Pada</th>
                   <th>Aksi</th>
                 </tr>
@@ -298,14 +296,12 @@ function BackupPowerForm() {
                       <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '85px' }}></div></td>
-                      <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
-                      <td><div className="skeleton skeleton-text" style={{ width: '50px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '110px' }}></div></td>
                       <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
                     </tr>
                   ))
                 ) : filteredReports.length === 0 ? (
-                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada histori laporan Backup Power.</td></tr>
+                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '2rem' }}>Tidak ada histori laporan Backup Power.</td></tr>
                 ) : (
                   filteredReports.map(rep => (
                     <tr key={rep.id}>
@@ -315,8 +311,6 @@ function BackupPowerForm() {
                       <td>{rep.nop || '-'}</td>
                       <td>{rep.cluster || '-'}</td>
                       <td>{rep.backupDate ? new Date(rep.backupDate).toLocaleDateString('id-ID') : '-'}</td>
-                      <td>{rep.plnOffTime || '-'}</td>
-                      <td>{rep.backupStartTime || '-'}</td>
                       <td>{formatDate(rep.createdAt)}</td>
                       <td>
                         <button className="btn-icon btn-small" onClick={() => setSelectedReport(rep)}>
