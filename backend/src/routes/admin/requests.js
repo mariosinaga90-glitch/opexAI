@@ -84,6 +84,7 @@ router.get('/:id', async (req, res) => {
       email: requestData.users?.email || '',
       team: requestData.users?.team || '-',
       toCluster: clusterLabels[firstItemCluster] || firstItemCluster || '-',
+      nop: items[0]?.nop || '-',
       items,
       sites: sites.map(s => s.siteName),
       attachments: atts,

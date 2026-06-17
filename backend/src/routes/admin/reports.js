@@ -96,6 +96,7 @@ router.get('/:id', async (req, res) => {
       email: reportData.users?.email || '',
       team: reportData.users?.team || '-',
       toCluster: clusterLabels[firstItemCluster] || firstItemCluster || '-',
+      nop: items[0]?.nop || '-',
       items,
       attachments: atts,
       sites,
