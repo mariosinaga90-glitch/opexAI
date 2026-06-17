@@ -493,7 +493,7 @@ function FundReportView() {
                 </div>
                 <div className="form-group">
                   <label className="form-label">Kategori Kebutuhan</label>
-                  <select id={`rep-cat-${index}`} className="form-control" required value={item.category} onChange={(e) => updateItem(index, 'category', e.target.value)}>
+                  <select id={`rep-cat-${index}`} className="form-control" required value={item.category} onChange={(e) => updateItem(index, 'category', e.target.value)} disabled style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }}>
                     <option value="">Pilih Kategori...</option>
                     <option value="bbm-mobil">BBM Mobil</option>
                     <option value="bbm-motor">BBM Motor</option>
@@ -531,16 +531,16 @@ function FundReportView() {
                   <input type="date" className="form-control" required value={item.transferDate} onChange={(e) => updateItem(index, 'transferDate', e.target.value)} />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Harga Satuan (Sesuai Nota)</label>
-                  <input type="number" className="form-control" placeholder="0" required value={item.unitPrice} onChange={(e) => updateItem(index, 'unitPrice', Number(e.target.value))} />
+                  <label className="form-label">Harga Satuan</label>
+                  <input type="number" className="form-control" placeholder="0" required value={item.unitPrice} onChange={(e) => updateItem(index, 'unitPrice', Number(e.target.value))} disabled style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Jumlah (Qty)</label>
-                  <input type="number" className="form-control" placeholder="1" required value={item.quantity} onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))} />
+                  <input type="number" className="form-control" placeholder="1" required value={item.quantity} onChange={(e) => updateItem(index, 'quantity', Number(e.target.value))} disabled style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed' }} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Harga Total</label>
-                  <input type="text" className="form-control" value={`Rp ${(item.unitPrice * item.quantity).toLocaleString('id-ID')}`} disabled style={{ backgroundColor: 'rgba(0,0,0,0.02)', fontWeight: 'bold' }} />
+                  <input type="text" className="form-control" value={`Rp ${(item.unitPrice * item.quantity).toLocaleString('id-ID')}`} disabled style={{ backgroundColor: 'rgba(30, 41, 59, 0.5)', color: '#94A3B8', cursor: 'not-allowed', fontWeight: 'bold' }} />
                 </div>
               </div>
 
