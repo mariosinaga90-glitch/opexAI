@@ -363,6 +363,7 @@ function AdminReportView() {
                 user: rep.user || '-',
                 team: rep.team || '-',
                 toCluster: rep.toCluster || '-',
+                nop: rep.nop || '-',
                 category: rep.categoryLabel || '-',
                 total: rep.totalUsed || 0,
                 sites: detail?.sites?.length > 0 ? detail.sites.map((s, idx) => `${idx + 1}. ${s}`).join('\n') : '-',
@@ -408,19 +409,19 @@ function AdminReportView() {
                         });
                         
                         sheet.addImage(imageId, {
-                          tl: { col: 17, row: row.number - 1 },
+                          tl: { col: 18, row: row.number - 1 },
                           ext: { width: 120, height: 120 },
                           editAs: 'oneCell'
                         });
                     } catch(e) {
                         console.error('Failed to embed image', e);
-                        sheet.getCell(`R${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
+                        sheet.getCell(`S${row.number}`).value = `Gagal: ${e.message || 'Error Buffer/Base64'}`;
                     }
                  } else {
-                    sheet.getCell(`R${row.number}`).value = "Bukan format gambar";
+                    sheet.getCell(`S${row.number}`).value = "Bukan format gambar";
                  }
               } else {
-                 sheet.getCell(`R${row.number}`).value = "Tidak ada bukti";
+                 sheet.getCell(`S${row.number}`).value = "Tidak ada bukti";
               }
             }
 

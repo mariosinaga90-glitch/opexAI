@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Download, Trash2, FileSpreadsheet, Image as ImageIcon, ArrowLeft } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 const API_BASE_URL = '/api';
 
@@ -70,7 +71,7 @@ function AdminBackupPowerView() {
         { header: 'Site Name', key: 'siteName', width: 30 },
         { header: 'Tanggal Backup', key: 'backupDate', width: 15 },
         { header: 'NOP', key: 'nop', width: 15 },
-        { header: 'NOP', key: 'cluster', width: 20 },
+        { header: 'TO Cluster', key: 'cluster', width: 20 },
         { header: 'Penyebab', key: 'outageCause', width: 25 },
         { header: 'PLN Off', key: 'plnOffTime', width: 15 },
         { header: 'Backup Start', key: 'backupStartTime', width: 15 },
@@ -119,11 +120,11 @@ function AdminBackupPowerView() {
           nop: rep.nop || '-',
           cluster: rep.cluster || '-',
           outageCause: rep.outageCause || '-',
-          plnOffTime: rep.plnOffTime || '-',
-          backupStartTime: rep.backupStartTime || '-',
+          plnOffTime: formatDateTime(rep.plnOffTime),
+          backupStartTime: formatDateTime(rep.backupStartTime),
           rhBefore: rep.rhBefore || '-',
-          plnOnTime: rep.plnOnTime || '-',
-          backupEndTime: rep.backupEndTime || '-',
+          plnOnTime: formatDateTime(rep.plnOnTime),
+          backupEndTime: formatDateTime(rep.backupEndTime),
           rhAfter: rep.rhAfter || '-',
           createdAt: rep.createdAt ? new Date(rep.createdAt).toLocaleString('id-ID') : '-'
         });
@@ -217,11 +218,11 @@ function AdminBackupPowerView() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p><p className="font-medium">{previewReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{previewReport.backupDate ? new Date(previewReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{previewReport.outageCause || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{previewReport.plnOffTime || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{previewReport.backupStartTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{formatDateTime(previewReport.plnOffTime)}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{formatDateTime(previewReport.backupStartTime)}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Sebelum Backup</p><p className="font-medium">{previewReport.rhBefore || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{previewReport.plnOnTime || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Selesai Backup</p><p className="font-medium">{previewReport.backupEndTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{formatDateTime(previewReport.plnOnTime)}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Selesai Backup</p><p className="font-medium">{formatDateTime(previewReport.backupEndTime)}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Sesudah Backup</p><p className="font-medium">{previewReport.rhAfter || '-'}</p></div>
         </div>
 

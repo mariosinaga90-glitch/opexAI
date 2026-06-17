@@ -358,6 +358,7 @@ function AdminRequestView() {
                 email: req.email || '-',
                 team: req.team || '-',
                 toCluster: req.toCluster || '-',
+                nop: req.nop || '-',
                 category: req.categoryLabel || '-',
                 title: req.title || '-',
                 amount: req.amount || 0,
@@ -396,19 +397,19 @@ function AdminRequestView() {
                         });
                         
                         sheet.addImage(imageId, {
-                          tl: { col: 10, row: row.number - 1 },
+                          tl: { col: 11, row: row.number - 1 },
                           ext: { width: 120, height: 120 },
                           editAs: 'oneCell'
                         });
                     } catch(e) {
                         console.error('Failed to embed image', e);
-                        sheet.getCell(`K${row.number}`).value = `Gagal memuat: ${e.message}`;
+                        sheet.getCell(`L${row.number}`).value = `Gagal memuat: ${e.message}`;
                     }
                  } else {
-                    sheet.getCell(`K${row.number}`).value = "Bukan format gambar";
+                    sheet.getCell(`L${row.number}`).value = "Bukan format gambar";
                  }
               } else {
-                 sheet.getCell(`K${row.number}`).value = "Tidak ada lampiran";
+                 sheet.getCell(`L${row.number}`).value = "Tidak ada lampiran";
               }
             }
 
