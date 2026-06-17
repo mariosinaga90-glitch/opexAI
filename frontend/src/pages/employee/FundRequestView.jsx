@@ -183,45 +183,102 @@ function FundRequestView({ onBack }) {
   if (selectedRequest) {
     return (
       <div className="glass-panel animate-fade-in-up" style={{ padding: '2rem' }}>
-        <div className="section-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div className="section-header" style={{ marginBottom: '2rem' }}>
           <div>
             <button className="btn-icon" onClick={() => setSelectedRequest(null)} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <ArrowLeft size={16} /> Kembali
             </button>
             <h2 className="section-title" style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>Detail Pengajuan</h2>
+            <p className="text-muted">Lihat detail pengajuan dana operasional Anda.</p>
           </div>
-          <button className="btn btn-primary" onClick={handleDownloadPDF}>
-            <Download size={18} style={{ marginRight: '8px' }} /> Download PDF
-          </button>
+          <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <span className={`status-badge status-${selectedRequest.status?.toLowerCase()}`} style={{ fontSize: '1rem', padding: '0.5rem 1rem' }}>
+              {selectedRequest.status}
+            </span>
+            <button className="btn btn-primary" onClick={handleDownloadPDF}>
+              <Download size={18} style={{ marginRight: '8px' }} />
+              Download PDF
+            </button>
+          </div>
         </div>
 
+        {/* Print Area */}
         <div ref={printRef} style={{ padding: '1rem', backgroundColor: 'var(--bg-card)', borderRadius: '8px' }}>
           <div style={{ textAlign: 'center', marginBottom: '2rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '1rem' }}>
             <h1 style={{ fontSize: '1.8rem', color: 'var(--primary-color)', marginBottom: '0.5rem' }}>OpexTac</h1>
             <p style={{ color: 'var(--text-muted)' }}>Dokumen Pengajuan Dana Operasional</p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>ID Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.id}</p></div>
-            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Tanggal Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.createdAt ? formatDateTime(selectedRequest.createdAt) : '-'}</p></div>
-            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Judul Pengajuan</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.title}</p></div>
-            <div><p className="text-muted" style={{ fontSize: '0.9rem' }}>Status</p><p className="font-medium" style={{ fontSize: '1.1rem' }}>{selectedRequest.status}</p></div>
+          <div className="form-grid" style={{ marginBottom: '2rem' }}>
+            <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.02)' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--primary)' }}>Profil Pengaju</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Nama Lengkap</p>
+                  <p className="font-medium">{selectedRequest.user || currentUser?.name || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Email</p>
+                  <p className="font-medium">{selectedRequest.email || currentUser?.email || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Role Team</p>
+                  <p className="font-medium">{selectedRequest.team || currentUser?.team || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p>
+                  <p className="font-medium">{selectedRequest.toCluster || currentUser?.microCluster || '-'}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>NOP</p>
+                  <p className="font-medium">{selectedRequest.nop || currentUser?.cluster || '-'}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.02)' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem', color: 'var(--primary)' }}>Informasi Pengajuan</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>ID Pengajuan</p>
+                  <p className="font-medium">{selectedRequest.id}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Pengajuan</p>
+                  <p className="font-medium">{selectedRequest.createdAt ? formatDateTime(selectedRequest.createdAt) : selectedRequest.date ? formatDateTime(selectedRequest.date) : '-'}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Kategori Kebutuhan</p>
+                  <p className="font-medium">{selectedRequest.categoryLabel}</p>
+                </div>
+                <div>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Judul</p>
+                  <p className="font-medium">{selectedRequest.title}</p>
+                </div>
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <p className="text-muted" style={{ fontSize: '0.85rem' }}>Total Estimasi Dana</p>
+                  <p className="font-medium" style={{ fontSize: '1.5rem', color: 'var(--secondary)' }}>Rp {selectedRequest.amount?.toLocaleString('id-ID')}</p>
+                </div>
+              </div>
+            </div>
           </div>
 
+          {/* Daftar Site */}
           {selectedRequest.sites && selectedRequest.sites.length > 0 && (
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Daftar Site</h3>
-              <div style={{ padding: '1rem', backgroundColor: 'rgba(0,0,0,0.03)', borderRadius: '6px' }}>
+            <div className="form-group" style={{ marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Daftar Site</h3>
+              <div className="glass-panel" style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)' }}>
                 {selectedRequest.sites.map((site, i) => (
-                  <p key={i} className="font-medium" style={{ marginBottom: '0.25rem' }}>{i + 1}. {site}</p>
+                  <p key={i} className="font-medium" style={{ marginBottom: '0.5rem' }}>{i + 1}. {site}</p>
                 ))}
               </div>
             </div>
           )}
 
-          <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Informasi Kendaraan</h3>
-            <div style={{ padding: '1rem', backgroundColor: 'rgba(0,0,0,0.03)', borderRadius: '6px' }}>
+          {/* Detail Kendaraan */}
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Informasi Kendaraan</h3>
+            <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.02)' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <p className="text-muted" style={{ fontSize: '0.85rem' }}>Jenis Kendaraan</p>
@@ -247,21 +304,18 @@ function FundRequestView({ onBack }) {
             </div>
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Deskripsi Keperluan</h3>
-            <div style={{ padding: '1rem', backgroundColor: 'rgba(0,0,0,0.03)', borderRadius: '6px' }}>
-              <p>{selectedRequest.description}</p>
+          {/* Detail Pekerjaan */}
+          <div className="form-group" style={{ marginBottom: '2rem' }}>
+            <label className="form-label">Detail Pekerjaan</label>
+            <div className="glass-panel" style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)' }}>
+              <p>{selectedRequest.detail || '-'}</p>
             </div>
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem' }}>Jumlah Dana</h3>
-            <p className="font-medium" style={{ fontSize: '1.5rem', color: 'var(--primary-color)' }}>Rp {selectedRequest.amount?.toLocaleString('id-ID')}</p>
-          </div>
-
+          {/* Rincian Item */}
           {selectedRequest.items && selectedRequest.items.length > 0 && (
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Rincian Item</h3>
+            <div className="form-group" style={{ marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Rincian Estimasi Kebutuhan</h3>
               <div className="table-responsive">
                 <table className="data-table">
                   <thead>
@@ -293,9 +347,10 @@ function FundRequestView({ onBack }) {
             </div>
           )}
 
+          {/* Lampiran */}
           {((selectedRequest.attachments && selectedRequest.attachments.length > 0) || selectedRequest.photo) && (
-            <div style={{ marginBottom: '2rem' }}>
-              <h3 style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>Bukti Transaksi / File Tambahan</h3>
+            <div className="form-group" style={{ marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Lampiran Pendukung</h3>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 {selectedRequest.attachments?.map(att => {
                   const isPdf = att.fileType?.includes('pdf') || att.filePath?.toLowerCase().endsWith('.pdf');
@@ -312,14 +367,24 @@ function FundRequestView({ onBack }) {
                   );
                 })}
                 {selectedRequest.photo && (!selectedRequest.attachments || selectedRequest.attachments.length === 0) && (
-                  <div style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(0,0,0,0.02)' }}>
-                    <img src={getFileUrl(selectedRequest.photo)} alt="Bukti" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
+                  <div style={{ border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'inline-block', padding: '0.5rem', background: 'rgba(255,255,255,0.02)' }}>
+                    <img src={getFileUrl(selectedRequest.photo)} alt="Lampiran" style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', display: 'block' }} />
                   </div>
                 )}
               </div>
             </div>
           )}
-        </div>
+
+        </div> {/* End of Print Area */}
+
+        {selectedRequest.adminNote && (
+          <div className="form-group" style={{ marginTop: '2rem' }}>
+            <label className="form-label">Catatan Admin</label>
+            <div className="glass-panel" style={{ padding: '1rem', backgroundColor: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+              <p style={{ color: 'var(--text-main)' }}>{selectedRequest.adminNote}</p>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
