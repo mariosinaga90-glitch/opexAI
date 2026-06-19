@@ -248,10 +248,17 @@
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding: 8rem 0 4rem;
+  }
   .hero-cta {
     flex-direction: column;
   }
   .stats {
     gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .stat-value {
+    font-size: 1.6rem;
   }
 }

@@ -134,11 +134,19 @@
 }
 
 @media (max-width: 768px) {
+  .features {
+    padding: 4rem 0;
+  }
+
   .features-grid {
     grid-template-columns: 1fr;
   }
   
   .features-header .section-title {
     font-size: 2.2rem;
+  }
+  
+  .feature-card {
+    padding: 2rem 1.5rem;
   }
 }
