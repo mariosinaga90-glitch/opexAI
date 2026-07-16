@@ -25,6 +25,7 @@ router.get('/', async (req, res) => {
       rhAfter: backupPowerReports.rhAfter,
       backupEndTime: backupPowerReports.backupEndTime,
       outageCause: backupPowerReports.outageCause,
+      photoOutageCause: backupPowerReports.photoOutageCause,
       photoPlnOff: backupPowerReports.photoPlnOff,
       photoRhBefore: backupPowerReports.photoRhBefore,
       photoPlnOn: backupPowerReports.photoPlnOn,
@@ -49,7 +50,7 @@ router.post('/', async (req, res) => {
     const { 
       userId, ticketNo, siteId, siteName, backupDate, nop, cluster, 
       plnOffTime, rhBefore, backupStartTime, plnOnTime, rhAfter, backupEndTime, outageCause,
-      photoPlnOff, photoRhBefore, photoPlnOn, photoRhAfter
+      photoOutageCause, photoPlnOff, photoRhBefore, photoPlnOn, photoRhAfter
     } = req.body;
 
     const id = `BKP-${uuidv4().substring(0, 8).toUpperCase()}`;
@@ -70,6 +71,7 @@ router.post('/', async (req, res) => {
       rhAfter,
       backupEndTime,
       outageCause,
+      photoOutageCause,
       photoPlnOff,
       photoRhBefore,
       photoPlnOn,

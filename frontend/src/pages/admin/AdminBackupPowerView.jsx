@@ -80,6 +80,7 @@ function AdminBackupPowerView() {
         { header: 'Backup End', key: 'backupEndTime', width: 15 },
         { header: 'RH After', key: 'rhAfter', width: 15 },
         { header: 'Tanggal Dibuat', key: 'createdAt', width: 20 },
+        { header: 'Foto Penyebab', key: 'foto0', width: 30 },
         { header: 'Foto PLN Off', key: 'foto1', width: 30 },
         { header: 'Foto RH Before', key: 'foto2', width: 30 },
         { header: 'Foto PLN On', key: 'foto3', width: 30 },
@@ -134,10 +135,11 @@ function AdminBackupPowerView() {
         row.alignment = { vertical: 'middle', horizontal: 'left', wrapText: true };
 
         const photoFields = [
-          { key: 'photoPlnOff', colIndex: 16 },    // shifted to accommodate Tanggal Backup
-          { key: 'photoRhBefore', colIndex: 17 },  
-          { key: 'photoPlnOn', colIndex: 18 },     
-          { key: 'photoRhAfter', colIndex: 19 }    
+          { key: 'photoOutageCause', colIndex: 16 },
+          { key: 'photoPlnOff', colIndex: 17 },
+          { key: 'photoRhBefore', colIndex: 18 },  
+          { key: 'photoPlnOn', colIndex: 19 },     
+          { key: 'photoRhAfter', colIndex: 20 }    
         ];
 
         for (const p of photoFields) {
@@ -228,6 +230,7 @@ function AdminBackupPowerView() {
 
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Foto Dokumentasi</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+          {previewReport.photoOutageCause && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>Penyebab Pemadaman</p><img src={getFileUrl(previewReport.photoOutageCause)} alt="Outage Cause" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {previewReport.photoPlnOff && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN Off</p><img src={getFileUrl(previewReport.photoPlnOff)} alt="PLN Off" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {previewReport.photoRhBefore && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH Before</p><img src={getFileUrl(previewReport.photoRhBefore)} alt="RH Before" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {previewReport.photoPlnOn && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN On</p><img src={getFileUrl(previewReport.photoPlnOn)} alt="PLN On" style={{ width: '100%', borderRadius: '8px' }} /></div>}

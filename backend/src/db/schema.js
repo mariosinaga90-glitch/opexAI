@@ -118,6 +118,7 @@ export const backupPowerReports = sqliteTable('backup_power_reports', {
   rhAfter: real('rhAfter'),
   backupEndTime: text('backupEndTime'),
   outageCause: text('outageCause'),
+  photoOutageCause: text('photoOutageCause'),
   photoPlnOff: text('photoPlnOff'),
   photoRhBefore: text('photoRhBefore'),
   photoPlnOn: text('photoPlnOn'),
