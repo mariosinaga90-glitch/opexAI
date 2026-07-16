@@ -21,7 +21,7 @@
   border-radius: 24px;
   padding: 2.5rem;
   position: relative;
-  box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.15);
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(255, 255, 255, 0.1);
 }
 
 .close-btn {
@@ -106,8 +106,8 @@
   margin-top: 1.5rem;
   font-size: 1rem;
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-violet) 100%);
-  color: white;
+  background: var(--primary);
+  color: #0A0F1A;
   border: none;
   font-weight: 600;
   cursor: pointer;
@@ -117,7 +117,7 @@
 
 .login-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.5);
+  box-shadow: 0 6px 20px 0 rgba(255, 255, 255, 0.25);
   filter: brightness(1.1);
 }
 
