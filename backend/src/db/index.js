@@ -21,4 +21,10 @@ if (!fs.existsSync(dataDir)) {
 const sqlite = new Database(dbPath);
 sqlite.pragma('journal_mode = WAL');
 sqlite.pragma('foreign_keys = ON');
+
+// Auto-migrate new columns safely
+try { sqlite.exec("ALTER TABLE users ADD COLUMN isLocked INTEGER DEFAULT 0;"); } catch (e) {}
+try { sqlite.exec("ALTER TABLE backup_power_reports ADD COLUMN photoOutageCause TEXT;"); } catch (e) {}
+
 export const db = drizzle(sqlite, { schema });
+
