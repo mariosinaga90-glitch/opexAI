@@ -1,12 +1,12 @@
 :root {
-  --primary: #F97316;
-  --primary-hover: #EA580C;
-  --primary-glow: rgba(249, 115, 22, 0.25);
-  --secondary: #10B981;
-  --accent-blue: #3B82F6;
-  --accent-amber: #F59E0B;
-  --accent-rose: #F43F5E;
-  --accent-violet: #8B5CF6;
+  --primary: #FFFFFF;
+  --primary-hover: #F1F5F9;
+  --primary-glow: rgba(255, 255, 255, 0.15);
+  --secondary: #94A3B8;
+  --accent-blue: #60A5FA;
+  --accent-amber: #FBBF24;
+  --accent-rose: #FB7185;
+  --accent-violet: #C084FC;
   --bg-color: #0A0F1A;
   --bg-card: rgba(15, 23, 42, 0.3);
   --surface: rgba(15, 23, 42, 0.35);
@@ -124,8 +124,8 @@ p {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-amber) 100%);
-  color: white;
+  background: var(--primary);
+  color: #0A0F1A;
   box-shadow: 0 4px 12px 0 var(--primary-glow);
   position: relative;
   overflow: hidden;
@@ -139,7 +139,7 @@ p {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, var(--primary-hover) 0%, var(--primary) 100%);
+  background: var(--primary-hover);
   opacity: 0;
   transition: opacity var(--transition-base);
   z-index: -1;
@@ -230,7 +230,7 @@ p {
 
 /* Selection */
 ::selection {
-  background: rgba(99, 102, 241, 0.35);
+  background: rgba(255, 255, 255, 0.25);
   color: white;
 }
 
@@ -467,8 +467,8 @@ p {
 
 .tab-btn.active {
   background-color: var(--primary);
-  color: white;
-  box-shadow: var(--shadow-sm), 0 4px 12px rgba(99, 102, 241, 0.3);
+  color: #0A0F1A;
+  box-shadow: var(--shadow-sm), 0 4px 12px rgba(255, 255, 255, 0.15);
 }
 
 /* File Upload input styled */
