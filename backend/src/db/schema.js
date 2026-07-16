@@ -14,6 +14,7 @@ export const users = sqliteTable('users', {
   plateNumber: text('plateNumber'),
   phoneNumber: text('phoneNumber'),
   nik: text('nik'),
+  isLocked: integer('isLocked', { mode: 'boolean' }).default(false),
   createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
 

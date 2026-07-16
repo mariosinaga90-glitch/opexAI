@@ -104,4 +104,21 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Toggle lock status
+router.put('/:id/toggle-lock', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isLocked } = req.body;
+    
+    await db.update(users)
+      .set({ isLocked: isLocked ? 1 : 0 }) // SQLite boolean is 0 or 1
+      .where(eq(users.id, id));
+
+    res.json({ success: true, message: `User lock status updated to ${isLocked}` });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update user lock status' });
+  }
+});
+
 export default router;

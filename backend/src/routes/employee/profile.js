@@ -5,6 +5,27 @@ import { eq } from 'drizzle-orm';
 
 const router = Router();
 
+// GET /api/employee/profile - Get profile details
+router.get('/', async (req, res) => {
+  try {
+    const userId = req.headers['x-user-id'];
+    if (!userId) {
+      return res.status(401).json({ error: 'Unauthorized: Missing X-User-Id header' });
+    }
+
+    const user = await db.select().from(users).where(eq(users.id, userId)).get();
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const { password: _, ...userWithoutPassword } = user;
+    res.json(userWithoutPassword);
+  } catch (error) {
+    console.error('Failed to fetch employee profile:', error);
+    res.status(500).json({ error: 'Failed to fetch profile' });
+  }
+});
+
 // PUT /api/employee/profile - Update profile details
 router.put('/', async (req, res) => {
   try {

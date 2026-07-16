@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search } from 'lucide-react';
+import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search, Lock, Unlock } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -107,6 +107,24 @@ function AdminUserView() {
       setDeleteConfirmId(null);
     }
   };
+
+  const handleToggleLock = async (user) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/admin/users/${user.id}/toggle-lock`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isLocked: !user.isLocked })
+      });
+      if (res.ok) {
+        fetchUsers();
+      } else {
+        alert('Gagal mengubah status akses');
+      }
+    } catch (error) {
+      console.error('Error toggling lock:', error);
+    }
+  };
+
 
   if (isFormOpen) {
     return (
@@ -348,6 +366,12 @@ function AdminUserView() {
                         {user.role === 'admin' ? <Shield size={12} /> : <UserIcon size={12} />}
                         {user.role}
                       </span>
+                      {user.isLocked && (
+                        <span className="status-badge" style={{ marginTop: '0.5rem', background: 'rgba(239, 68, 68, 0.1)', color: '#EF4444', border: '1px solid rgba(239, 68, 68, 0.3)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                          <Lock size={12} /> Terkunci
+                        </span>
+                      )}
+
                     </td>
                     <td>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -362,9 +386,14 @@ function AdminUserView() {
                           <Edit2 size={16} />
                         </button>
                         {user.role !== 'admin' && (
-                          <button className="btn-icon" onClick={() => confirmDelete(user.id)} style={{ color: '#EF4444' }} title="Hapus User">
-                            <Trash2 size={16} />
-                          </button>
+                          <>
+                            <button className="btn-icon" onClick={() => handleToggleLock(user)} style={{ color: user.isLocked ? '#10B981' : '#EF4444' }} title={user.isLocked ? "Buka Kunci Akses" : "Kunci Akses Pengajuan"}>
+                              {user.isLocked ? <Unlock size={16} /> : <Lock size={16} />}
+                            </button>
+                            <button className="btn-icon" onClick={() => confirmDelete(user.id)} style={{ color: '#EF4444' }} title="Hapus User">
+                              <Trash2 size={16} />
+                            </button>
+                          </>
                         )}
                       </div>
                     </td>

@@ -10,6 +10,7 @@ function FundReportView() {
   const [selectedReport, setSelectedReport] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLocked, setIsLocked] = useState(false);
   const printRef = useRef(null);
 
   const [approvedRequests, setApprovedRequests] = useState([]);
@@ -51,6 +52,12 @@ function FundReportView() {
             .map(rep => rep.reqId || rep.requestId)
         );
         setApprovedRequests(reqsData.filter(r => r.status === 'Approved' && !reportedRequestIds.has(r.id)));
+      }
+
+      const resProfile = await fetch(`${API_BASE_URL}/employee/profile`, { headers });
+      if (resProfile.ok) {
+        const data = await resProfile.json();
+        setIsLocked(data.isLocked);
       }
     } catch (err) {
       console.error('Failed to fetch data:', err);
@@ -585,9 +592,15 @@ function FundReportView() {
           <h1 className="page-title" style={{ fontSize: '1.8rem' }}>Riwayat Laporan</h1>
           <p className="page-subtitle">Daftar laporan realisasi dana yang telah Anda submit.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
-          <Plus size={18} style={{ marginRight: '8px' }} /> Buat Laporan
-        </button>
+        {isLocked ? (
+          <div style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500' }}>
+            Akses Pembuatan Laporan Baru Dikunci oleh Admin
+          </div>
+        ) : (
+          <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
+            <Plus size={18} style={{ marginRight: '8px' }} /> Buat Laporan
+          </button>
+        )}
       </div>
 
       <div className="data-section glass-panel">

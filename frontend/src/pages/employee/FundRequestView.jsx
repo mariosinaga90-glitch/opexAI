@@ -10,6 +10,7 @@ function FundRequestView({ onBack }) {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isLocked, setIsLocked] = useState(false);
   const printRef = useRef(null);
 
   // Form State
@@ -76,6 +77,21 @@ function FundRequestView({ onBack }) {
     });
 
     fetchHistory();
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/employee/profile`, {
+          headers: { 'X-User-Id': user.id }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setIsLocked(data.isLocked);
+        }
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      }
+    };
+    if (user.id) fetchProfile();
   }, []);
 
   const addSite = () => setSites([...sites, { id: Date.now(), siteName: '' }]);
@@ -590,10 +606,16 @@ function FundRequestView({ onBack }) {
           <h1 className="page-title" style={{ fontSize: '1.8rem' }}>Riwayat Pengajuan</h1>
           <p className="page-subtitle">Daftar seluruh pengajuan dana Anda beserta status terkini.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
-          <Plus size={18} style={{ marginRight: '8px' }} />
-          Ajukan Dana Baru
-        </button>
+        {isLocked ? (
+          <div style={{ background: 'rgba(239,68,68,0.1)', color: '#EF4444', padding: '0.75rem 1rem', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '500' }}>
+            Akses Pengajuan Baru Dikunci oleh Admin
+          </div>
+        ) : (
+          <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
+            <Plus size={18} style={{ marginRight: '8px' }} />
+            Ajukan Dana Baru
+          </button>
+        )}
       </div>
 
       <div className="data-section glass-panel">

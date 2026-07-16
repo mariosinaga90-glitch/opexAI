@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { fundReports, reportItems, attachments, requestSites, fundRequests } from '../../db/schema.js';
+import { users, fundReports, reportItems, attachments, requestSites, fundRequests } from '../../db/schema.js';
 import { desc, eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
 
@@ -82,6 +82,12 @@ router.post('/', async (req, res) => {
 
     const userId = req.headers['x-user-id'];
     if (!userId) return res.status(401).json({ error: 'Unauthorized: Missing X-User-Id header' });
+    
+    // Check if user is locked
+    const user = await db.select().from(users).where(eq(users.id, userId)).get();
+    if (user && user.isLocked) {
+      return res.status(403).json({ error: 'Akun Anda sedang dikunci oleh Admin. Tidak dapat membuat laporan baru.' });
+    }
     
     // Generate simple ID (e.g., REP-12345)
     const newId = `REP-${Math.floor(Math.random() * 90000) + 10000}`;
