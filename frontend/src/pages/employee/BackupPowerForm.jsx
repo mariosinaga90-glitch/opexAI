@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Save, FileText, ArrowLeft, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { formatDateTime } from '../../utils/dateFormatter';
 
 const API_BASE_URL = '/api';
 
@@ -217,11 +218,11 @@ function BackupPowerForm() {
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>TO Cluster</p><p className="font-medium">{selectedReport.cluster}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Tanggal Backup</p><p className="font-medium">{selectedReport.backupDate ? new Date(selectedReport.backupDate).toLocaleDateString('id-ID') : '-'}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Penyebab Pemadaman</p><p className="font-medium">{selectedReport.outageCause || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{selectedReport.plnOffTime || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{selectedReport.backupStartTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN Off</p><p className="font-medium">{formatDateTime(selectedReport.plnOffTime)}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Mulai Backup</p><p className="font-medium">{formatDateTime(selectedReport.backupStartTime)}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Sebelum Backup</p><p className="font-medium">{selectedReport.rhBefore || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{selectedReport.plnOnTime || '-'}</p></div>
-          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Selesai Backup</p><p className="font-medium">{selectedReport.backupEndTime || '-'}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu PLN On</p><p className="font-medium">{formatDateTime(selectedReport.plnOnTime)}</p></div>
+          <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>Waktu Selesai Backup</p><p className="font-medium">{formatDateTime(selectedReport.backupEndTime)}</p></div>
           <div><p className="text-muted" style={{ fontSize: '0.85rem' }}>RH Sesudah Backup</p><p className="font-medium">{selectedReport.rhAfter || '-'}</p></div>
         </div>
 
@@ -378,12 +379,12 @@ function BackupPowerForm() {
           
           <div className="form-grid">
             <div className="form-group">
-              <label className="form-label">PLN Off (Jam)</label>
-              <input type="time" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} />
+              <label className="form-label">Tanggal & Waktu PLN Off</label>
+              <input type="datetime-local" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} />
             </div>
             <div className="form-group">
-              <label className="form-label">Waktu Mulai Backup (Jam)</label>
-              <input type="time" className="form-control" name="backupStartTime" value={formData.backupStartTime} onChange={handleInputChange} />
+              <label className="form-label">Tanggal & Waktu Mulai Backup</label>
+              <input type="datetime-local" className="form-control" name="backupStartTime" value={formData.backupStartTime} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="form-label">RH Sebelum Backup (Angka)</label>
@@ -393,12 +394,12 @@ function BackupPowerForm() {
 
           <div className="form-grid">
             <div className="form-group">
-              <label className="form-label">PLN On (Jam)</label>
-              <input type="time" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} />
+              <label className="form-label">Tanggal & Waktu PLN On</label>
+              <input type="datetime-local" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} />
             </div>
             <div className="form-group">
-              <label className="form-label">Waktu Selesai Backup (Jam)</label>
-              <input type="time" className="form-control" name="backupEndTime" value={formData.backupEndTime} onChange={handleInputChange} />
+              <label className="form-label">Tanggal & Waktu Selesai Backup</label>
+              <input type="datetime-local" className="form-control" name="backupEndTime" value={formData.backupEndTime} onChange={handleInputChange} />
             </div>
             <div className="form-group">
               <label className="form-label">RH Sesudah Backup (Angka)</label>

@@ -15,13 +15,15 @@
 .badge {
   display: inline-block;
   padding: 0.5rem 1rem;
-  background: rgba(99, 102, 241, 0.1);
+  background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.2) 50%, rgba(99, 102, 241, 0.1) 100%);
+  background-size: 200% auto;
   color: #818CF8;
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.3);
+  animation: shimmer 3s infinite linear;
 }
 
 .hero-subtitle {
@@ -72,6 +74,13 @@
 .hero-visual {
   position: relative;
   perspective: 1000px;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+  100% { transform: translateY(0px); }
 }
 
 .mockup {

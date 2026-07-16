@@ -81,9 +81,9 @@
 }
 
 .feature-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.1);
-  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-8px) !important;
+  box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.2);
+  border-color: rgba(99, 102, 241, 0.4);
 }
 
 .feature-card:hover::before,

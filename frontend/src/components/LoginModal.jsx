@@ -4,7 +4,7 @@ import { X, User, Lock, AlertCircle } from 'lucide-react';
 import { API_BASE_URL } from '../config';
 import './LoginModal.css';
 
-const LoginModal = ({ isOpen, onClose }) => {
+const LoginModal = ({ isOpen, onClose, hideClose = false }) => {
   const navigate = useNavigate();
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
@@ -47,9 +47,11 @@ const LoginModal = ({ isOpen, onClose }) => {
   return (
     <div className="login-overlay">
       <div className="login-modal animate-fade-in-up">
-        <button className="close-btn" onClick={onClose}>
-          <X size={24} />
-        </button>
+        {!hideClose && (
+          <button className="close-btn" onClick={onClose}>
+            <X size={24} />
+          </button>
+        )}
         
         <div className="login-header">
           <h2>Selamat Datang</h2>

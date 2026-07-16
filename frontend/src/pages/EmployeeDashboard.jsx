@@ -148,7 +148,7 @@ function EmployeeDashboardOverview() {
           <h2 className="section-title">Grafik Perbandingan Nominal</h2>
           <select 
             className="form-control" 
-            style={{ width: 'auto', display: 'inline-block', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+            style={{ width: 'auto', display: 'inline-block' }}
             value={dateFilter}
             onChange={(e) => setDateFilter(e.target.value)}
           >
@@ -203,12 +203,11 @@ function EmployeeDashboardOverview() {
       <div className="data-section glass-panel" style={{ marginBottom: '2rem' }}>
         <div className="section-header" style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
           <h2 className="section-title" style={{ width: '100%', marginBottom: '0.5rem' }}>Detail Perbandingan Pengajuan vs Laporan</h2>
-          <div className="search-input" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '300px' }}>
+          <div className="search-wrapper">
             <Search size={18} className="text-muted" />
             <input 
               type="text" 
               placeholder="Cari ID atau judul..." 
-              style={{ background: 'transparent', border: 'none', color: 'inherit', outline: 'none', width: '100%' }}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -217,7 +216,7 @@ function EmployeeDashboardOverview() {
             <Filter size={18} className="text-muted" />
             <select 
               className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto' }}
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
@@ -229,7 +228,7 @@ function EmployeeDashboardOverview() {
 
             <select 
               className="form-control" 
-              style={{ width: 'auto', backgroundColor: 'rgba(30, 41, 59, 0.7)' }}
+              style={{ width: 'auto' }}
               value={filterCategory}
               onChange={(e) => setFilterCategory(e.target.value)}
             >

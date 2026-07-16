@@ -132,9 +132,9 @@ function DashboardLayout({ role }) {
             <button className="mobile-toggle" onClick={() => setIsSidebarOpen(true)}>
               <Menu size={24} />
             </button>
-            <div className="topbar-search" style={{ position: 'relative' }}>
-              <Search size={18} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
-              <input type="text" placeholder="Cari..." className="search-input" style={{ paddingLeft: '2.5rem' }} />
+            <div className="search-wrapper">
+              <Search size={18} className="text-muted" />
+              <input type="text" placeholder="Cari..." />
             </div>
           </div>
           <div className="topbar-profile">

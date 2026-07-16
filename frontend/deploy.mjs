@@ -5,9 +5,9 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ssh = new NodeSSH();
-const host = '202.10.34.185';
+const host = 'opextracker.com';
 const username = 'root'; // Updated username
-const password = '7L!1NPkYU9y6%H';
+const password = 'Simanjorang83';
 
 async function runDeploy() {
   try {
@@ -51,7 +51,7 @@ async function runDeploy() {
     const nginxConfig = `
 server {
     listen 80;
-    server_name ${host};
+    server_name opextracker.com www.opextracker.com;
 
     root /var/www/opexai;
     index index.html;
@@ -76,7 +76,7 @@ server {
       console.error('Nginx restart stderr:', restartResult.stderr);
     }
 
-    console.log('Deployment successful! You can now access your app at http://' + host);
+    console.log('Deployment successful! You can now access your app at http://opextracker.com');
 
     ssh.dispose();
   } catch (error) {

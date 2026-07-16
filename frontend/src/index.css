@@ -39,10 +39,17 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.12), transparent 40%),
-    radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.08), transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.04), transparent 50%);
+    radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.08), transparent 50%);
+  background-size: 200% 200%;
+  animation: bgGradientMove 15s ease infinite alternate;
   background-attachment: fixed;
+}
+
+@keyframes bgGradientMove {
+  0% { background-position: 0% 0%; }
+  100% { background-position: 100% 100%; }
 }
 
 a {
@@ -87,12 +94,12 @@ p {
   border: 1px solid var(--border-color);
   border-radius: 16px;
   box-shadow: var(--shadow-md);
-  transition: border-color var(--transition-base), box-shadow var(--transition-base), transform var(--transition-fast);
+  transition: all var(--transition-base);
 }
 
 .glass-panel:hover {
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: var(--shadow-lg);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 10px 40px -10px rgba(99, 102, 241, 0.2);
 }
 
 .container {
