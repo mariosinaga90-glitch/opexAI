@@ -5,16 +5,7 @@ function LandingPage() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
 
   return (
-    <div className="app-container" style={{ 
-      minHeight: '100vh', 
-      position: 'relative',
-      backgroundImage: `url('/bg-landing.jpg')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat'
-    }}>
-      {/* Dark overlay for better readability */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(10, 15, 26, 0.6)', zIndex: 1 }}></div>
+    <div className="app-container" style={{ minHeight: '100vh', position: 'relative' }}>
 
       <div className="logo-container" style={{ position: 'absolute', top: '2rem', left: '2rem', zIndex: 10, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-main)' }}>
         <span className="logo-icon" style={{ color: 'var(--primary)', fontSize: '1.8rem' }}>▲</span>

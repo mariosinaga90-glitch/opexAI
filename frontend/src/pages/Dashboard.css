@@ -2,7 +2,7 @@
 .dashboard-container {
   display: flex;
   height: 100vh;
-  background-color: var(--bg-color);
+  background-color: transparent;
   color: var(--text-main);
   overflow: hidden;
   position: relative;
