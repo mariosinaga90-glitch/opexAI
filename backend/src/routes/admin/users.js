@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../../db/index.js';
-import { users, fundRequests, requestItems, requestSites, fundReports, reportItems, attachments } from '../../db/schema.js';
+import { users, fundRequests, requestItems, requestSites, fundReports, reportItems, attachments, backupPowerReports } from '../../db/schema.js';
 import { eq, inArray } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -93,6 +93,9 @@ router.delete('/:id', async (req, res) => {
       await db.delete(attachments).where(inArray(attachments.requestId, reqIds));
       await db.delete(fundRequests).where(inArray(fundRequests.id, reqIds));
     }
+
+    // Cascade delete backup power reports
+    await db.delete(backupPowerReports).where(eq(backupPowerReports.userId, id));
 
     // Delete user
     await db.delete(users).where(eq(users.id, id));
