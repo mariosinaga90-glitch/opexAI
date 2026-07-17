@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User } from 'lucide-react';
+import TutorialGuide from './TutorialGuide';
 import '../pages/Dashboard.css';
 
 function DashboardLayout({ role }) {
@@ -153,6 +154,9 @@ function DashboardLayout({ role }) {
           <Outlet />
         </main>
       </div>
+
+      {/* Floating Tutorial Guide */}
+      <TutorialGuide />
     </div>
   );
 }
