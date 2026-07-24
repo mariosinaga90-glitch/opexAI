@@ -46,6 +46,25 @@ function BackupPowerForm() {
     fetchReports();
   }, []);
 
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('backupPowerDraft');
+      if (saved) {
+        setFormData(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error('Error loading draft', e);
+    }
+  }, []);
+
+  // Save draft on change
+  useEffect(() => {
+    if (JSON.stringify(formData) !== JSON.stringify(initialForm)) {
+      localStorage.setItem('backupPowerDraft', JSON.stringify(formData));
+    }
+  }, [formData]);
+
   const fetchReports = async () => {
     setLoading(true);
     try {
@@ -112,6 +131,7 @@ function BackupPowerForm() {
       if (res.ok) {
         alert('Laporan Backup Power berhasil disubmit!');
         setFormData(initialForm);
+        localStorage.removeItem('backupPowerDraft');
         setActiveTab('list');
         fetchReports();
       } else {

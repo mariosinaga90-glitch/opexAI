@@ -77,8 +77,14 @@ async function addTimestampWatermark(filePath) {
   // Estimate text width based on character count and font size
   const textWidth = Math.round(timestamp.length * fontSize * 0.6);
   const textHeight = Math.round(fontSize * 1.4);
-  const boxWidth = textWidth + padding * 2;
-  const boxHeight = textHeight + padding * 2;
+  let boxWidth = textWidth + padding * 2;
+  let boxHeight = textHeight + padding * 2;
+
+  // Prevent sharp composite error if the watermark is somehow larger than the tiny image
+  if (boxWidth > width || boxHeight > height) {
+    console.log('Image too small for watermark, skipping.');
+    return;
+  }
 
   // SVG overlay with semi-transparent dark background and white text
   const svgOverlay = `

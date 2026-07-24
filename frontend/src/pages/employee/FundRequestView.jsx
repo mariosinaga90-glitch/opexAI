@@ -94,6 +94,29 @@ function FundRequestView({ onBack }) {
     if (user.id) fetchProfile();
   }, []);
 
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fundRequestDraft');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.items) setItems(parsed.items);
+        if (parsed.sites) setSites(parsed.sites);
+        if (parsed.uploadUrl) setUploadUrl(parsed.uploadUrl);
+        if (parsed.requestDate) setRequestDate(parsed.requestDate);
+      }
+    } catch (e) {
+      console.error('Error loading draft', e);
+    }
+  }, []);
+
+  // Save draft on change
+  useEffect(() => {
+    if (items.length > 1 || sites.length > 1 || items[0].description !== '' || uploadUrl !== '') {
+      localStorage.setItem('fundRequestDraft', JSON.stringify({ items, sites, uploadUrl, requestDate }));
+    }
+  }, [items, sites, uploadUrl, requestDate]);
+
   const addSite = () => setSites([...sites, { id: Date.now(), siteName: '' }]);
   const removeSite = (id) => { if (sites.length > 1) setSites(sites.filter(site => site.id !== id)); };
 
@@ -176,6 +199,7 @@ function FundRequestView({ onBack }) {
         setItems([{ id: 1, description: '', team: '', toCluster: '', category: '', categoryLabel: '', vehicleType: '', plateNumber: '', detail: '', unitPrice: 0, quantity: 1, kmBefore: 0, kmAfter: 0 }]);
         setSites([{ id: 1, siteName: '' }]);
         setUploadUrl('');
+        localStorage.removeItem('fundRequestDraft');
         fetchHistory();
       } else {
         alert('Gagal mengirim pengajuan');

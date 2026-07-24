@@ -70,6 +70,31 @@ function FundReportView() {
     fetchData();
   }, []);
 
+  // Load draft on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('fundReportDraft');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.items) setItems(parsed.items);
+        if (parsed.uploadUrl) setUploadUrl(parsed.uploadUrl);
+        if (parsed.reqId) setReqId(parsed.reqId);
+        if (parsed.summary) setSummary(parsed.summary);
+        if (parsed.requestedAmount) setRequestedAmount(parsed.requestedAmount);
+        if (parsed.reportDate) setReportDate(parsed.reportDate);
+      }
+    } catch (e) {
+      console.error('Error loading draft', e);
+    }
+  }, []);
+
+  // Save draft on change
+  useEffect(() => {
+    if (items.length > 1 || uploadUrl !== '' || reqId !== '' || summary !== '') {
+      localStorage.setItem('fundReportDraft', JSON.stringify({ items, uploadUrl, reqId, summary, requestedAmount, reportDate }));
+    }
+  }, [items, uploadUrl, reqId, summary, requestedAmount, reportDate]);
+
   const handleReviewClick = async (rep) => {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -214,6 +239,7 @@ function FundReportView() {
         setUploadUrl('');
         setReportDate(new Date().toISOString().slice(0,10));
         setRequestSites([]);
+        localStorage.removeItem('fundReportDraft');
         fetchData();
       } else {
         alert('Gagal mengirim laporan');
