@@ -22,10 +22,10 @@ FROM node:20-alpine AS backend-builder
 
 WORKDIR /app/backend
 
-COPY backend/package.json ./
+COPY backend/package.json backend/package-lock.json* ./
 
-# Install python and build tools for better-sqlite3 compilation
-RUN apk add --no-cache python3 make g++
+# Install python and build tools for better-sqlite3 and sharp compilation
+RUN apk add --no-cache python3 make g++ vips-dev
 RUN npm install --omit=dev
 
 COPY backend/src ./src
@@ -35,6 +35,9 @@ COPY backend/drizzle.config.js ./
 # Stage 3: Production Final Image (Unified Monolith)
 # ===========================
 FROM node:20-alpine AS production
+
+# Install runtime dependencies for sharp (image processing + SVG text rendering)
+RUN apk add --no-cache vips fontconfig font-noto
 
 WORKDIR /app
 
