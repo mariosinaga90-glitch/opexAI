@@ -3,6 +3,7 @@ import { db } from '../../db/index.js';
 import { users, fundRequests, requestItems, requestSites, fundReports, reportItems, attachments, backupPowerReports } from '../../db/schema.js';
 import { eq, inArray } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
+import bcrypt from 'bcrypt';
 
 const router = Router();
 
@@ -22,12 +23,16 @@ router.post('/', async (req, res) => {
   try {
     const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
     
-    // Simplistic creation without real hashing for now
+    let hashedPassword = password;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+
     await db.insert(users).values({
-      id: `USR-${Date.now()}`, // simple ID generation
+      id: `USR-${Date.now()}`,
       name,
       email,
-      password, // In real app, hash this!
+      password: hashedPassword,
       role,
       cluster,
       microCluster,
@@ -49,10 +54,16 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
+    const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
     
+    const updateData = { name, email, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik };
+    
+    if (password && password.trim() !== '') {
+      updateData.password = await bcrypt.hash(password, 10);
+    }
+
     await db.update(users)
-      .set({ name, email, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik })
+      .set(updateData)
       .where(eq(users.id, id));
 
     res.json({ success: true, message: 'User updated' });

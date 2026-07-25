@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import apiRoutes from './routes/index.js';
 
 import path from 'path';
@@ -19,7 +21,11 @@ app.use(cors({
   origin: corsOrigin === '*' ? true : corsOrigin.split(',').map(o => o.trim()),
   credentials: true,
 }));
+app.use(helmet({
+  crossOriginResourcePolicy: false, // allow serving local images to other origins if needed
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 // Serve static files for uploads
 app.use('/uploads', express.static(path.resolve(__dirname, '../uploads')));

@@ -9,21 +9,23 @@ import empRequestRoutes from './employee/requests.js';
 import empReportRoutes from './employee/reports.js';
 import empProfileRoutes from './employee/profile.js';
 import backupPowerRoutes from './backupPower.js';
+import { verifyToken, verifyAdmin } from '../middleware/authMiddleware.js';
 
 const router = Router();
 
 router.use('/auth', authRoutes);
 
-router.use('/admin/dashboard', dashboardRoutes);
-router.use('/admin/requests', requestRoutes);
-router.use('/admin/reports', reportRoutes);
-router.use('/admin/users', userRoutes);
-router.use('/upload', uploadRoutes);
+// Admin Routes (Protected by verifyAdmin)
+router.use('/admin/dashboard', verifyAdmin, dashboardRoutes);
+router.use('/admin/requests', verifyAdmin, requestRoutes);
+router.use('/admin/reports', verifyAdmin, reportRoutes);
+router.use('/admin/users', verifyAdmin, userRoutes);
 
-router.use('/employee/requests', empRequestRoutes);
-router.use('/employee/reports', empReportRoutes);
-router.use('/employee/profile', empProfileRoutes);
-
-router.use('/backup-power', backupPowerRoutes);
+// Common / Employee Routes (Protected by verifyToken)
+router.use('/upload', verifyToken, uploadRoutes);
+router.use('/employee/requests', verifyToken, empRequestRoutes);
+router.use('/employee/reports', verifyToken, empReportRoutes);
+router.use('/employee/profile', verifyToken, empProfileRoutes);
+router.use('/backup-power', verifyToken, backupPowerRoutes);
 
 export default router;
