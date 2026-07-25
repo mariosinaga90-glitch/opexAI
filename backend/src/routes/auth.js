@@ -26,10 +26,28 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ success: false, message: 'Invalid ID or password' });
     }
 
-    // Verify password using bcrypt
-    const isMatch = await bcrypt.compare(password, user.password);
+    // Verify password (handle both plain-text migration and bcrypt)
+    let isMatch = false;
+    let needsUpgrade = false;
+
+    if (user.password && user.password.startsWith('$2b$')) {
+      isMatch = await bcrypt.compare(password, user.password);
+    } else {
+      // Fallback for unmigrated plain-text passwords
+      if (password === user.password) {
+        isMatch = true;
+        needsUpgrade = true; // Flag to hash it now
+      }
+    }
+
     if (!isMatch) {
       return res.status(401).json({ success: false, message: 'Invalid ID or password' });
+    }
+
+    // Seamlessly upgrade password to bcrypt if it was plain-text
+    if (needsUpgrade) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await db.update(users).set({ password: hashedPassword }).where(eq(users.id, user.id));
     }
 
     // Generate JWT
