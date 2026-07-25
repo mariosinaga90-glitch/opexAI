@@ -3,7 +3,7 @@ import { db } from '../../db/index.js';
 import { users, fundRequests, requestItems, requestSites, fundReports, reportItems, attachments, backupPowerReports } from '../../db/schema.js';
 import { eq, inArray } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 const router = Router();
 

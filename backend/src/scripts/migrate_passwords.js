@@ -1,6 +1,6 @@
 import { db } from '../db/index.js';
 import { users } from '../db/schema.js';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 
 async function migratePasswords() {

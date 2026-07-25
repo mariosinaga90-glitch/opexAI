@@ -22,7 +22,9 @@ app.use(cors({
   credentials: true,
 }));
 app.use(helmet({
-  crossOriginResourcePolicy: false, // allow serving local images to other origins if needed
+  contentSecurityPolicy: false, // Don't block React inline scripts/styles
+  crossOriginEmbedderPolicy: false,
+  crossOriginResourcePolicy: false,
 }));
 app.use(express.json());
 app.use(cookieParser());
