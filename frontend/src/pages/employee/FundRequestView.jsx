@@ -473,7 +473,7 @@ function FundRequestView({ onBack }) {
                 <label className="form-label">Nama / ID Site</label>
                 <input type="text" className="form-control" placeholder="Contoh: BKS001 - Site Tambun" required value={site.siteName} onChange={e => {
                   const newSites = [...sites];
-                  newSites[index].siteName = e.target.value;
+                  newSites[index].siteName = e.target.value.toUpperCase();
                   setSites(newSites);
                 }} />
               </div>

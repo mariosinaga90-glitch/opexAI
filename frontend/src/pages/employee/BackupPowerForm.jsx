@@ -82,7 +82,10 @@ function BackupPowerForm() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    let { name, value } = e.target;
+    if (name === 'siteId' || name === 'siteName') {
+      value = value.toUpperCase();
+    }
     setFormData({ ...formData, [name]: value });
   };
 
