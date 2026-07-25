@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search, Lock, Unlock } from 'lucide-react';
 import { API_BASE_URL } from '../../config';
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 function AdminUserView() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -269,10 +269,11 @@ function AdminUserView() {
                   <div style={{ width: '100%', height: 220 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie data={clusterData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                        <Pie data={clusterData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="value" stroke="none" label>
                           {clusterData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}
                         </Pie>
                         <Tooltip contentStyle={{ backgroundColor: 'rgba(9, 13, 22, 0.95)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+                        <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.85rem' }}/>
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
@@ -282,10 +283,11 @@ function AdminUserView() {
                   <div style={{ width: '100%', height: 220 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
-                        <Pie data={teamData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value" stroke="none">
+                        <Pie data={teamData} cx="50%" cy="50%" innerRadius={50} outerRadius={70} paddingAngle={5} dataKey="value" stroke="none" label>
                           {teamData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[(index + 2) % COLORS.length]} />)}
                         </Pie>
                         <Tooltip contentStyle={{ backgroundColor: 'rgba(9, 13, 22, 0.95)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '8px', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+                        <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.85rem' }}/>
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
