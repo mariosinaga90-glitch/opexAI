@@ -385,7 +385,26 @@ function AdminRequestView() {
                         const blob = await imgRes.blob();
                         const base64Data = await new Promise((resolve, reject) => {
                            const reader = new FileReader();
-                           reader.onloadend = () => resolve(reader.result);
+                           reader.onloadend = () => {
+                             const img = new Image();
+                             img.src = reader.result;
+                             img.onload = () => {
+                               const canvas = document.createElement('canvas');
+                               const maxWidth = 800;
+                               let width = img.width;
+                               let height = img.height;
+                               if (width > maxWidth) {
+                                 height = Math.round((height * maxWidth) / width);
+                                 width = maxWidth;
+                               }
+                               canvas.width = width;
+                               canvas.height = height;
+                               const ctx = canvas.getContext('2d');
+                               ctx.drawImage(img, 0, 0, width, height);
+                               resolve(canvas.toDataURL('image/jpeg', 0.6));
+                             };
+                             img.onerror = () => resolve(reader.result);
+                           };
                            reader.onerror = reject;
                            reader.readAsDataURL(blob);
                         });
