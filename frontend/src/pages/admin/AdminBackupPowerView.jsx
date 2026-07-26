@@ -11,6 +11,7 @@ function AdminBackupPowerView() {
   const [search, setSearch] = useState('');
   const [filterNop, setFilterNop] = useState('all');
   const [filterCluster, setFilterCluster] = useState('all');
+  const [filterSiteId, setFilterSiteId] = useState('');
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   
@@ -221,8 +222,20 @@ function AdminBackupPowerView() {
       }
     }
 
-    return matchesSearch && matchesNop && matchesCluster && matchesDate;
+    const matchesSiteId = filterSiteId === '' || (r.siteId || '').toLowerCase().includes(filterSiteId.toLowerCase());
+
+    return matchesSearch && matchesNop && matchesCluster && matchesDate && matchesSiteId;
   });
+
+  // Calculate Summary RH
+  const totalRunningHours = filteredReports.reduce((sum, r) => {
+    const before = parseFloat(r.rhBefore) || 0;
+    const after = parseFloat(r.rhAfter) || 0;
+    const diff = after - before;
+    return sum + (diff > 0 ? diff : 0);
+  }, 0);
+  
+  const deltaRhTime = totalRunningHours / 24;
 
   if (previewReport) {
     return (
@@ -306,6 +319,10 @@ function AdminBackupPowerView() {
                 <option value="TO Purwakarta">TO Purwakarta</option>
               </select>
             </div>
+            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+              <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Site ID</label>
+              <input type="text" className="form-control" placeholder="Contoh: BKS001" value={filterSiteId} onChange={(e) => setFilterSiteId(e.target.value)} />
+            </div>
             <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
               <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
@@ -314,11 +331,29 @@ function AdminBackupPowerView() {
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
               <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
             </div>
-            { (filterNop !== 'all' || filterCluster !== 'all' || filterDateFrom || filterDateTo || search) && (
+            { (filterNop !== 'all' || filterCluster !== 'all' || filterSiteId || filterDateFrom || filterDateTo || search) && (
               <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
-                <button className="btn" onClick={() => { setFilterNop('all'); setFilterCluster('all'); setFilterDateFrom(''); setFilterDateTo(''); setSearch(''); }}>Reset</button>
+                <button className="btn" onClick={() => { setFilterNop('all'); setFilterCluster('all'); setFilterSiteId(''); setFilterDateFrom(''); setFilterDateTo(''); setSearch(''); }}>Reset</button>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Summary RH Panel */}
+        <div style={{ marginBottom: '1.5rem', padding: '1.5rem', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px', display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
+          <div>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Total Event Backup</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: 'var(--text-color)' }}>{filteredReports.length}</p>
+          </div>
+          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
+          <div>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Total Running Hours</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#eab308' }}>{totalRunningHours.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+          </div>
+          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
+          <div>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Delta RH Time</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#3b82f6' }}>{deltaRhTime.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Hari</span></p>
           </div>
         </div>
 
