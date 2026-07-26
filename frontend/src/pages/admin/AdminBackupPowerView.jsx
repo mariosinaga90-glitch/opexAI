@@ -353,7 +353,7 @@ function AdminBackupPowerView() {
           <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
           <div>
             <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Delta RH Time</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#3b82f6' }}>{deltaRhTime.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Hari</span></p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#3b82f6' }}>{deltaRhTime.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
           </div>
         </div>
 
