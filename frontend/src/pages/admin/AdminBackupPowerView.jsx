@@ -234,8 +234,21 @@ function AdminBackupPowerView() {
     const diff = after - before;
     return sum + (diff > 0 ? diff : 0);
   }, 0);
-  
   const deltaRhTime = totalRunningHours / 24;
+
+  // Calculate Delta Time (End Time - Start Time) in hours
+  const totalDeltaTimeHours = filteredReports.reduce((sum, r) => {
+    if (r.backupStartTime && r.backupEndTime) {
+      const start = new Date(r.backupStartTime).getTime();
+      const end = new Date(r.backupEndTime).getTime();
+      if (!isNaN(start) && !isNaN(end) && end > start) {
+        return sum + ((end - start) / (1000 * 60 * 60));
+      }
+    }
+    return sum;
+  }, 0);
+
+  const selisih = Math.abs(deltaRhTime - totalDeltaTimeHours);
 
   if (previewReport) {
     return (
@@ -354,6 +367,16 @@ function AdminBackupPowerView() {
           <div>
             <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Delta RH Time</p>
             <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#3b82f6' }}>{deltaRhTime.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+          </div>
+          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
+          <div>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Delta Time</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#10b981' }}>{totalDeltaTimeHours.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+          </div>
+          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
+          <div>
+            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Selisih</p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#ef4444' }}>{selisih.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
           </div>
         </div>
 
