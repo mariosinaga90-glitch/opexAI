@@ -361,7 +361,7 @@ function AdminBackupPowerView() {
           <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
           <div>
             <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Total Running Hours</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#eab308' }}>{totalRunningHours.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#eab308' }}>{totalRunningHours.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Aktual</span></p>
           </div>
           <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
           <div>
