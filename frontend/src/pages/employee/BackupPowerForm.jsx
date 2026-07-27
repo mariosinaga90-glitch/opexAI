@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Save, FileText, ArrowLeft, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { formatDateTime } from '../../utils/dateFormatter';
+import { addWatermark } from '../../utils/watermark';
 
 const API_BASE_URL = '/api';
 
@@ -90,10 +91,18 @@ function BackupPowerForm() {
   };
 
   const handleFileUpload = async (e, fieldName) => {
-    const file = e.target.files[0];
+    let file = e.target.files[0];
     if (!file) return;
 
     setUploadingField(fieldName);
+    
+    // Process image to add Geotag/Watermark
+    try {
+      file = await addWatermark(file);
+    } catch (err) {
+      console.warn('Gagal memproses watermark, menggunakan file asli:', err);
+    }
+
     const fd = new FormData();
     fd.append('file', file);
     try {
