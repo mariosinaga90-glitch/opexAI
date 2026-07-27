@@ -234,7 +234,7 @@ function AdminBackupPowerView() {
     const diff = after - before;
     return sum + (diff > 0 ? diff : 0);
   }, 0);
-  const deltaRhTime = totalRunningHours / 24;
+  const deltaRhTime = totalRunningHours;
 
   // Calculate Delta Time (End Time - Start Time) in hours
   const totalDeltaTimeHours = filteredReports.reduce((sum, r) => {
