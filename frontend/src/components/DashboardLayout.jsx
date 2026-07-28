@@ -78,11 +78,20 @@ function DashboardLayout({ role }) {
   };
 
   const handleInstallClick = async () => {
-    if (!installPrompt) return;
-    installPrompt.prompt();
-    const { outcome } = await installPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setInstallPrompt(null);
+    if (installPrompt) {
+      installPrompt.prompt();
+      const { outcome } = await installPrompt.userChoice;
+      if (outcome === 'accepted') {
+        setInstallPrompt(null);
+      }
+    } else {
+      // Fallback manual instructions
+      alert(
+        "Aplikasi belum siap diinstal secara otomatis, atau Anda menggunakan iPhone (iOS).\n\n" +
+        "CARA INSTALL MANUAL:\n" +
+        "1. Android (Chrome): Klik ikon titik tiga di pojok kanan atas, lalu pilih 'Tambahkan ke Layar Utama' (Add to Home screen).\n" +
+        "2. iPhone (Safari): Klik ikon 'Share' (kotak dengan panah ke atas) di bawah, lalu geser dan pilih 'Tambahkan ke Layar Utama' (Add to Home Screen)."
+      );
     }
   };
 
@@ -140,16 +149,14 @@ function DashboardLayout({ role }) {
         </nav>
         
         <div className="sidebar-footer">
-          {installPrompt && (
-            <button 
-              onClick={handleInstallClick} 
-              className="nav-item text-primary" 
-              style={{ border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: '0.5rem', color: 'var(--primary-color)' }}
-            >
-              <Download size={20} />
-              <span style={{ fontWeight: 600 }}>Install Aplikasi</span>
-            </button>
-          )}
+          <button 
+            onClick={handleInstallClick} 
+            className="nav-item text-primary" 
+            style={{ border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: '0.5rem', color: 'var(--primary-color)' }}
+          >
+            <Download size={20} />
+            <span style={{ fontWeight: 600 }}>Install Aplikasi</span>
+          </button>
           <a href="/" onClick={handleLogout} className="nav-item text-danger">
             <LogOut size={20} />
             <span>Keluar</span>
