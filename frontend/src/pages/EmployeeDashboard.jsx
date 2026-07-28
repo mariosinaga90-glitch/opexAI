@@ -24,8 +24,8 @@ function EmployeeDashboardOverview() {
   const needsReportCount = rawComparisonData.filter(d => d.requestStatus === 'Approved' && (d.reportStatus === 'Belum Ada' || d.reportStatus === 'Revision')).length;
 
   const stats = [
-    { label: 'Pengajuan Aktif', value: activeRequestsCount.toString(), icon: Clock, color: 'warning', hash: '#pengajuan' },
-    { label: 'Disetujui', value: approvedRequestsCount.toString(), icon: CheckCircle, color: 'success', hash: '#pengajuan' },
+    { label: 'Pengajuan Aktif', value: activeRequestsCount.toString(), icon: Clock, color: 'warning', hash: '' },
+    { label: 'Disetujui', value: approvedRequestsCount.toString(), icon: CheckCircle, color: 'success', hash: '' },
     { label: 'Perlu Laporan', value: needsReportCount.toString(), icon: FileWarning, color: 'danger', hash: '#laporan' },
   ];
 
@@ -116,10 +116,6 @@ function EmployeeDashboardOverview() {
           <h1 className="page-title">Dashboard Karyawan</h1>
           <p className="page-subtitle">Ringkasan pengajuan dan laporan Anda</p>
         </div>
-        <button className="btn btn-primary" onClick={() => navigate('/employee#pengajuan')}>
-          <Plus size={18} style={{ marginRight: '8px' }} />
-          Ajukan Dana
-        </button>
       </div>
 
       {/* Stats Grid */}
@@ -320,7 +316,6 @@ function EmployeeDashboardOverview() {
       <div className="data-section glass-panel">
         <div className="section-header">
           <h2 className="section-title">Pengajuan Terakhir</h2>
-          <button className="btn btn-secondary btn-sm" onClick={() => navigate('/employee#pengajuan')}>Lihat Semua</button>
         </div>
         <div className="table-responsive">
           <table className="data-table">
@@ -331,7 +326,6 @@ function EmployeeDashboardOverview() {
                 <th>Tanggal Pengajuan</th>
                 <th>Jumlah</th>
                 <th>Status</th>
-                <th>Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -343,11 +337,10 @@ function EmployeeDashboardOverview() {
                     <td><div className="skeleton skeleton-text" style={{ width: '120px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '80px' }}></div></td>
                     <td><div className="skeleton skeleton-text" style={{ width: '70px' }}></div></td>
-                    <td><div className="skeleton skeleton-text" style={{ width: '60px' }}></div></td>
                   </tr>
                 ))
               ) : recentRequests.length === 0 ? (
-                <tr><td colSpan="6" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada pengajuan.</td></tr>
+                <tr><td colSpan="5" style={{ textAlign: 'center', padding: '2rem' }}>Belum ada pengajuan.</td></tr>
               ) : (
                 recentRequests.map((req, index) => (
                   <tr key={index}>
@@ -359,9 +352,6 @@ function EmployeeDashboardOverview() {
                       <span className={`status-badge status-${req.status?.toLowerCase()}`}>
                         {req.status}
                       </span>
-                    </td>
-                    <td>
-                      <button className="btn-icon" onClick={() => navigate('/employee#pengajuan')}>Detail</button>
                     </td>
                   </tr>
                 ))
@@ -384,8 +374,6 @@ function EmployeeDashboard() {
 
   const renderContent = () => {
     switch (currentHash) {
-      case '#pengajuan':
-        return <FundRequestView />;
       case '#laporan':
         return <FundReportView />;
       case '#profile':
