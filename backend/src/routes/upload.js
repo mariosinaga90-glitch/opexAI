@@ -128,7 +128,9 @@ router.post('/', upload.single('file'), async (req, res) => {
       return res.status(400).json({ error: 'No file uploaded' });
     }
 
-    // Add timestamp watermark to image files (skip PDFs)
+    // Timestamp watermark is now handled by the frontend (watermark.js)
+    // We skip adding backend watermark to avoid double timestamps.
+    /*
     const isImage = ['image/jpeg', 'image/png'].includes(req.file.mimetype);
     if (isImage) {
       try {
@@ -136,9 +138,9 @@ router.post('/', upload.single('file'), async (req, res) => {
         console.log(`Timestamp watermark added to: ${req.file.filename}`);
       } catch (watermarkErr) {
         console.error('Failed to add watermark, keeping original file:', watermarkErr.message);
-        // Continue without watermark — don't block the upload
       }
     }
+    */
     
     // Create the public URL
     const fileUrl = `/uploads/${req.file.filename}`;
