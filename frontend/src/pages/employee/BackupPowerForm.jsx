@@ -443,7 +443,7 @@ function BackupPowerForm() {
 
           <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Dokumentasi Foto</h3>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+          <div className="photo-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
             {renderUploadBox('photoOutageCause', 'Foto Penyebab Pemadaman')}
             {renderUploadBox('photoPlnOff', 'Foto Ketika PLN Off')}
             {renderUploadBox('photoRhBefore', 'Foto RH Sebelum Backup')}
