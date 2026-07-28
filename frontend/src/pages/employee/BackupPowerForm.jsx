@@ -365,7 +365,7 @@ function BackupPowerForm() {
         <form onSubmit={handleSubmit} className="glass-panel" style={{ padding: '2rem' }}>
           <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Informasi Site & Waktu</h3>
           
-          <div className="form-grid">
+          <div className="form-grid form-grid-2col">
             <div className="form-group">
               <label className="form-label">No Ticket</label>
               <input type="text" className="form-control" name="ticketNo" value={formData.ticketNo} onChange={handleInputChange} required />
@@ -384,7 +384,7 @@ function BackupPowerForm() {
             </div>
           </div>
 
-          <div className="form-grid">
+          <div className="form-grid form-grid-2col">
             <div className="form-group">
               <label className="form-label">NOP</label>
               <select className="form-control" name="nop" value={formData.nop} onChange={handleInputChange}>
@@ -411,7 +411,7 @@ function BackupPowerForm() {
 
           <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Log Jam & Mesin</h3>
           
-          <div className="form-grid">
+          <div className="form-grid form-grid-2col">
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu PLN Off</label>
               <input type="datetime-local" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} />
@@ -426,7 +426,7 @@ function BackupPowerForm() {
             </div>
           </div>
 
-          <div className="form-grid">
+          <div className="form-grid form-grid-2col">
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu PLN On</label>
               <input type="datetime-local" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} />
