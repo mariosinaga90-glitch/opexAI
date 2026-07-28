@@ -287,21 +287,21 @@ function BackupPowerForm() {
 
       {activeTab === 'list' && (
         <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
-            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+          <div className="advanced-filters" style={{ marginBottom: '1.5rem' }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Cari No Ticket / Site ID</label>
               <input type="text" className="form-control" placeholder="Ketik kata kunci..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
-            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
               <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
             </div>
-            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
               <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
             </div>
             { (searchQuery || filterDateFrom || filterDateTo) && (
-              <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
+              <div className="filter-actions">
                 <button className="btn" onClick={() => { setSearchQuery(''); setFilterDateFrom(''); setFilterDateTo(''); }}>Reset</button>
               </div>
             )}

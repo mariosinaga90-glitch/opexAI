@@ -313,8 +313,8 @@ function AdminBackupPowerView() {
           </div>
 
           {/* Filters Row */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', backgroundColor: 'rgba(0,0,0,0.02)', padding: '1rem', borderRadius: '8px' }}>
-            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+          <div className="advanced-filters">
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>NOP</label>
               <select className="form-control" value={filterNop} onChange={(e) => setFilterNop(e.target.value)}>
                 <option value="all">Semua NOP</option>
@@ -323,7 +323,7 @@ function AdminBackupPowerView() {
                 <option value="Tangerang">Tangerang</option>
               </select>
             </div>
-            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>TO Cluster</label>
               <select className="form-control" value={filterCluster} onChange={(e) => setFilterCluster(e.target.value)}>
                 <option value="all">Semua TO Cluster</option>
@@ -332,20 +332,20 @@ function AdminBackupPowerView() {
                 <option value="TO Purwakarta">TO Purwakarta</option>
               </select>
             </div>
-            <div className="form-group" style={{ flex: '1 1 200px', margin: 0 }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Site ID</label>
               <input type="text" className="form-control" placeholder="Contoh: BKS001" value={filterSiteId} onChange={(e) => setFilterSiteId(e.target.value)} />
             </div>
-            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Dari Tanggal</label>
               <input type="date" className="form-control" value={filterDateFrom} onChange={(e) => setFilterDateFrom(e.target.value)} />
             </div>
-            <div className="form-group" style={{ flex: '1 1 150px', margin: 0 }}>
+            <div className="form-group">
               <label className="text-muted" style={{ fontSize: '0.85rem', display: 'block', marginBottom: '0.25rem' }}>Sampai Tanggal</label>
               <input type="date" className="form-control" value={filterDateTo} onChange={(e) => setFilterDateTo(e.target.value)} />
             </div>
             { (filterNop !== 'all' || filterCluster !== 'all' || filterSiteId || filterDateFrom || filterDateTo || search) && (
-              <div style={{ display: 'flex', alignItems: 'flex-end', margin: 0 }}>
+              <div className="filter-actions">
                 <button className="btn" onClick={() => { setFilterNop('all'); setFilterCluster('all'); setFilterSiteId(''); setFilterDateFrom(''); setFilterDateTo(''); setSearch(''); }}>Reset</button>
               </div>
             )}
@@ -353,30 +353,30 @@ function AdminBackupPowerView() {
         </div>
 
         {/* Summary RH Panel */}
-        <div style={{ marginBottom: '1.5rem', padding: '1.5rem', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border-color)', borderRadius: '12px', display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
-          <div>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Total Event Backup</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: 'var(--text-color)' }}>{filteredReports.length}</p>
+        <div className="summary-panel">
+          <div className="summary-item">
+            <p className="summary-label">Total Event Backup</p>
+            <p className="summary-val">{filteredReports.length}</p>
           </div>
-          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
-          <div>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Total Running Hours</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#eab308' }}>{totalRunningHours.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Aktual</span></p>
+          <div className="summary-divider"></div>
+          <div className="summary-item">
+            <p className="summary-label">Total Running Hours</p>
+            <p className="summary-val text-warning">{totalRunningHours.toFixed(2)} <span>Aktual</span></p>
           </div>
-          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
-          <div>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Delta RH Time</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#3b82f6' }}>{deltaRhTime.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+          <div className="summary-divider"></div>
+          <div className="summary-item">
+            <p className="summary-label">Delta RH Time</p>
+            <p className="summary-val text-info">{deltaRhTime.toFixed(2)} <span>Jam</span></p>
           </div>
-          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
-          <div>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Delta Time</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#10b981' }}>{totalDeltaTimeHours.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+          <div className="summary-divider"></div>
+          <div className="summary-item">
+            <p className="summary-label">Delta Time</p>
+            <p className="summary-val text-success">{totalDeltaTimeHours.toFixed(2)} <span>Jam</span></p>
           </div>
-          <div style={{ width: '1px', height: '40px', backgroundColor: 'var(--border-color)' }}></div>
-          <div>
-            <p className="text-muted" style={{ fontSize: '0.9rem', marginBottom: '0.25rem' }}>Selisih</p>
-            <p style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: '#ef4444' }}>{selisih.toFixed(2)} <span style={{ fontSize: '1rem', fontWeight: 400 }}>Jam</span></p>
+          <div className="summary-divider"></div>
+          <div className="summary-item">
+            <p className="summary-label">Selisih</p>
+            <p className="summary-val text-danger">{selisih.toFixed(2)} <span>Jam</span></p>
           </div>
         </div>
 

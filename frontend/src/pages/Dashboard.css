@@ -450,6 +450,62 @@
   font-weight: 600;
 }
 
+/* Advanced Filters & Summary Panel (Backup Power) */
+.advanced-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  background-color: rgba(0, 0, 0, 0.02);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.advanced-filters .form-group {
+  flex: 1 1 200px;
+  margin: 0;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: flex-end;
+  margin: 0;
+}
+
+.summary-panel {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.summary-item .summary-label {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-muted);
+}
+
+.summary-item .summary-val {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.summary-item .summary-val span {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.summary-divider {
+  width: 1px;
+  height: 40px;
+  background-color: var(--border-color);
+}
+
 /* Badges */
 .status-badge {
   padding: 0.4rem 0.9rem;
@@ -838,6 +894,43 @@ textarea.form-control {
   .data-section {
     padding: 1rem;
     margin-bottom: 1.5rem !important;
+  }
+
+  /* Backup Power Adjustments Mobile */
+  .advanced-filters {
+    flex-direction: column;
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .advanced-filters .form-group {
+    flex: 1 1 100%;
+  }
+
+  .filter-actions {
+    width: 100%;
+  }
+
+  .filter-actions .btn {
+    width: 100%;
+  }
+
+  .summary-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .summary-divider {
+    width: 100%;
+    height: 1px;
   }
 }
 
