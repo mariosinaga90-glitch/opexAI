@@ -82,7 +82,7 @@ function DashboardLayout({ role }) {
   const closeSidebar = () => setIsSidebarOpen(false);
 
   const handleLogout = (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     localStorage.removeItem('user');
     navigate('/');
   };
