@@ -7,6 +7,7 @@ import AdminRequestView from './admin/AdminRequestView';
 import AdminReportView from './admin/AdminReportView';
 import AdminUserView from './admin/AdminUserView';
 import AdminSettingsView from './admin/AdminSettingsView';
+import EmployeeProfileView from './employee/EmployeeProfileView';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
 
 function AdminDashboardOverview() {
@@ -668,6 +669,8 @@ function AdminDashboard() {
         return <AdminUserView />;
       case '#settings':
         return <AdminSettingsView />;
+      case '#profile':
+        return <EmployeeProfileView />;
       default:
         return <AdminDashboardOverview />;
     }
