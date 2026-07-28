@@ -23,6 +23,15 @@
   background: linear-gradient(135deg, #334155 0%, #1E293B 100%);
 }
 
+@media (max-width: 768px) {
+  .tutorial-fab {
+    bottom: calc(85px + env(safe-area-inset-bottom));
+    right: 1.25rem;
+    width: 48px;
+    height: 48px;
+  }
+}
+
 .tutorial-overlay {
   position: fixed;
   top: 0;
