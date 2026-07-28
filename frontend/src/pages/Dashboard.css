@@ -939,11 +939,6 @@ textarea.form-control {
     gap: 0.75rem !important;
   }
   
-  /* Make the 3rd item (if it's the last) span 2 columns for balance */
-  .form-grid-2col > div:nth-child(3):last-child {
-    grid-column: span 2;
-  }
-  
   .form-grid-2col .form-label {
     font-size: 0.75rem;
     white-space: nowrap;
@@ -955,11 +950,6 @@ textarea.form-control {
   .photo-grid-mobile {
     grid-template-columns: repeat(2, 1fr) !important;
     gap: 0.75rem !important;
-  }
-
-  /* Make the 5th photo (last) span 2 columns */
-  .photo-grid-mobile > div:nth-child(5):last-child {
-    grid-column: span 2;
   }
 }
 
