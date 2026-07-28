@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User, Download } from 'lucide-react';
 import TutorialGuide from './TutorialGuide';
@@ -10,6 +10,8 @@ function DashboardLayout({ role }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [installPrompt, setInstallPrompt] = useState(null);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const profileMenuRef = useRef(null);
 
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
@@ -17,9 +19,17 @@ function DashboardLayout({ role }) {
       setInstallPrompt(e);
     };
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -177,19 +187,60 @@ function DashboardLayout({ role }) {
               <input type="text" placeholder="Cari..." />
             </div>
           </div>
-          <div className="topbar-profile">
+          <div className="topbar-profile" ref={profileMenuRef} style={{ position: 'relative' }}>
             <div className="profile-info">
               <span className="profile-name">{user.name}</span>
               <span className="profile-role">{user.team || user.role}</span>
             </div>
-            <Link 
-              to={role === 'admin' ? '/admin#profile' : '/employee#profile'} 
+            <div 
               className="profile-avatar" 
-              style={{ textDecoration: 'none' }}
-              title="Edit Profil"
+              style={{ cursor: 'pointer', textDecoration: 'none' }}
+              onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+              title="Menu Profil"
             >
               {user.name.charAt(0).toUpperCase()}
-            </Link>
+            </div>
+
+            {/* Profile Dropdown Menu */}
+            {isProfileMenuOpen && (
+              <div style={{
+                position: 'absolute',
+                top: 'calc(100% + 10px)',
+                right: 0,
+                width: '200px',
+                background: 'rgba(15, 23, 42, 0.95)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                overflow: 'hidden',
+                zIndex: 100,
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <Link 
+                  to={role === 'admin' ? '/admin#profile' : '/employee#profile'}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', color: 'var(--text-main)', textDecoration: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.05)' }}
+                  onClick={() => setIsProfileMenuOpen(false)}
+                >
+                  <User size={18} />
+                  <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Edit Profil</span>
+                </Link>
+                <a 
+                  href="/"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsProfileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem', color: 'var(--accent-rose)', textDecoration: 'none', cursor: 'pointer' }}
+                >
+                  <LogOut size={18} />
+                  <span style={{ fontSize: '0.9rem', fontWeight: 500 }}>Keluar</span>
+                </a>
+              </div>
+            )}
           </div>
         </header>
 
