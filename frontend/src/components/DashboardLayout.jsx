@@ -182,9 +182,14 @@ function DashboardLayout({ role }) {
               <span className="profile-name">{user.name}</span>
               <span className="profile-role">{user.team || user.role}</span>
             </div>
-            <div className="profile-avatar">
+            <Link 
+              to={role === 'admin' ? '/admin#profile' : '/employee#profile'} 
+              className="profile-avatar" 
+              style={{ textDecoration: 'none' }}
+              title="Edit Profil"
+            >
               {user.name.charAt(0).toUpperCase()}
-            </div>
+            </Link>
           </div>
         </header>
 
@@ -196,7 +201,7 @@ function DashboardLayout({ role }) {
 
       {/* Bottom Navigation for Mobile */}
       <nav className="bottom-nav">
-        {navItems.slice(0, 4).map((item, index) => {
+        {navItems.filter(item => item.name !== 'Edit Profil' && item.name !== 'Pengaturan').slice(0, 5).map((item, index) => {
           const Icon = item.icon;
           const itemPathname = item.path.split('#')[0];
           const itemHash = item.path.includes('#') ? '#' + item.path.split('#')[1] : '';
@@ -208,18 +213,11 @@ function DashboardLayout({ role }) {
               to={item.path} 
               className={`bottom-nav-item ${isActive ? 'active' : ''}`}
             >
-              <Icon size={22} />
-              <span>{item.name === 'Report Backup Power' ? 'Backup' : (item.name === 'Daftar Pengajuan' ? 'Pengajuan' : item.name)}</span>
+              <Icon size={item.name === 'Dashboard' ? 22 : 24} />
+              {item.name === 'Dashboard' && <span>Dashboard</span>}
             </Link>
           );
         })}
-        <Link 
-          to={role === 'admin' ? '/admin#profile' : '/employee#profile'} 
-          className={`bottom-nav-item ${location.hash === '#profile' ? 'active' : ''}`}
-        >
-          <User size={22} />
-          <span>Profil</span>
-        </Link>
       </nav>
 
       {/* Floating Tutorial Guide */}
