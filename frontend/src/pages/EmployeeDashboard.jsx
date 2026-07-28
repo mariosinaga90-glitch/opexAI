@@ -24,8 +24,8 @@ function EmployeeDashboardOverview() {
   const needsReportCount = rawComparisonData.filter(d => d.requestStatus === 'Approved' && (d.reportStatus === 'Belum Ada' || d.reportStatus === 'Revision')).length;
 
   const stats = [
-    { label: 'Pengajuan Aktif', value: activeRequestsCount.toString(), icon: Clock, color: 'warning', hash: '' },
-    { label: 'Disetujui', value: approvedRequestsCount.toString(), icon: CheckCircle, color: 'success', hash: '' },
+    { label: 'Pengajuan Aktif', value: activeRequestsCount.toString(), icon: Clock, color: 'warning', hash: '#pengajuan' },
+    { label: 'Disetujui', value: approvedRequestsCount.toString(), icon: CheckCircle, color: 'success', hash: '#pengajuan' },
     { label: 'Perlu Laporan', value: needsReportCount.toString(), icon: FileWarning, color: 'danger', hash: '#laporan' },
   ];
 
@@ -374,6 +374,8 @@ function EmployeeDashboard() {
 
   const renderContent = () => {
     switch (currentHash) {
+      case '#pengajuan':
+        return <FundRequestView />;
       case '#laporan':
         return <FundReportView />;
       case '#profile':

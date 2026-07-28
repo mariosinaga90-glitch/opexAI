@@ -62,6 +62,7 @@ function DashboardLayout({ role }) {
 
   const employeeNav = [
     { name: 'Dashboard', path: '/employee', icon: LayoutDashboard },
+    { name: 'Pengajuan', path: '/employee#pengajuan', icon: FileText },
     { name: 'Laporan', path: '/employee#laporan', icon: CheckSquare },
     { name: 'Report Backup Power', path: '/employee/backup-power', icon: BatteryCharging },
     { name: 'Edit Profil', path: '/employee#profile', icon: User },
