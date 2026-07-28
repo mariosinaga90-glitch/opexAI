@@ -287,12 +287,12 @@ function AdminBackupPowerView() {
 
   return (
     <div className="animate-fade-in-up">
-      <div className="dashboard-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+      <div className="page-header">
         <div>
-          <h1 className="dashboard-title">Data Backup Power</h1>
-          <p className="dashboard-subtitle">Monitoring log genset dan pemadaman dari lapangan.</p>
+          <h1 className="page-title" style={{ fontSize: '1.8rem' }}>Data Backup Power</h1>
+          <p className="page-subtitle">Monitoring log genset dan pemadaman dari lapangan.</p>
         </div>
-        <button className="btn btn-primary" onClick={handleExportExcel} disabled={exporting || reports.length === 0}>
+        <button className="btn btn-success" onClick={handleExportExcel} disabled={exporting || reports.length === 0}>
           <FileSpreadsheet size={18} style={{ marginRight: '8px' }} />
           {exporting ? 'Memproses Excel...' : 'Export Excel'}
         </button>
