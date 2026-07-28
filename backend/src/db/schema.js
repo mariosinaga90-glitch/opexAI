@@ -12,6 +12,8 @@ export const users = sqliteTable('users', {
   team: text('team'),
   vehicleType: text('vehicleType'),
   plateNumber: text('plateNumber'),
+  gensetBrand: text('gensetBrand'),
+  gensetCapacity: text('gensetCapacity'),
   phoneNumber: text('phoneNumber'),
   nik: text('nik'),
   isLocked: integer('isLocked', { mode: 'boolean' }).default(false),

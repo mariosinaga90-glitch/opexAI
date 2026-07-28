@@ -43,7 +43,9 @@ router.put('/', async (req, res) => {
       phoneNumber,
       nik,
       vehicleType,
-      plateNumber
+      plateNumber,
+      gensetBrand,
+      gensetCapacity
     } = req.body;
 
     if (!name || !email) {
@@ -67,7 +69,9 @@ router.put('/', async (req, res) => {
         phoneNumber,
         nik,
         vehicleType,
-        plateNumber
+        plateNumber,
+        gensetBrand,
+        gensetCapacity
       })
       .where(eq(users.id, userId));
 

@@ -13,6 +13,8 @@ function EmployeeProfileView() {
     team: '', // Tim / Divisi
     vehicleType: '',
     plateNumber: '',
+    gensetBrand: '',
+    gensetCapacity: '',
     phoneNumber: '',
     nik: ''
   });
@@ -59,7 +61,9 @@ function EmployeeProfileView() {
           phoneNumber: user.phoneNumber,
           nik: user.nik,
           vehicleType: user.vehicleType,
-          plateNumber: user.plateNumber
+          plateNumber: user.plateNumber,
+          gensetBrand: user.gensetBrand,
+          gensetCapacity: user.gensetCapacity
         })
       });
 
@@ -227,18 +231,16 @@ function EmployeeProfileView() {
             <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
               <div className="form-group">
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Car size={16} className="text-primary" /> Jenis Kendaraan
+                  <Car size={16} className="text-primary" /> Merk Kendaraan
                 </label>
-                <select 
+                <input 
+                  type="text" 
                   className="form-control" 
                   name="vehicleType"
                   value={user.vehicleType || ''} 
                   onChange={handleChange}
-                >
-                  <option value="">Pilih Kendaraan...</option>
-                  <option value="Mobil">Mobil</option>
-                  <option value="Motor">Motor</option>
-                </select>
+                  placeholder="Contoh: Pickup Grandmax"
+                />
               </div>
               <div className="form-group">
                 <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -251,6 +253,35 @@ function EmployeeProfileView() {
                   value={user.plateNumber || ''} 
                   onChange={handleChange}
                   placeholder="Contoh: B 1234 ABC"
+                />
+              </div>
+            </div>
+
+            <div className="form-grid" style={{ marginBottom: '1.5rem' }}>
+              <div className="form-group">
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Globe size={16} className="text-primary" /> Merk Genset
+                </label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  name="gensetBrand"
+                  value={user.gensetBrand || ''} 
+                  onChange={handleChange}
+                  placeholder="Contoh: Krisbow"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <Globe size={16} className="text-primary" /> Capacity Genset (Kva)
+                </label>
+                <input 
+                  type="text" 
+                  className="form-control" 
+                  name="gensetCapacity"
+                  value={user.gensetCapacity || ''} 
+                  onChange={handleChange}
+                  placeholder="Contoh: 5.5"
                 />
               </div>
             </div>

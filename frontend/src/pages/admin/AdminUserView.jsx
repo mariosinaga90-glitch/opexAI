@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search, Lock, Unlock } from 'lucide-react';
+import { Plus, Edit2, Trash2, Shield, User as UserIcon, Search, Lock, Unlock, FileSpreadsheet } from 'lucide-react';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import { API_BASE_URL } from '../../config';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
@@ -14,8 +16,10 @@ function AdminUserView() {
   const [formData, setFormData] = useState({
     name: '', email: '', password: '', role: 'employee',
     cluster: '', microCluster: '', team: '',
-    vehicleType: '', plateNumber: '', phoneNumber: '', nik: ''
+    vehicleType: '', plateNumber: '', gensetBrand: '', gensetCapacity: '', phoneNumber: '', nik: ''
   });
+
+  const [exporting, setExporting] = useState(false);
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -61,7 +65,7 @@ function AdminUserView() {
     setFormData({ 
       name: '', email: '', password: '', role: 'employee', 
       cluster: '', microCluster: '', team: '',
-      vehicleType: '', plateNumber: '', phoneNumber: '', nik: ''
+      vehicleType: '', plateNumber: '', gensetBrand: '', gensetCapacity: '', phoneNumber: '', nik: ''
     });
   };
 
@@ -76,6 +80,8 @@ function AdminUserView() {
       team: user.team || '',
       vehicleType: user.vehicleType || '',
       plateNumber: user.plateNumber || '',
+      gensetBrand: user.gensetBrand || '',
+      gensetCapacity: user.gensetCapacity || '',
       phoneNumber: user.phoneNumber || '',
       nik: user.nik || ''
     });
@@ -209,17 +215,26 @@ function AdminUserView() {
                 value={formData.nik} onChange={e => setFormData({...formData, nik: e.target.value})} />
             </div>
             <div className="form-group">
-              <label className="form-label">Jenis Kendaraan</label>
-              <select className="form-control" value={formData.vehicleType} onChange={e => setFormData({...formData, vehicleType: e.target.value})}>
-                <option value="">Pilih Kendaraan...</option>
-                <option value="Mobil">Mobil</option>
-                <option value="Motor">Motor</option>
-              </select>
+              <label className="form-label">Merk Kendaraan</label>
+              <input type="text" className="form-control" placeholder="Contoh: Pickup Grandmax" 
+                value={formData.vehicleType} onChange={e => setFormData({...formData, vehicleType: e.target.value})} />
             </div>
             <div className="form-group">
               <label className="form-label">Plat No</label>
               <input type="text" className="form-control" placeholder="Contoh: B 1234 ABC" 
                 value={formData.plateNumber} onChange={e => setFormData({...formData, plateNumber: e.target.value})} />
+            </div>
+          </div>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Merk Genset</label>
+              <input type="text" className="form-control" placeholder="Contoh: Krisbow" 
+                value={formData.gensetBrand} onChange={e => setFormData({...formData, gensetBrand: e.target.value})} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Capacity Genset (Kva)</label>
+              <input type="text" className="form-control" placeholder="Contoh: 5.5" 
+                value={formData.gensetCapacity} onChange={e => setFormData({...formData, gensetCapacity: e.target.value})} />
             </div>
           </div>
 
@@ -239,10 +254,79 @@ function AdminUserView() {
           <h1 className="page-title" style={{ fontSize: '1.8rem' }}>Manajemen Pengguna</h1>
           <p className="page-subtitle">Kelola akun admin dan karyawan yang memiliki akses ke sistem.</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
-          <Plus size={18} style={{ marginRight: '8px' }} />
-          Tambah Pengguna
-        </button>
+        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+          <button className="btn btn-success" onClick={async () => {
+            if (!users || users.length === 0) {
+              alert('Tidak ada data pengguna untuk diekspor.');
+              return;
+            }
+            try {
+              setExporting(true);
+              const workbook = new ExcelJS.Workbook();
+              const sheet = workbook.addWorksheet('Data Pengguna');
+              
+              sheet.columns = [
+                { header: 'No', key: 'no', width: 5 },
+                { header: 'Nama Lengkap', key: 'name', width: 25 },
+                { header: 'Email', key: 'email', width: 25 },
+                { header: 'Role Akun', key: 'role', width: 15 },
+                { header: 'NOP', key: 'cluster', width: 15 },
+                { header: 'TO Cluster', key: 'microCluster', width: 20 },
+                { header: 'Role Organisasi', key: 'team', width: 15 },
+                { header: 'No HP', key: 'phoneNumber', width: 20 },
+                { header: 'NIK KTP', key: 'nik', width: 25 },
+                { header: 'Merk Kendaraan', key: 'vehicleType', width: 20 },
+                { header: 'Plat Nomor', key: 'plateNumber', width: 15 },
+                { header: 'Merk Genset', key: 'gensetBrand', width: 20 },
+                { header: 'Kapasitas Genset (Kva)', key: 'gensetCapacity', width: 20 },
+                { header: 'Status Terkunci', key: 'isLocked', width: 15 }
+              ];
+
+              sheet.getRow(1).font = { bold: true };
+              
+              const filteredUsers = users.filter(user => {
+                const matchesSearch = user.name?.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      user.email?.toLowerCase().includes(searchQuery.toLowerCase());
+                const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+                return matchesSearch && matchesRole;
+              });
+
+              filteredUsers.forEach((u, index) => {
+                sheet.addRow({
+                  no: index + 1,
+                  name: u.name,
+                  email: u.email,
+                  role: u.role,
+                  cluster: u.cluster || '-',
+                  microCluster: u.microCluster || '-',
+                  team: u.team || '-',
+                  phoneNumber: u.phoneNumber || '-',
+                  nik: u.nik || '-',
+                  vehicleType: u.vehicleType || '-',
+                  plateNumber: u.plateNumber || '-',
+                  gensetBrand: u.gensetBrand || '-',
+                  gensetCapacity: u.gensetCapacity || '-',
+                  isLocked: u.isLocked ? 'Ya' : 'Tidak'
+                });
+              });
+
+              const buffer = await workbook.xlsx.writeBuffer();
+              saveAs(new Blob([buffer]), `Data_Karyawan_${new Date().toISOString().slice(0,10)}.xlsx`);
+            } catch (err) {
+              console.error('Error exporting excel:', err);
+              alert('Gagal mengekspor file Excel.');
+            } finally {
+              setExporting(false);
+            }
+          }} disabled={exporting || users.length === 0}>
+            <FileSpreadsheet size={18} style={{ marginRight: '8px' }} />
+            {exporting ? 'Memproses...' : 'Export Excel'}
+          </button>
+          <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
+            <Plus size={18} style={{ marginRight: '8px' }} />
+            Tambah Pengguna
+          </button>
+        </div>
       </div>
 
       {/* Stats Charts */}

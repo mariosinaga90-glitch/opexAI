@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 // Create user
 router.post('/', async (req, res) => {
   try {
-    const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
+    const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik, gensetBrand, gensetCapacity } = req.body;
     
     let hashedPassword = password;
     if (password) {
@@ -39,6 +39,8 @@ router.post('/', async (req, res) => {
       team,
       vehicleType,
       plateNumber,
+      gensetBrand,
+      gensetCapacity,
       phoneNumber,
       nik,
     });
@@ -54,9 +56,9 @@ router.post('/', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik } = req.body;
+    const { name, email, password, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik, gensetBrand, gensetCapacity } = req.body;
     
-    const updateData = { name, email, role, cluster, microCluster, team, vehicleType, plateNumber, phoneNumber, nik };
+    const updateData = { name, email, role, cluster, microCluster, team, vehicleType, plateNumber, gensetBrand, gensetCapacity, phoneNumber, nik };
     
     if (password && password.trim() !== '') {
       updateData.password = await bcrypt.hash(password, 10);
