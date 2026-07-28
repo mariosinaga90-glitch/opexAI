@@ -748,6 +748,37 @@ textarea.form-control {
   .dashboard-content {
     padding: 1rem 1rem calc(80px + env(safe-area-inset-bottom)) 1rem;
   }
+
+  /* Responsive Filter Bars for Mobile */
+  .section-header[style*="wrap"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+  
+  .section-header[style*="wrap"] > .search-wrapper,
+  .section-header[style*="wrap"] > .search-input,
+  .section-header[style*="wrap"] > div:nth-child(2) {
+    width: 100% !important;
+    max-width: none !important;
+    margin-bottom: 0.25rem !important;
+  }
+  
+  .section-header[style*="wrap"] > div:last-child {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+  }
+  
+  .section-header[style*="wrap"] select.form-control,
+  .section-header[style*="wrap"] input.form-control {
+    width: 100% !important;
+  }
+  
+  .section-header[style*="wrap"] > div:last-child > svg {
+    display: none;
+  }
   
   .search-wrapper {
     display: none; /* Hide search bar on mobile header to save space */
