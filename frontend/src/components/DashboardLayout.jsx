@@ -194,6 +194,34 @@ function DashboardLayout({ role }) {
         </main>
       </div>
 
+      {/* Bottom Navigation for Mobile */}
+      <nav className="bottom-nav">
+        {navItems.slice(0, 4).map((item, index) => {
+          const Icon = item.icon;
+          const itemPathname = item.path.split('#')[0];
+          const itemHash = item.path.includes('#') ? '#' + item.path.split('#')[1] : '';
+          const isActive = location.pathname === itemPathname && location.hash === itemHash;
+          
+          return (
+            <Link 
+              key={index} 
+              to={item.path} 
+              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
+            >
+              <Icon size={22} />
+              <span>{item.name === 'Report Backup Power' ? 'Backup' : (item.name === 'Daftar Pengajuan' ? 'Pengajuan' : item.name)}</span>
+            </Link>
+          );
+        })}
+        <Link 
+          to={role === 'admin' ? '/admin#profile' : '/employee#profile'} 
+          className={`bottom-nav-item ${location.hash === '#profile' ? 'active' : ''}`}
+        >
+          <User size={22} />
+          <span>Profil</span>
+        </Link>
+      </nav>
+
       {/* Floating Tutorial Guide */}
       <TutorialGuide />
     </div>
