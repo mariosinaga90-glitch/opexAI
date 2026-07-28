@@ -411,7 +411,7 @@ function BackupPowerForm() {
 
           <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Log Jam & Mesin</h3>
           
-          <div className="form-grid form-grid-2col">
+          <div className="form-grid">
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu PLN Off</label>
               <input type="datetime-local" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} />
@@ -426,7 +426,7 @@ function BackupPowerForm() {
             </div>
           </div>
 
-          <div className="form-grid form-grid-2col">
+          <div className="form-grid">
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu PLN On</label>
               <input type="datetime-local" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} />
