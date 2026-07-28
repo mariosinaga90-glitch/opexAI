@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User, Download } from 'lucide-react';
 import TutorialGuide from './TutorialGuide';
 import '../pages/Dashboard.css';
 
@@ -9,6 +9,19 @@ function DashboardLayout({ role }) {
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      e.preventDefault();
+      setInstallPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
 
   useEffect(() => {
     const syncUser = () => {
@@ -62,6 +75,15 @@ function DashboardLayout({ role }) {
     e.preventDefault();
     localStorage.removeItem('user');
     navigate('/');
+  };
+
+  const handleInstallClick = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    const { outcome } = await installPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setInstallPrompt(null);
+    }
   };
 
   if (!user) return null; // Prevent rendering until user is loaded
@@ -118,6 +140,16 @@ function DashboardLayout({ role }) {
         </nav>
         
         <div className="sidebar-footer">
+          {installPrompt && (
+            <button 
+              onClick={handleInstallClick} 
+              className="nav-item text-primary" 
+              style={{ border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', marginBottom: '0.5rem', color: 'var(--primary-color)' }}
+            >
+              <Download size={20} />
+              <span style={{ fontWeight: 600 }}>Install Aplikasi</span>
+            </button>
+          )}
           <a href="/" onClick={handleLogout} className="nav-item text-danger">
             <LogOut size={20} />
             <span>Keluar</span>
