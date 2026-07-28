@@ -260,12 +260,12 @@ function BackupPowerForm() {
         </div>
 
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Foto Dokumentasi</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
-          {selectedReport.photoOutageCause && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>Penyebab Pemadaman</p><img src={getFileUrl(selectedReport.photoOutageCause)} alt="Outage Cause" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+        <div className="photo-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
           {selectedReport.photoPlnOff && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN Off</p><img src={getFileUrl(selectedReport.photoPlnOff)} alt="PLN Off" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {selectedReport.photoRhBefore && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH Before</p><img src={getFileUrl(selectedReport.photoRhBefore)} alt="RH Before" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {selectedReport.photoPlnOn && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN On</p><img src={getFileUrl(selectedReport.photoPlnOn)} alt="PLN On" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {selectedReport.photoRhAfter && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH After</p><img src={getFileUrl(selectedReport.photoRhAfter)} alt="RH After" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+          {selectedReport.photoOutageCause && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>Penyebab Pemadaman</p><img src={getFileUrl(selectedReport.photoOutageCause)} alt="Outage Cause" style={{ width: '100%', borderRadius: '8px' }} /></div>}
         </div>
       </div>
     );
@@ -444,11 +444,11 @@ function BackupPowerForm() {
           <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Dokumentasi Foto</h3>
           
           <div className="photo-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-            {renderUploadBox('photoOutageCause', 'Foto Penyebab Pemadaman')}
             {renderUploadBox('photoPlnOff', 'Foto Ketika PLN Off')}
             {renderUploadBox('photoRhBefore', 'Foto RH Sebelum Backup')}
             {renderUploadBox('photoPlnOn', 'Foto Ketika PLN On')}
             {renderUploadBox('photoRhAfter', 'Foto RH Sesudah Backup')}
+            {renderUploadBox('photoOutageCause', 'Foto Penyebab Pemadaman')}
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>

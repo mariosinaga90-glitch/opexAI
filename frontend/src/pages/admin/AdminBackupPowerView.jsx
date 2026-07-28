@@ -274,12 +274,12 @@ function AdminBackupPowerView() {
         </div>
 
         <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Foto Dokumentasi</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
-          {previewReport.photoOutageCause && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>Penyebab Pemadaman</p><img src={getFileUrl(previewReport.photoOutageCause)} alt="Outage Cause" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+        <div className="photo-grid-mobile" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
           {previewReport.photoPlnOff && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN Off</p><img src={getFileUrl(previewReport.photoPlnOff)} alt="PLN Off" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {previewReport.photoRhBefore && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH Before</p><img src={getFileUrl(previewReport.photoRhBefore)} alt="RH Before" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {previewReport.photoPlnOn && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>PLN On</p><img src={getFileUrl(previewReport.photoPlnOn)} alt="PLN On" style={{ width: '100%', borderRadius: '8px' }} /></div>}
           {previewReport.photoRhAfter && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>RH After</p><img src={getFileUrl(previewReport.photoRhAfter)} alt="RH After" style={{ width: '100%', borderRadius: '8px' }} /></div>}
+          {previewReport.photoOutageCause && <div><p className="text-muted" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>Penyebab Pemadaman</p><img src={getFileUrl(previewReport.photoOutageCause)} alt="Outage Cause" style={{ width: '100%', borderRadius: '8px' }} /></div>}
         </div>
       </div>
     );
