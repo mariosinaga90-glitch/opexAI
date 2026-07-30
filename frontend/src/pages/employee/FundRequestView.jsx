@@ -166,6 +166,10 @@ function FundRequestView({ onBack }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!uploadUrl) {
+      alert('Foto / Bukti wajib diunggah sebelum submit.');
+      return;
+    }
     const mainItem = items[0];
     const payload = {
       title: `Pengajuan ${mainItem.categoryLabel || 'Dana'}`,
@@ -605,7 +609,7 @@ function FundRequestView({ onBack }) {
           ))}
 
           <div className="form-group" style={{ marginTop: '1.5rem' }}>
-            <label className="form-label">Upload Foto / Bukti (Opsional, Max 5MB)</label>
+            <label className="form-label">Upload Foto / Bukti (Wajib, Max 5MB)</label>
             <div className="file-upload-box" style={{ position: 'relative' }}>
               <input type="file" onChange={handleFileUpload} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} accept="image/*,.pdf" />
               <UploadCloud size={32} className="file-upload-icon" />

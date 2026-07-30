@@ -198,6 +198,10 @@ function FundReportView() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!uploadUrl) {
+      alert('Lampiran foto / bukti wajib diunggah sebelum submit.');
+      return;
+    }
     const mainItem = items[0];
     const totalUsed = items.reduce((acc, item) => acc + (item.unitPrice * item.quantity), 0);
     
@@ -593,7 +597,7 @@ function FundReportView() {
           ))}
 
           <div className="form-group" style={{ marginTop: '1.5rem' }}>
-            <label className="form-label">Upload Lampiran (Max 5MB)</label>
+            <label className="form-label">Upload Lampiran (Wajib, Max 5MB)</label>
             <div className="file-upload-box" style={{ position: 'relative' }}>
               <input type="file" onChange={handleFileUpload} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }} accept="image/*,.pdf" />
               <UploadCloud size={32} className="file-upload-icon" />

@@ -123,6 +123,10 @@ function BackupPowerForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!formData.photoPlnOff || !formData.photoRhBefore || !formData.photoPlnOn || !formData.photoRhAfter || !formData.photoOutageCause) {
+      alert('Semua foto dokumentasi (5 foto) wajib diunggah sebelum submit.');
+      return;
+    }
     setIsSubmitting(true);
 
     try {
@@ -387,7 +391,7 @@ function BackupPowerForm() {
           <div className="form-grid form-grid-2col">
             <div className="form-group">
               <label className="form-label">NOP</label>
-              <select className="form-control" name="nop" value={formData.nop} onChange={handleInputChange}>
+              <select className="form-control" name="nop" value={formData.nop} onChange={handleInputChange} required>
                 <option value="">Pilih NOP...</option>
                 <option value="Karawang">Karawang</option>
                 <option value="Serang">Serang</option>
@@ -396,7 +400,7 @@ function BackupPowerForm() {
             </div>
             <div className="form-group">
               <label className="form-label">TO Cluster</label>
-              <select className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange}>
+              <select className="form-control" name="cluster" value={formData.cluster} onChange={handleInputChange} required>
                 <option value="">Pilih TO Cluster...</option>
                 <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
                 <option value="TO Karawang">TO Karawang</option>
@@ -405,7 +409,7 @@ function BackupPowerForm() {
             </div>
             <div className="form-group">
               <label className="form-label">Penyebab Pemadaman</label>
-              <input type="text" className="form-control" name="outageCause" value={formData.outageCause} onChange={handleInputChange} placeholder="Contoh: Gardu PLN meledak" />
+              <input type="text" className="form-control" name="outageCause" value={formData.outageCause} onChange={handleInputChange} placeholder="Contoh: Gardu PLN meledak" required />
             </div>
           </div>
 
@@ -414,30 +418,30 @@ function BackupPowerForm() {
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu PLN Off</label>
-              <input type="datetime-local" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} />
+              <input type="datetime-local" className="form-control" name="plnOffTime" value={formData.plnOffTime} onChange={handleInputChange} required />
             </div>
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu Mulai Backup</label>
-              <input type="datetime-local" className="form-control" name="backupStartTime" value={formData.backupStartTime} onChange={handleInputChange} />
+              <input type="datetime-local" className="form-control" name="backupStartTime" value={formData.backupStartTime} onChange={handleInputChange} required />
             </div>
             <div className="form-group">
               <label className="form-label">RH Sebelum Backup (Angka)</label>
-              <input type="number" step="any" className="form-control" name="rhBefore" value={formData.rhBefore} onChange={handleInputChange} />
+              <input type="number" step="any" className="form-control" name="rhBefore" value={formData.rhBefore} onChange={handleInputChange} required />
             </div>
           </div>
 
           <div className="form-grid">
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu PLN On</label>
-              <input type="datetime-local" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} />
+              <input type="datetime-local" className="form-control" name="plnOnTime" value={formData.plnOnTime} onChange={handleInputChange} required />
             </div>
             <div className="form-group">
               <label className="form-label">Tanggal & Waktu Selesai Backup</label>
-              <input type="datetime-local" className="form-control" name="backupEndTime" value={formData.backupEndTime} onChange={handleInputChange} />
+              <input type="datetime-local" className="form-control" name="backupEndTime" value={formData.backupEndTime} onChange={handleInputChange} required />
             </div>
             <div className="form-group">
               <label className="form-label">RH Sesudah Backup (Angka)</label>
-              <input type="number" step="any" className="form-control" name="rhAfter" value={formData.rhAfter} onChange={handleInputChange} />
+              <input type="number" step="any" className="form-control" name="rhAfter" value={formData.rhAfter} onChange={handleInputChange} required />
             </div>
           </div>
 
