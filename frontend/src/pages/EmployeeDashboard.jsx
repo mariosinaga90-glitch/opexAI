@@ -367,10 +367,21 @@ function EmployeeDashboardOverview() {
 function EmployeeDashboard() {
   const location = useLocation();
   const [currentHash, setCurrentHash] = useState(location.hash);
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
 
   useEffect(() => {
     setCurrentHash(location.hash);
   }, [location.hash]);
+
+  useEffect(() => {
+    const handleUserUpdate = () => {
+      setUser(JSON.parse(localStorage.getItem('user') || '{}'));
+    };
+    window.addEventListener('user-updated', handleUserUpdate);
+    return () => window.removeEventListener('user-updated', handleUserUpdate);
+  }, []);
+
+  const isProfileIncomplete = !user.name || !user.email || !user.team || !user.cluster || !user.microCluster || !user.phoneNumber || !user.nik;
 
   const renderContent = () => {
     switch (currentHash) {
@@ -387,6 +398,15 @@ function EmployeeDashboard() {
 
   return (
     <div className="dashboard-page">
+      {isProfileIncomplete && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', borderLeft: '4px solid #EF4444', padding: '1rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', borderRadius: '4px' }}>
+          <FileWarning color="#EF4444" size={24} />
+          <div>
+            <h4 style={{ margin: 0, color: '#EF4444', fontSize: '1rem' }}>Profil Anda Belum Lengkap!</h4>
+            <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.9rem', color: 'var(--text-main)' }}>Silakan lengkapi data diri Anda (Role, NOP, TO Cluster, No HP, NIK, dll) di menu <a href="#profile" style={{ color: 'var(--primary)', textDecoration: 'underline', fontWeight: 'bold' }}>Edit Profil</a> agar proses operasional berjalan lancar.</p>
+          </div>
+        </div>
+      )}
       {renderContent()}
     </div>
   );
