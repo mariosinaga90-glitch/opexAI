@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Download, Trash2, FileSpreadsheet, Image as ImageIcon, ArrowLeft } from 'lucide-react';
+import { Search, Download, Trash2, FileSpreadsheet, Image as ImageIcon, ArrowLeft, Edit, Save, Loader2 } from 'lucide-react';
 import ExcelJS from 'exceljs';
 import { saveAs } from 'file-saver';
 import { formatDateTime } from '../../utils/dateFormatter';
@@ -18,6 +18,10 @@ function AdminBackupPowerView() {
   const [loading, setLoading] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [previewReport, setPreviewReport] = useState(null);
+  const [editingReport, setEditingReport] = useState(null);
+  const [editFormData, setEditFormData] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [uploadingField, setUploadingField] = useState(null);
 
   useEffect(() => {
     fetchReports();
@@ -46,6 +50,109 @@ function AdminBackupPowerView() {
       console.error('Delete error:', err);
     }
   };
+
+  const handleEditClick = (report) => {
+    setEditingReport(report);
+    setEditFormData({
+      ...report,
+      plnOffTime: report.plnOffTime ? report.plnOffTime.substring(0, 16) : '',
+      backupStartTime: report.backupStartTime ? report.backupStartTime.substring(0, 16) : '',
+      plnOnTime: report.plnOnTime ? report.plnOnTime.substring(0, 16) : '',
+      backupEndTime: report.backupEndTime ? report.backupEndTime.substring(0, 16) : ''
+    });
+  };
+
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleEditFileUpload = async (e, fieldName) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setUploadingField(fieldName);
+    const fd = new FormData();
+    fd.append('file', file);
+    try {
+      const res = await fetch(`${API_BASE_URL}/upload`, { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) {
+        setEditFormData(prev => ({ ...prev, [fieldName]: data.url }));
+      } else {
+        alert('Upload gagal');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Upload error');
+    } finally {
+      setUploadingField(null);
+    }
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    setIsUpdating(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/backup-power/${editingReport.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editFormData)
+      });
+      if (res.ok) {
+        alert('Laporan berhasil diperbarui!');
+        setEditingReport(null);
+        fetchReports();
+      } else {
+        const err = await res.json();
+        alert('Gagal update: ' + (err.error || 'Unknown error'));
+      }
+    } catch (err) {
+      console.error('Update error:', err);
+      alert('Terjadi kesalahan saat menyimpan.');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
+  const renderEditUploadBox = (field, label) => (
+    <div className="form-group">
+      <label className="form-label">{label}</label>
+      {editFormData[field] ? (
+        <div style={{ position: 'relative', marginTop: '0.5rem', width: '100%', height: '150px', backgroundColor: '#f1f5f9', borderRadius: '8px', overflow: 'hidden' }}>
+          <img src={getFileUrl(editFormData[field])} alt={label} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <button 
+            type="button" 
+            onClick={() => setEditFormData({...editFormData, [field]: ''})}
+            style={{ position: 'absolute', top: 5, right: 5, background: 'rgba(255,0,0,0.8)', color: 'white', border: 'none', borderRadius: '50%', width: 24, height: 24, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            ✕
+          </button>
+        </div>
+      ) : (
+        <div style={{ position: 'relative', width: '100%', height: '150px', border: '2px dashed var(--border-color)', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.01)', cursor: 'pointer' }}>
+          {uploadingField === field ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+              <Loader2 size={24} className="spin" color="var(--primary-color)" />
+              <span className="text-muted" style={{ fontSize: '0.85rem' }}>Uploading...</span>
+            </div>
+          ) : (
+            <>
+              <ImageIcon size={32} color="var(--text-muted)" style={{ marginBottom: '0.5rem' }} />
+              <span className="text-muted" style={{ fontSize: '0.85rem' }}>Klik / Tap untuk Foto</span>
+              <input 
+                type="file" 
+                accept="image/*" 
+                capture="environment"
+                onChange={(e) => handleEditFileUpload(e, field)}
+                style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }}
+              />
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
 
   const getFileUrl = (path) => {
     if (!path) return '';
@@ -250,6 +357,117 @@ function AdminBackupPowerView() {
 
   const selisih = Math.abs(deltaRhTime - totalDeltaTimeHours);
 
+  if (editingReport && editFormData) {
+    return (
+      <div className="glass-panel animate-fade-in-up" style={{ padding: '2rem' }}>
+        <button className="btn-icon" onClick={() => setEditingReport(null)} style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <ArrowLeft size={16} /> Kembali
+        </button>
+        <h2 className="section-title">Edit Log Backup Power</h2>
+        
+        <form onSubmit={handleUpdate}>
+          <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Informasi Site & Waktu</h3>
+          
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">No Ticket</label>
+              <input type="text" className="form-control" name="ticketNo" value={editFormData.ticketNo || ''} onChange={handleEditInputChange} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Site ID</label>
+              <input type="text" className="form-control" name="siteId" value={editFormData.siteId || ''} onChange={handleEditInputChange} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Site Name</label>
+              <input type="text" className="form-control" name="siteName" value={editFormData.siteName || ''} onChange={handleEditInputChange} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tanggal Backup Power</label>
+              <input type="date" className="form-control" name="backupDate" value={editFormData.backupDate || ''} onChange={handleEditInputChange} required />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">NOP</label>
+              <select className="form-control" name="nop" value={editFormData.nop || ''} onChange={handleEditInputChange}>
+                <option value="">Pilih NOP...</option>
+                <option value="Karawang">Karawang</option>
+                <option value="Serang">Serang</option>
+                <option value="Tangerang">Tangerang</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">TO Cluster</label>
+              <select className="form-control" name="cluster" value={editFormData.cluster || ''} onChange={handleEditInputChange}>
+                <option value="">Pilih TO Cluster...</option>
+                <option value="TO Kab. Bekasi">TO Kab. Bekasi</option>
+                <option value="TO Karawang">TO Karawang</option>
+                <option value="TO Purwakarta">TO Purwakarta</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Penyebab Pemadaman</label>
+              <input type="text" className="form-control" name="outageCause" value={editFormData.outageCause || ''} onChange={handleEditInputChange} placeholder="Contoh: Gardu PLN meledak" />
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Log Jam & Mesin</h3>
+          
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Tanggal & Waktu PLN Off</label>
+              <input type="datetime-local" className="form-control" name="plnOffTime" value={editFormData.plnOffTime || ''} onChange={handleEditInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tanggal & Waktu Mulai Backup</label>
+              <input type="datetime-local" className="form-control" name="backupStartTime" value={editFormData.backupStartTime || ''} onChange={handleEditInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">RH Sebelum Backup (Angka)</label>
+              <input type="number" step="any" className="form-control" name="rhBefore" value={editFormData.rhBefore || ''} onChange={handleEditInputChange} />
+            </div>
+          </div>
+
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Tanggal & Waktu PLN On</label>
+              <input type="datetime-local" className="form-control" name="plnOnTime" value={editFormData.plnOnTime || ''} onChange={handleEditInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tanggal & Waktu Selesai Backup</label>
+              <input type="datetime-local" className="form-control" name="backupEndTime" value={editFormData.backupEndTime || ''} onChange={handleEditInputChange} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">RH Sesudah Backup (Angka)</label>
+              <input type="number" step="any" className="form-control" name="rhAfter" value={editFormData.rhAfter || ''} onChange={handleEditInputChange} />
+            </div>
+          </div>
+
+          <h3 style={{ fontSize: '1.2rem', margin: '2rem 0 1.5rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.5rem' }}>Dokumentasi Foto</h3>
+          
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+            {renderEditUploadBox('photoOutageCause', 'Foto Penyebab Pemadaman')}
+            {renderEditUploadBox('photoPlnOff', 'Foto Ketika PLN Off')}
+            {renderEditUploadBox('photoRhBefore', 'Foto RH Sebelum Backup')}
+            {renderEditUploadBox('photoPlnOn', 'Foto Ketika PLN On')}
+            {renderEditUploadBox('photoRhAfter', 'Foto RH Sesudah Backup')}
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
+            <button type="submit" className="btn btn-primary" disabled={isUpdating} style={{ padding: '0.8rem 2rem', fontSize: '1rem' }}>
+              {isUpdating ? (
+                <><Loader2 size={18} className="spin" style={{ marginRight: '8px' }} /> Menyimpan...</>
+              ) : (
+                <><Save size={18} style={{ marginRight: '8px' }} /> Simpan Perubahan</>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  }
+
   if (previewReport) {
     return (
       <div className="glass-panel animate-fade-in-up" style={{ padding: '2rem' }}>
@@ -452,6 +670,9 @@ function AdminBackupPowerView() {
                       </td>
                       <td>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <button className="btn-icon btn-small" onClick={() => handleEditClick(rep)} title="Edit Laporan">
+                            <Edit size={16} />
+                          </button>
                           <button className="btn-icon btn-small" onClick={() => setPreviewReport(rep)} title="Preview Laporan">
                             <ImageIcon size={16} />
                           </button>

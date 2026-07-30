@@ -85,6 +85,51 @@ router.post('/', async (req, res) => {
   }
 });
 
+// PUT report (Admin edit)
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { 
+      ticketNo, siteId, siteName, backupDate, nop, cluster, 
+      plnOffTime, rhBefore, backupStartTime, plnOnTime, rhAfter, backupEndTime, outageCause,
+      photoOutageCause, photoPlnOff, photoRhBefore, photoPlnOn, photoRhAfter
+    } = req.body;
+
+    const updatedReport = await db.update(backupPowerReports)
+      .set({
+        ticketNo,
+        siteId,
+        siteName,
+        backupDate,
+        nop,
+        cluster,
+        plnOffTime,
+        rhBefore: rhBefore ? Number(rhBefore) : null,
+        backupStartTime,
+        plnOnTime,
+        rhAfter: rhAfter ? Number(rhAfter) : null,
+        backupEndTime,
+        outageCause,
+        photoOutageCause,
+        photoPlnOff,
+        photoRhBefore,
+        photoPlnOn,
+        photoRhAfter
+      })
+      .where(eq(backupPowerReports.id, id))
+      .returning();
+
+    if (updatedReport.length === 0) {
+      return res.status(404).json({ error: 'Report not found' });
+    }
+
+    res.json(updatedReport[0]);
+  } catch (error) {
+    console.error('Error updating backup power report:', error);
+    res.status(500).json({ error: 'Failed to update backup power report' });
+  }
+});
+
 // DELETE report (Admin only)
 router.delete('/:id', async (req, res) => {
   try {
