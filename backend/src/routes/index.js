@@ -9,6 +9,7 @@ import empRequestRoutes from './employee/requests.js';
 import empReportRoutes from './employee/reports.js';
 import empProfileRoutes from './employee/profile.js';
 import backupPowerRoutes from './backupPower.js';
+import dashboardDataRoutes from './dashboardData.js';
 import { verifyToken, verifyAdmin } from '../middleware/authMiddleware.js';
 
 const router = Router();
@@ -27,5 +28,6 @@ router.use('/employee/requests', verifyToken, empRequestRoutes);
 router.use('/employee/reports', verifyToken, empReportRoutes);
 router.use('/employee/profile', verifyToken, empProfileRoutes);
 router.use('/backup-power', verifyToken, backupPowerRoutes);
+router.use('/dashboard-data', verifyToken, dashboardDataRoutes);
 
 export default router;

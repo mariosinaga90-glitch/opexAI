@@ -25,6 +25,18 @@ sqlite.pragma('foreign_keys = ON');
 // Auto-migrate new columns safely
 try { sqlite.exec("ALTER TABLE users ADD COLUMN isLocked INTEGER DEFAULT 0;"); } catch (e) {}
 try { sqlite.exec("ALTER TABLE backup_power_reports ADD COLUMN photoOutageCause TEXT;"); } catch (e) {}
+try {
+  sqlite.exec(`
+    CREATE TABLE IF NOT EXISTS dashboard_data (
+      id TEXT PRIMARY KEY,
+      datasetId TEXT NOT NULL UNIQUE,
+      fileName TEXT,
+      data TEXT,
+      columns TEXT,
+      uploadedAt INTEGER DEFAULT (strftime('%s', 'now'))
+    );
+  `);
+} catch (e) { console.error('Auto-migration failed for dashboard_data:', e); }
 
 export const db = drizzle(sqlite, { schema });
 

@@ -128,3 +128,12 @@ export const backupPowerReports = sqliteTable('backup_power_reports', {
   photoRhAfter: text('photoRhAfter'),
   createdAt: integer('createdAt', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
 });
+
+export const dashboardData = sqliteTable('dashboard_data', {
+  id: text('id').primaryKey(),
+  datasetId: text('datasetId').notNull().unique(), // e.g. 'ticketAuto'
+  fileName: text('fileName'),
+  data: text('data'), // JSON string of row data
+  columns: text('columns'), // JSON string of columns
+  uploadedAt: integer('uploadedAt', { mode: 'timestamp' }).default(sql`(strftime('%s', 'now'))`),
+});
