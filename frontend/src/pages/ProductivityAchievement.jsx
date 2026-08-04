@@ -28,11 +28,24 @@ const DATASET_CONFIGS = [
 
 const getPreviewColumns = (configId, allColumns) => {
   if (configId === 'dataPic') {
-    const targetKeywords = ['pic', 'nop', 'cluster', 'role'];
-    const matched = allColumns.filter(col => {
-      const lower = col.toLowerCase();
-      return targetKeywords.some(kw => lower.includes(kw));
+    const orderedKeywords = ['pic', 'nop', 'cluster', 'role'];
+    const matched = [];
+    
+    orderedKeywords.forEach(kw => {
+      // Try exact match first
+      let match = allColumns.find(col => col.toLowerCase() === kw);
+      if (!match) {
+        // Fallback to partial match
+        match = allColumns.find(col => col.toLowerCase().includes(kw));
+      }
+      // Avoid duplicates if a column matched multiple keywords
+      if (match && !matched.includes(match)) {
+        matched.push(match);
+      }
     });
+    
+    // If it found at least some of our desired columns, show them. 
+    // Otherwise fallback to the first 8 columns.
     if (matched.length > 0) return matched;
   }
   return allColumns.slice(0, 8);
