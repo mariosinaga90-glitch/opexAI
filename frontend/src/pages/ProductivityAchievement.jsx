@@ -30,6 +30,9 @@ const getPreviewColumns = (configId, allColumns) => {
   if (configId === 'dataPic') {
     return ['PIC', 'NOP', 'Cluster', 'Role'];
   }
+  if (configId === 'ticketFna') {
+    return ['No Ticket', 'Site', 'Site name', 'Area name', 'Regional name', 'NOP name', 'Cluster name', 'Status'];
+  }
   return allColumns.slice(0, 8);
 };
 
@@ -586,7 +589,7 @@ const ProductivityAchievement = () => {
                               <tr key={i} style={{ backgroundColor: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
                                 {getPreviewColumns(config.id, ds.columns).map(col => (
                                   <td key={`${i}-${col}`} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {config.id === 'dataPic' ? getCellValue(row, col, ds.columns) : row[col]}
+                                    {['dataPic', 'ticketFna'].includes(config.id) ? getCellValue(row, col, ds.columns) : row[col]}
                                   </td>
                                 ))}
                               </tr>
