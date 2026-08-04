@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User, Download } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User, Download, TrendingUp } from 'lucide-react';
 import TutorialGuide from './TutorialGuide';
 import '../pages/Dashboard.css';
 
@@ -65,6 +65,7 @@ function DashboardLayout({ role }) {
     { name: 'Pengajuan', path: '/employee#pengajuan', icon: FileText },
     { name: 'Laporan', path: '/employee#laporan', icon: CheckSquare },
     { name: 'Report Backup Power', path: '/employee/backup-power', icon: BatteryCharging },
+    { name: 'Productivity', path: '/employee/productivity', icon: TrendingUp },
     { name: 'Edit Profil', path: '/employee#profile', icon: User },
   ];
 
@@ -73,6 +74,7 @@ function DashboardLayout({ role }) {
     { name: 'Daftar Pengajuan', path: '/admin#pengajuan', icon: FileText },
     { name: 'Review Laporan', path: '/admin#laporan', icon: CheckSquare },
     { name: 'Data Backup Power', path: '/admin/backup-power', icon: BatteryCharging },
+    { name: 'Productivity', path: '/admin/productivity', icon: TrendingUp },
     { name: 'Manajemen Pengguna', path: '/admin#users', icon: Users },
     { name: 'Pengaturan', path: '/admin#settings', icon: Settings },
   ];
