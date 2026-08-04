@@ -28,27 +28,17 @@ const DATASET_CONFIGS = [
 
 const getPreviewColumns = (configId, allColumns) => {
   if (configId === 'dataPic') {
-    const orderedKeywords = ['pic', 'nop', 'cluster', 'role'];
-    const matched = [];
-    
-    orderedKeywords.forEach(kw => {
-      // Try exact match first
-      let match = allColumns.find(col => col.toLowerCase() === kw);
-      if (!match) {
-        // Fallback to partial match
-        match = allColumns.find(col => col.toLowerCase().includes(kw));
-      }
-      // Avoid duplicates if a column matched multiple keywords
-      if (match && !matched.includes(match)) {
-        matched.push(match);
-      }
-    });
-    
-    // If it found at least some of our desired columns, show them. 
-    // Otherwise fallback to the first 8 columns.
-    if (matched.length > 0) return matched;
+    return ['PIC', 'NOP', 'Cluster', 'Role'];
   }
   return allColumns.slice(0, 8);
+};
+
+// Helper function to safely get cell value even if case or whitespace differs
+const getCellValue = (row, colName, allColumns) => {
+  if (row[colName] !== undefined) return row[colName];
+  // Find a matching key in the actual columns
+  const match = allColumns.find(c => c.toLowerCase().includes(colName.toLowerCase()));
+  return match ? row[match] : '-';
 };
 
 const ProductivityAchievement = () => {
@@ -587,7 +577,7 @@ const ProductivityAchievement = () => {
                               <tr key={i} style={{ backgroundColor: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
                                 {getPreviewColumns(config.id, ds.columns).map(col => (
                                   <td key={`${i}-${col}`} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                                    {row[col]}
+                                    {config.id === 'dataPic' ? getCellValue(row, col, ds.columns) : row[col]}
                                   </td>
                                 ))}
                               </tr>
