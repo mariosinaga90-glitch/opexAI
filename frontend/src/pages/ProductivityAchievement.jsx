@@ -22,7 +22,8 @@ const DATASET_CONFIGS = [
   { id: 'ticketAuto', label: 'Ticket Auto', color: '#38bdf8' },
   { id: 'ticketFna', label: 'Ticket FNA', color: '#818cf8' },
   { id: 'pmSite', label: 'Ticket PM Site', color: '#10b981' },
-  { id: 'pmGenset', label: 'Ticket PM Genset', color: '#f59e0b' }
+  { id: 'pmGenset', label: 'Ticket PM Genset', color: '#f59e0b' },
+  { id: 'dataPic', label: 'Data PIC', color: '#c084fc' }
 ];
 
 const ProductivityAchievement = () => {
@@ -30,7 +31,8 @@ const ProductivityAchievement = () => {
     ticketAuto: { data: [], columns: [], fileName: '' },
     ticketFna: { data: [], columns: [], fileName: '' },
     pmSite: { data: [], columns: [], fileName: '' },
-    pmGenset: { data: [], columns: [], fileName: '' }
+    pmGenset: { data: [], columns: [], fileName: '' },
+    dataPic: { data: [], columns: [], fileName: '' }
   });
 
   const [error, setError] = useState('');
@@ -179,19 +181,21 @@ const ProductivityAchievement = () => {
       ...datasets.ticketAuto.data, 
       ...datasets.ticketFna.data,
       ...datasets.pmSite.data,
-      ...datasets.pmGenset.data
+      ...datasets.pmGenset.data,
+      ...datasets.dataPic.data
     ];
-  }, [datasets.ticketAuto.data, datasets.ticketFna.data, datasets.pmSite.data, datasets.pmGenset.data]);
+  }, [datasets.ticketAuto.data, datasets.ticketFna.data, datasets.pmSite.data, datasets.pmGenset.data, datasets.dataPic.data]);
 
   const fmeColumns = useMemo(() => {
     const cols = new Set([
       ...datasets.ticketAuto.columns, 
       ...datasets.ticketFna.columns,
       ...datasets.pmSite.columns,
-      ...datasets.pmGenset.columns
+      ...datasets.pmGenset.columns,
+      ...datasets.dataPic.columns
     ]);
     return Array.from(cols);
-  }, [datasets.ticketAuto.columns, datasets.ticketFna.columns, datasets.pmSite.columns, datasets.pmGenset.columns]);
+  }, [datasets.ticketAuto.columns, datasets.ticketFna.columns, datasets.pmSite.columns, datasets.pmGenset.columns, datasets.dataPic.columns]);
 
   const pmData = useMemo(() => {
     return [...datasets.pmSite.data, ...datasets.pmGenset.data];
@@ -281,12 +285,14 @@ const ProductivityAchievement = () => {
     const fnaCount = applyFilters(datasets.ticketFna.data).length;
     const siteCount = applyFilters(datasets.pmSite.data).length;
     const gensetCount = applyFilters(datasets.pmGenset.data).length;
+    const picCount = applyFilters(datasets.dataPic.data).length;
 
     return [
       { name: 'Total Tiket Auto', value: autoCount },
       { name: 'Total Ticket FNA', value: fnaCount },
       { name: 'Total Ticket PM Site', value: siteCount },
-      { name: 'Total Ticket PM Genset', value: gensetCount }
+      { name: 'Total Ticket PM Genset', value: gensetCount },
+      { name: 'Total Data PIC', value: picCount }
     ].filter(item => item.value > 0);
   }, [datasets, filters]);
   const donutDataStatus = useMemo(() => {
