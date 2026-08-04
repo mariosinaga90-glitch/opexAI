@@ -427,8 +427,13 @@ const ProductivityAchievement = () => {
     const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
 
     picData.forEach(row => {
+      const picName = row[picNameCol] || 'Unknown';
       if (row[picNopCol]) {
-        nopToPic[String(row[picNopCol]).trim().toLowerCase()] = row[picNameCol] || 'Unknown';
+        nopToPic[String(row[picNopCol]).trim().toLowerCase()] = picName;
+      }
+      if (row[picNameCol]) {
+        // Juga map nama ke nama itu sendiri (berjaga-jaga jika Ticket Auto isinya langsung nama)
+        nopToPic[String(row[picNameCol]).trim().toLowerCase()] = picName;
       }
     });
 
@@ -436,7 +441,8 @@ const ProductivityAchievement = () => {
     const groupedByPic = {};
     
     // Find Ticket Auto columns
-    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || 'PIC Take Over Ticket';
+    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
+    const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
 
     autoData.forEach(row => {
@@ -458,8 +464,15 @@ const ProductivityAchievement = () => {
       }
       checkIn = checkIn.replace(/\./g, '-'); 
       
-      const lookupKey = row[autoPicTakeOverCol] ? String(row[autoPicTakeOverCol]).trim().toLowerCase() : null;
-      const pic = lookupKey ? (nopToPic[lookupKey] || 'Unknown PIC') : 'Unknown PIC';
+      // Coba ambil dari PIC Take Over, jika tidak ada/kosong, fallback ke NOP
+      let lookupVal = autoPicTakeOverCol ? row[autoPicTakeOverCol] : null;
+      if (!lookupVal && autoNopCol) {
+        lookupVal = row[autoNopCol];
+      }
+      
+      const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
+      // Jika pic tidak ditemukan di mapping, gunakan nilai aslinya jika ada (sebagai fallback), jika tidak ada tulis Unknown
+      const pic = lookupKey ? (nopToPic[lookupKey] || lookupVal || 'Unknown PIC') : 'Unknown PIC';
 
       checkInSet.add(checkIn);
 
