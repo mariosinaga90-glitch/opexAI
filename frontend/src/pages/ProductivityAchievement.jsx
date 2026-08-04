@@ -694,7 +694,7 @@ const ProductivityAchievement = () => {
                         ))}
                       </Pie>
                       <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }}/>
+                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }} formatter={(value) => value.replace('Total Ticket ', '').replace('Total Tiket ', '').replace('Total ', '')} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -724,7 +724,7 @@ const ProductivityAchievement = () => {
                         ))}
                       </Pie>
                       <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }}/>
+                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }} formatter={(value) => value.replace('Total Ticket ', '').replace('Total Tiket ', '').replace('Total ', '')} />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
