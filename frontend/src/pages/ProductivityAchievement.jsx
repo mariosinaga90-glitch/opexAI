@@ -33,12 +33,24 @@ const getPreviewColumns = (configId, allColumns) => {
   return allColumns.slice(0, 8);
 };
 
-// Helper function to safely get cell value even if case or whitespace differs
 const getCellValue = (row, colName, allColumns) => {
   if (row[colName] !== undefined) return row[colName];
   // Find a matching key in the actual columns
   const match = allColumns.find(c => c.toLowerCase().includes(colName.toLowerCase()));
   return match ? row[match] : '-';
+};
+
+const renderCustomLabel = ({ cx, cy, midAngle, outerRadius, percent, name }) => {
+  if (percent < 0.05) return null; // Hanya tampilkan jika > 5% agar tidak menumpuk
+  const RADIAN = Math.PI / 180;
+  const radius = outerRadius + 15;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  return (
+    <text x={x} y={y} fill="#e2e8f0" fontSize={10} textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central">
+      {name.replace('Total Ticket ', '').replace('Total Tiket ', '')}
+    </text>
+  );
 };
 
 const ProductivityAchievement = () => {
@@ -673,6 +685,8 @@ const ProductivityAchievement = () => {
                         paddingAngle={2} 
                         dataKey="value" 
                         nameKey="name" 
+                        label={renderCustomLabel}
+                        labelLine={false}
                         style={{ fontSize: '0.75rem' }}
                       >
                         {donutData.map((entry, index) => (
@@ -701,6 +715,8 @@ const ProductivityAchievement = () => {
                         paddingAngle={2} 
                         dataKey="value" 
                         nameKey="name" 
+                        label={renderCustomLabel}
+                        labelLine={false}
                         style={{ fontSize: '0.75rem' }}
                       >
                         {donutDataStatus.map((entry, index) => (
