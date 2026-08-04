@@ -111,6 +111,7 @@ const ProductivityAchievement = () => {
 
   // Filter State
   const [filters, setFilters] = useState({});
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [activeTab, setActiveTab] = useState('raw_data'); // Default to raw_data initially so they see the upload boxes
   const [showConfig, setShowConfig] = useState(true);
 
@@ -275,11 +276,11 @@ const ProductivityAchievement = () => {
   // -----------------------------------------------------
   const fmeData = useMemo(() => {
     return [
-      ...datasets.ticketAuto.data, 
-      ...datasets.ticketFna.data,
-      ...datasets.pmSite.data,
-      ...datasets.pmGenset.data,
-      ...datasets.dataPic.data
+      ...datasets.ticketAuto.data.map(row => ({ ...row, _source: 'ticketAuto' })), 
+      ...datasets.ticketFna.data.map(row => ({ ...row, _source: 'ticketFna' })),
+      ...datasets.pmSite.data.map(row => ({ ...row, _source: 'pmSite' })),
+      ...datasets.pmGenset.data.map(row => ({ ...row, _source: 'pmGenset' })),
+      ...datasets.dataPic.data.map(row => ({ ...row, _source: 'dataPic' }))
     ];
   }, [datasets.ticketAuto.data, datasets.ticketFna.data, datasets.pmSite.data, datasets.pmGenset.data, datasets.dataPic.data]);
 
@@ -335,14 +336,43 @@ const ProductivityAchievement = () => {
   // -----------------------------------------------------
   const filteredData = useMemo(() => {
     return activeData.filter(row => {
+      // 1. Slicers
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All' && String(row[key]) !== String(val)) {
           return false;
         }
       }
+      
+      // 2. Date Range Filter
+      if (dateRange.start || dateRange.end) {
+        let rowDateStr = row[fmeConfig.timeCol];
+        
+        // Coba baca dari kolom 'Check In At' jika tidak ada di kolom waktu fmeConfig, khususnya untuk ticketAuto
+        if (!rowDateStr && row._source === 'ticketAuto') {
+          const autoCheckInCol = Object.keys(row).find(c => c.toLowerCase().trim().includes('check in at')) || 'Check In At';
+          rowDateStr = row[autoCheckInCol];
+        }
+
+        if (rowDateStr) {
+          let jsDate;
+          if (!isNaN(rowDateStr) && Number(rowDateStr) > 10000) {
+            jsDate = new Date((Number(rowDateStr) - 25569) * 86400 * 1000);
+          } else {
+            jsDate = new Date(String(rowDateStr).split(' ')[0]);
+          }
+          
+          if (!isNaN(jsDate.getTime())) {
+            const time = jsDate.getTime();
+            if (dateRange.start && time < new Date(dateRange.start).getTime()) return false;
+            // set end date to end of day
+            if (dateRange.end && time > new Date(dateRange.end).getTime() + 86399999) return false;
+          }
+        }
+      }
+      
       return true;
     });
-  }, [activeData, filters]);
+  }, [activeData, filters, dateRange, fmeConfig.timeCol]);
 
   // Dynamic Extract Unique Values for Dropdowns
   const getUniqueValues = (col) => {
@@ -420,7 +450,7 @@ const ProductivityAchievement = () => {
   const productivityTeamData = useMemo(() => {
     const nopToPic = {};
     const picData = datasets.dataPic?.data || [];
-    const autoData = datasets.ticketAuto?.data || [];
+    const autoData = filteredData.filter(row => row._source === 'ticketAuto');
     
     // Find column names case-insensitively just in case
     const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
@@ -502,7 +532,7 @@ const ProductivityAchievement = () => {
       data: Object.values(groupedByPic).sort((a,b) => b.Total - a.Total).slice(0, 50), // limit top 50 PICs to prevent overwhelming chart
       columns: Array.from(checkInSet).sort()
     };
-  }, [datasets.ticketAuto, datasets.dataPic]);
+  }, [filteredData, datasets.dataPic]);
 
   const formatDateForDisplay = (dateStr) => {
     const jsDate = new Date(dateStr);
@@ -614,6 +644,24 @@ const ProductivityAchievement = () => {
               </select>
             </div>
           ))}
+          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.75rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginRight: '0.5rem' }}>Start Date:</span>
+            <input 
+              type="date" 
+              value={dateRange.start} 
+              onChange={(e) => setDateRange({...dateRange, start: e.target.value})}
+              style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '0.75rem', outline: 'none', fontWeight: 600, colorScheme: 'dark' }}
+            />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.75rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginRight: '0.5rem' }}>End Date:</span>
+            <input 
+              type="date" 
+              value={dateRange.end} 
+              onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
+              style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '0.75rem', outline: 'none', fontWeight: 600, colorScheme: 'dark' }}
+            />
+          </div>
         </div>
       )}
 
