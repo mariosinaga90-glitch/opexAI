@@ -953,35 +953,35 @@ const ProductivityAchievement = () => {
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
               <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity Team (Pivot Table)</h3>
-                <div style={{ overflowX: 'auto' }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.875rem' }}>
-                    <thead>
-                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
-                        <th style={{ padding: '0.75rem', textAlign: 'left', minWidth: '150px' }}>PIC</th>
+                <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '350px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }} className="custom-scrollbar">
+                  <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.75rem' }}>
+                    <thead style={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: 'rgba(15, 23, 42, 0.95)', boxShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>
+                      <tr>
+                        <th style={{ padding: '0.4rem 0.6rem', textAlign: 'left', minWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>PIC</th>
                         {productivityTeamData.columns.map(col => (
-                          <th key={col} style={{ padding: '0.75rem', textAlign: 'center', whiteSpace: 'nowrap' }}>{formatDateForDisplay(col)}</th>
+                          <th key={col} style={{ padding: '0.4rem 0.6rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{formatDateForDisplay(col)}</th>
                         ))}
-                        <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Grand Total</th>
+                        <th style={{ padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
                       </tr>
                     </thead>
                     <tbody>
                       {productivityTeamData.data.map((row, idx) => (
-                        <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                          <td style={{ padding: '0.75rem' }}>{row.name}</td>
+                        <tr key={idx} style={{ backgroundColor: idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.02)' }}>
+                          <td style={{ padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{row.name}</td>
                           {productivityTeamData.columns.map(col => (
-                            <td key={col} style={{ padding: '0.75rem', textAlign: 'center' }}>{row[col] || 0}</td>
+                            <td key={col} style={{ padding: '0.4rem 0.6rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.2)' }}>{row[col] || '-'}</td>
                           ))}
-                          <td style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>{row.Total}</td>
+                          <td style={{ padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
                         </tr>
                       ))}
                       {productivityTeamData.data.length > 0 && (
-                        <tr style={{ backgroundColor: 'rgba(255,255,255,0.05)', fontWeight: 'bold', borderTop: '2px solid rgba(255,255,255,0.2)' }}>
-                          <td style={{ padding: '0.75rem' }}>Grand Total</td>
+                        <tr style={{ backgroundColor: 'rgba(30, 41, 59, 0.95)', fontWeight: 'bold', position: 'sticky', bottom: 0, zIndex: 1, boxShadow: '0 -1px 2px rgba(0,0,0,0.5)' }}>
+                          <td style={{ padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Grand Total</td>
                           {productivityTeamData.columns.map(col => {
                             const colTotal = productivityTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                            return <td key={col} style={{ padding: '0.75rem', textAlign: 'center' }}>{colTotal}</td>;
+                            return <td key={col} style={{ padding: '0.4rem 0.6rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || '-'}</td>;
                           })}
-                          <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                          <td style={{ padding: '0.4rem 0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
                             {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
                           </td>
                         </tr>
