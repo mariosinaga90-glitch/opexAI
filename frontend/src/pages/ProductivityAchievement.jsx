@@ -289,7 +289,15 @@ const ProductivityAchievement = () => {
       { name: 'Total Ticket PM Genset', value: gensetCount }
     ].filter(item => item.value > 0);
   }, [datasets, filters]);
-
+  const donutDataStatus = useMemo(() => {
+    if (!fmeConfig.statusCol) return [];
+    const grouped = {};
+    filteredData.forEach(row => {
+      const s = String(row[fmeConfig.statusCol]) || 'Unknown';
+      grouped[s] = (grouped[s] || 0) + 1;
+    });
+    return Object.entries(grouped).map(([name, value]) => ({ name, value })).sort((a,b) => b.value - a.value);
+  }, [filteredData, fmeConfig.statusCol]);
   const trendData = useMemo(() => {
     if (!fmeConfig.timeCol) return [];
     const timeMap = {};
@@ -537,12 +545,11 @@ const ProductivityAchievement = () => {
               </div>
             </div>
 
-            {/* Middle Section: Charts Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1rem' }}>
-              
-              {/* Donut Chart */}
-              <div className="glass-panel" style={{ padding: '1rem', height: '350px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white', textAlign: 'center' }}>Total Ticket</h3>
+            {/* Middle Section: 2 Donut Charts */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              {/* Donut Chart 1: Total Ticket */}
+              <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Total Ticket</h3>
                 <div style={{ flex: 1 }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
@@ -550,26 +557,59 @@ const ProductivityAchievement = () => {
                         data={donutData} 
                         cx="50%" 
                         cy="50%" 
-                        innerRadius={55} 
-                        outerRadius={85} 
+                        innerRadius={45} 
+                        outerRadius={70} 
                         paddingAngle={2} 
                         dataKey="value" 
                         nameKey="name" 
-                        label={({ name, percent }) => `${name.replace('Total Ticket ', '').replace('Total Tiket ', '')} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name }) => name.replace('Total Ticket ', '').replace('Total Tiket ', '')}
                         labelLine={{ stroke: 'rgba(255,255,255,0.2)' }}
+                        style={{ fontSize: '0.75rem' }}
                       >
                         {donutData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={getColorForStatus(entry.name, index)} />
                         ))}
                       </Pie>
                       <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend verticalAlign="bottom" height={36}/>
+                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }}/>
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
-              {/* Stacked Bar Chart for Trends */}
+              {/* Donut Chart 2: Proporsi Status */}
+              <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Proporsi Status</h3>
+                <div style={{ flex: 1 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie 
+                        data={donutDataStatus} 
+                        cx="50%" 
+                        cy="50%" 
+                        innerRadius={45} 
+                        outerRadius={70} 
+                        paddingAngle={2} 
+                        dataKey="value" 
+                        nameKey="name" 
+                        label={({ name }) => name}
+                        labelLine={{ stroke: 'rgba(255,255,255,0.2)' }}
+                        style={{ fontSize: '0.75rem' }}
+                      >
+                        {donutDataStatus.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={getColorForStatus(entry.name, index)} />
+                        ))}
+                      </Pie>
+                      <RechartsTooltip content={<CustomTooltip />} />
+                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }}/>
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+
+            {/* Stacked Bar Chart for Trends */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
               <div className="glass-panel" style={{ padding: '1rem', height: '350px', display: 'flex', flexDirection: 'column' }}>
                 <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Trend {fmeConfig.statusCol} per {fmeConfig.timeCol}</h3>
                 <div style={{ flex: 1 }}>
