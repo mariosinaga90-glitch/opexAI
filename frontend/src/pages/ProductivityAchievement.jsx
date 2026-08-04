@@ -137,6 +137,79 @@ const ProductivityAchievement = () => {
     }
   };
 
+  const handleDownloadTemplate = () => {
+    const wb = XLSX.utils.book_new();
+    DATASET_CONFIGS.forEach(config => {
+      // Create empty sheet with dummy headers so user knows where to paste
+      const wsData = [['Kolom 1', 'Kolom 2', 'Kolom 3']];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, config.label);
+    });
+    XLSX.writeFile(wb, 'Opex_Productivity_Template.xlsx');
+  };
+
+  const handleMasterUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          setLoading(true);
+          const workbook = XLSX.read(evt.target.result, { type: 'binary' });
+          let successCount = 0;
+          
+          for (let i = 0; i < DATASET_CONFIGS.length; i++) {
+            const config = DATASET_CONFIGS[i];
+            const sheetName = workbook.SheetNames.find(n => n === config.label) || workbook.SheetNames[i];
+            if (!sheetName) continue;
+            
+            const worksheet = workbook.Sheets[sheetName];
+            if (!worksheet) continue;
+
+            const jsonData = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+            
+            if (jsonData.length > 0) {
+              const cols = Object.keys(jsonData[0]);
+              
+              const res = await fetch(`${API_BASE_URL}/dashboard-data`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  datasetId: config.id,
+                  fileName: `${file.name} - ${sheetName}`,
+                  data: jsonData,
+                  columns: cols
+                })
+              });
+              
+              if (res.ok) {
+                setDatasets(prev => ({
+                  ...prev,
+                  [config.id]: { data: jsonData, columns: cols, fileName: `${file.name} - ${sheetName}` }
+                }));
+                successCount++;
+              }
+            }
+          }
+          
+          if (successCount === 0) {
+            setError('Gagal membaca data dari template excel, pastikan tidak kosong.');
+          } else {
+            setError('');
+            alert(`Berhasil mengupload ${successCount} sheet!`);
+          }
+        } catch (err) {
+          console.error(err);
+          setError('Gagal memproses master file.');
+        } finally {
+          setLoading(false);
+          e.target.value = null; // reset input
+        }
+      };
+      reader.readAsBinaryString(file);
+    }
+  };
+
   const removeDataset = async (datasetId) => {
     try {
       setLoading(true);
@@ -422,8 +495,28 @@ const ProductivityAchievement = () => {
       )}
 
       {activeTab === 'raw_data' ? (
-        /* 4 RAW DATA UPLOAD SECTIONS */
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', flex: 1, overflowY: 'auto', paddingRight: '0.5rem', paddingBottom: '2rem' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1, overflowY: 'auto', paddingBottom: '2rem' }}>
+          
+          {/* Master Template Controls */}
+          <div className="glass-panel" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
+            <div>
+              <h3 style={{ margin: '0 0 0.5rem 0', color: 'white', fontSize: '1.125rem' }}>Master Template Excel</h3>
+              <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Gunakan satu file Excel dengan 5 sheet untuk mengunggah semua data sekaligus.</p>
+            </div>
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button onClick={handleDownloadTemplate} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'transparent', color: 'white', cursor: 'pointer' }}>
+                <Download size={16} /> Download Template
+              </button>
+              
+              <input type="file" id="upload-master" accept=".xlsx, .xls" onChange={handleMasterUpload} style={{ display: 'none' }} />
+              <label htmlFor="upload-master" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', background: 'var(--primary-color)', color: '#0f172a', fontWeight: 600, cursor: 'pointer', margin: 0 }}>
+                <UploadCloud size={16} /> Upload Master
+              </label>
+            </div>
+          </div>
+
+          {/* RAW DATA UPLOAD SECTIONS */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', paddingRight: '0.5rem' }}>
           {DATASET_CONFIGS.map(config => {
             const ds = datasets[config.id];
             const hasData = ds.data.length > 0;
@@ -488,6 +581,7 @@ const ProductivityAchievement = () => {
               </div>
             );
           })}
+          </div>
         </div>
       ) : activeTab === 'dashboard_fme' ? (
         fmeData.length > 0 ? (
