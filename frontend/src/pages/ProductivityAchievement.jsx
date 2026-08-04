@@ -436,7 +436,7 @@ const ProductivityAchievement = () => {
     const groupedByPic = {};
     
     // Find Ticket Auto columns
-    const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || 'PIC Take Over Ticket';
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
 
     autoData.forEach(row => {
@@ -458,8 +458,8 @@ const ProductivityAchievement = () => {
       }
       checkIn = checkIn.replace(/\./g, '-'); 
       
-      const nop = row[autoNopCol] ? String(row[autoNopCol]).trim().toLowerCase() : null;
-      const pic = nop ? (nopToPic[nop] || 'Unknown PIC') : 'Unknown PIC';
+      const lookupKey = row[autoPicTakeOverCol] ? String(row[autoPicTakeOverCol]).trim().toLowerCase() : null;
+      const pic = lookupKey ? (nopToPic[lookupKey] || 'Unknown PIC') : 'Unknown PIC';
 
       checkInSet.add(checkIn);
 
