@@ -417,6 +417,58 @@ const ProductivityAchievement = () => {
     return { data: result, statuses: Array.from(allStatuses) };
   }, [filteredData, fmeConfig.timeCol, fmeConfig.statusCol]);
 
+  const productivityTeamData = useMemo(() => {
+    const nopToPic = {};
+    const picData = datasets.dataPic?.data || [];
+    const autoData = datasets.ticketAuto?.data || [];
+    
+    // Find column names case-insensitively just in case
+    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
+
+    picData.forEach(row => {
+      if (row[picNopCol]) {
+        nopToPic[String(row[picNopCol]).trim().toLowerCase()] = row[picNameCol] || 'Unknown';
+      }
+    });
+
+    const checkInSet = new Set();
+    const groupedByPic = {};
+    
+    // Find Ticket Auto columns
+    const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
+
+    autoData.forEach(row => {
+      let checkInRaw = row[autoCheckInCol];
+      if (!checkInRaw) {
+        // Fallback search
+        const fallbackCheckIn = Object.keys(row).find(k => k.toLowerCase().includes('check in'));
+        if (fallbackCheckIn) checkInRaw = row[fallbackCheckIn];
+      }
+      
+      const checkInStr = String(checkInRaw || 'No Check In');
+      // Ambil bagian tanggal saja jika formatnya DateTime (misal "2024-05-10 14:00")
+      const checkIn = checkInStr.split(' ')[0]; 
+      
+      const nop = row[autoNopCol] ? String(row[autoNopCol]).trim().toLowerCase() : null;
+      const pic = nop ? (nopToPic[nop] || 'Unknown PIC') : 'Unknown PIC';
+
+      checkInSet.add(checkIn);
+
+      if (!groupedByPic[pic]) {
+        groupedByPic[pic] = { name: pic, Total: 0 };
+      }
+      groupedByPic[pic][checkIn] = (groupedByPic[pic][checkIn] || 0) + 1;
+      groupedByPic[pic].Total += 1;
+    });
+
+    return {
+      data: Object.values(groupedByPic).sort((a,b) => b.Total - a.Total).slice(0, 50), // limit top 50 PICs to prevent overwhelming chart
+      columns: Array.from(checkInSet).sort()
+    };
+  }, [datasets.ticketAuto, datasets.dataPic]);
+
   const statusCards = useMemo(() => {
     if (!fmeConfig.statusCol || !fmeConfig.categoryCol) return [];
     const grouped = {};
@@ -804,6 +856,27 @@ const ProductivityAchievement = () => {
                 })}
               </div>
 
+            </div>
+
+            {/* Productivity Team Pivot Chart */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
+              <div className="glass-panel" style={{ padding: '1rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity Team</h3>
+                <div style={{ flex: 1 }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={productivityTeamData.data} margin={{ top: 20, right: 30, left: 0, bottom: 50 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                      <XAxis dataKey="name" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 10 }} angle={-45} textAnchor="end" interval={0} />
+                      <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                      <RechartsTooltip content={<CustomTooltip />} />
+                      <Legend verticalAlign="top" height={36}/>
+                      {productivityTeamData.columns.map((col, index) => (
+                        <Bar key={col} dataKey={col} stackId="a" fill={STATUS_COLORS['Default'][index % STATUS_COLORS['Default'].length]} />
+                      ))}
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
 
           </div>
