@@ -471,8 +471,12 @@ const ProductivityAchievement = () => {
       }
       
       const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
-      // Jika pic tidak ditemukan di mapping, gunakan nilai aslinya jika ada (sebagai fallback), jika tidak ada tulis Unknown
-      const pic = lookupKey ? (nopToPic[lookupKey] || lookupVal || 'Unknown PIC') : 'Unknown PIC';
+      // Jika pic tidak ditemukan di mapping Data PIC, abaikan/hilangkan data ini
+      if (!lookupKey || !nopToPic[lookupKey]) {
+        return; // skip forEach iteration
+      }
+      
+      const pic = nopToPic[lookupKey];
 
       checkInSet.add(checkIn);
 
