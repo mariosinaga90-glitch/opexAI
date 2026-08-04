@@ -865,23 +865,45 @@ const ProductivityAchievement = () => {
 
             </div>
 
-            {/* Productivity Team Pivot Chart */}
+            {/* Productivity Team Pivot Table */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
-              <div className="glass-panel" style={{ padding: '1rem', height: '400px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity Team</h3>
-                <div style={{ flex: 1 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={productivityTeamData.data} margin={{ top: 20, right: 30, left: 0, bottom: 50 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                      <XAxis dataKey="name" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 10 }} angle={-45} textAnchor="end" interval={0} />
-                      <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                      <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend verticalAlign="top" height={36}/>
-                      {productivityTeamData.columns.map((col, index) => (
-                        <Bar key={col} dataKey={col} stackId="a" fill={STATUS_COLORS['Default'][index % STATUS_COLORS['Default'].length]} />
+              <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity Team (Pivot Table)</h3>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.875rem' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
+                        <th style={{ padding: '0.75rem', textAlign: 'left', minWidth: '150px' }}>PIC</th>
+                        {productivityTeamData.columns.map(col => (
+                          <th key={col} style={{ padding: '0.75rem', textAlign: 'center' }}>{col}</th>
+                        ))}
+                        <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Grand Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {productivityTeamData.data.map((row, idx) => (
+                        <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                          <td style={{ padding: '0.75rem' }}>{row.name}</td>
+                          {productivityTeamData.columns.map(col => (
+                            <td key={col} style={{ padding: '0.75rem', textAlign: 'center' }}>{row[col] || 0}</td>
+                          ))}
+                          <td style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>{row.Total}</td>
+                        </tr>
                       ))}
-                    </BarChart>
-                  </ResponsiveContainer>
+                      {productivityTeamData.data.length > 0 && (
+                        <tr style={{ backgroundColor: 'rgba(255,255,255,0.05)', fontWeight: 'bold', borderTop: '2px solid rgba(255,255,255,0.2)' }}>
+                          <td style={{ padding: '0.75rem' }}>Grand Total</td>
+                          {productivityTeamData.columns.map(col => {
+                            const colTotal = productivityTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
+                            return <td key={col} style={{ padding: '0.75rem', textAlign: 'center' }}>{colTotal}</td>;
+                          })}
+                          <td style={{ padding: '0.75rem', textAlign: 'center' }}>
+                            {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
