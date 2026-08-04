@@ -137,16 +137,7 @@ const ProductivityAchievement = () => {
     }
   };
 
-  const handleDownloadTemplate = () => {
-    const wb = XLSX.utils.book_new();
-    DATASET_CONFIGS.forEach(config => {
-      // Create empty sheet with dummy headers so user knows where to paste
-      const wsData = [['Kolom 1', 'Kolom 2', 'Kolom 3']];
-      const ws = XLSX.utils.aoa_to_sheet(wsData);
-      XLSX.utils.book_append_sheet(wb, ws, config.label);
-    });
-    XLSX.writeFile(wb, 'Opex_Productivity_Template.xlsx');
-  };
+
 
   const handleMasterUpload = (e) => {
     const file = e.target.files[0];
@@ -504,9 +495,7 @@ const ProductivityAchievement = () => {
               <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Gunakan satu file Excel dengan 5 sheet untuk mengunggah semua data sekaligus.</p>
             </div>
             <div style={{ display: 'flex', gap: '1rem' }}>
-              <button onClick={handleDownloadTemplate} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: 'transparent', color: 'white', cursor: 'pointer' }}>
-                <Download size={16} /> Download Template
-              </button>
+
               
               <input type="file" id="upload-master" accept=".xlsx, .xls" onChange={handleMasterUpload} style={{ display: 'none' }} />
               <label htmlFor="upload-master" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', background: 'var(--primary-color)', color: '#0f172a', fontWeight: 600, cursor: 'pointer', margin: 0 }}>
