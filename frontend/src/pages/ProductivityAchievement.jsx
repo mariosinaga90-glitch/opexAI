@@ -453,16 +453,27 @@ const ProductivityAchievement = () => {
         if (fallbackCheckIn) checkInRaw = row[fallbackCheckIn];
       }
       
-      const checkInStr = String(checkInRaw || 'No Check In');
-      // Ambil bagian tanggal saja jika formatnya DateTime (misal "2024-05-10 14:00")
-      let checkIn = checkInStr.split(' ')[0]; 
-      
-      // FIX: Jika checkIn berupa angka desimal (format serial date Excel misal 45422.3),
-      // hilangkan desimal atau ubah titik menjadi strip agar tidak error di Recharts (karena Recharts menganggap titik sebagai nested object path)
-      if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
-        checkIn = String(Math.floor(Number(checkInRaw)));
+      let checkIn = 'No Check In';
+      if (checkInRaw) {
+        if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
+          const jsDate = new Date((Number(checkInRaw) - 25569) * 86400 * 1000);
+          const yyyy = jsDate.getFullYear();
+          const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
+          const dd = String(jsDate.getDate()).padStart(2, '0');
+          checkIn = `${yyyy}-${mm}-${dd}`;
+        } else {
+          const checkInStr = String(checkInRaw).split(' ')[0];
+          const jsDate = new Date(checkInStr);
+          if (!isNaN(jsDate.getTime())) {
+            const yyyy = jsDate.getFullYear();
+            const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
+            const dd = String(jsDate.getDate()).padStart(2, '0');
+            checkIn = `${yyyy}-${mm}-${dd}`;
+          } else {
+            checkIn = checkInStr.replace(/\./g, '-');
+          }
+        }
       }
-      checkIn = checkIn.replace(/\./g, '-'); 
       
       // Coba ambil dari PIC Take Over, jika tidak ada/kosong, fallback ke NOP
       let lookupVal = autoPicTakeOverCol ? row[autoPicTakeOverCol] : null;
@@ -492,6 +503,14 @@ const ProductivityAchievement = () => {
       columns: Array.from(checkInSet).sort()
     };
   }, [datasets.ticketAuto, datasets.dataPic]);
+
+  const formatDateForDisplay = (dateStr) => {
+    const jsDate = new Date(dateStr);
+    if (!isNaN(jsDate.getTime())) {
+      return jsDate.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+    }
+    return dateStr;
+  };
 
   const statusCards = useMemo(() => {
     if (!fmeConfig.statusCol || !fmeConfig.categoryCol) return [];
@@ -892,7 +911,7 @@ const ProductivityAchievement = () => {
                       <tr style={{ backgroundColor: 'rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
                         <th style={{ padding: '0.75rem', textAlign: 'left', minWidth: '150px' }}>PIC</th>
                         {productivityTeamData.columns.map(col => (
-                          <th key={col} style={{ padding: '0.75rem', textAlign: 'center' }}>{col}</th>
+                          <th key={col} style={{ padding: '0.75rem', textAlign: 'center', whiteSpace: 'nowrap' }}>{formatDateForDisplay(col)}</th>
                         ))}
                         <th style={{ padding: '0.75rem', textAlign: 'center', fontWeight: 'bold' }}>Grand Total</th>
                       </tr>
