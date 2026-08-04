@@ -673,8 +673,6 @@ const ProductivityAchievement = () => {
                         paddingAngle={2} 
                         dataKey="value" 
                         nameKey="name" 
-                        label={({ name }) => name.replace('Total Ticket ', '').replace('Total Tiket ', '')}
-                        labelLine={{ stroke: 'rgba(255,255,255,0.2)' }}
                         style={{ fontSize: '0.75rem' }}
                       >
                         {donutData.map((entry, index) => (
@@ -703,8 +701,6 @@ const ProductivityAchievement = () => {
                         paddingAngle={2} 
                         dataKey="value" 
                         nameKey="name" 
-                        label={({ name }) => name}
-                        labelLine={{ stroke: 'rgba(255,255,255,0.2)' }}
                         style={{ fontSize: '0.75rem' }}
                       >
                         {donutDataStatus.map((entry, index) => (
