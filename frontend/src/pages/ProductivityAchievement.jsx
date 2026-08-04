@@ -517,8 +517,8 @@ const ProductivityAchievement = () => {
 
               
               <input type="file" id="upload-master" accept=".xlsx, .xls" onChange={handleMasterUpload} style={{ display: 'none' }} />
-              <label htmlFor="upload-master" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', background: 'var(--primary-color)', color: '#0f172a', fontWeight: 600, cursor: 'pointer', margin: 0 }}>
-                <UploadCloud size={16} /> Upload Master
+              <label htmlFor="upload-master" className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', background: 'var(--primary, #2563eb)', color: '#ffffff', fontWeight: 600, cursor: 'pointer', margin: 0, border: 'none' }}>
+                <UploadCloud size={16} /> Upload Data Excel
               </label>
             </div>
           </div>

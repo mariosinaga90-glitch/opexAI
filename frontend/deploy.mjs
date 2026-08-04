@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const ssh = new NodeSSH();
 const host = 'opextracker.com';
-const username = 'root'; // Updated username
+const username = 'root'; 
 const password = 'Simanjorang83';
 
 async function runDeploy() {
@@ -19,64 +19,34 @@ async function runDeploy() {
     });
     console.log('Connected!');
 
-    // Check OS and Nginx
-    const osResult = await ssh.execCommand('cat /etc/os-release');
-    console.log('OS Info:', osResult.stdout.substring(0, 100));
-
-    // Create web directory
-    console.log('Setting up web directory...');
-    await ssh.execCommand('mkdir -p /var/www/opexai');
-    await ssh.execCommand(`chown -R ${username}:${username} /var/www/opexai`);
-
-    // Upload files
-    console.log('Uploading files...');
+    // Upload files to a temporary location
+    console.log('Uploading files to temporary server location...');
+    await ssh.execCommand('mkdir -p /tmp/opexai-frontend-dist');
     const localDist = path.join(__dirname, 'dist');
-    await ssh.putDirectory(localDist, '/var/www/opexai', {
+    await ssh.putDirectory(localDist, '/tmp/opexai-frontend-dist', {
       recursive: true,
       concurrency: 10,
     });
     console.log('Upload complete.');
 
-    // Check Nginx installation
-    console.log('Checking Nginx...');
-    const nginxCheck = await ssh.execCommand('which nginx');
-    if (!nginxCheck.stdout) {
-      console.log('Installing Nginx...');
-      await ssh.execCommand('apt-get update');
-      await ssh.execCommand('apt-get install -y nginx');
+    // Inject files directly into the active Coolify container
+    console.log('Searching for active Coolify application container...');
+    const containerResult = await ssh.execCommand("docker ps --format '{{.Names}}' | grep dnudzs4iz4nfn5cptv0d93ib");
+    const containerName = containerResult.stdout.trim();
+    
+    if (containerName) {
+        console.log(`Found container: ${containerName}`);
+        console.log('Injecting new frontend build into the container...');
+        const cpResult = await ssh.execCommand(`docker cp /tmp/opexai-frontend-dist/. ${containerName}:/app/frontend/dist/`);
+        
+        if (cpResult.stderr) {
+            console.error('Warning during injection:', cpResult.stderr);
+        }
+        
+        console.log('Deployment successful! You can now access your app at http://opextracker.com');
+    } else {
+        console.error('Error: Could not find the active Coolify container. Is the backend running?');
     }
-
-    // Configure Nginx
-    console.log('Configuring Nginx...');
-    const nginxConfig = `
-server {
-    listen 80;
-    server_name opextracker.com www.opextracker.com;
-
-    root /var/www/opexai;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-}
-`;
-    // Write config to temp file and move it
-    await ssh.execCommand(`echo '${nginxConfig}' > /tmp/opexai`);
-    await ssh.execCommand('mv /tmp/opexai /etc/nginx/sites-available/opexai');
-    await ssh.execCommand('ln -sf /etc/nginx/sites-available/opexai /etc/nginx/sites-enabled/');
-
-    // Remove default nginx config to prevent conflicts on port 80
-    await ssh.execCommand('rm -f /etc/nginx/sites-enabled/default');
-
-    // Restart Nginx
-    console.log('Restarting Nginx...');
-    const restartResult = await ssh.execCommand('systemctl restart nginx');
-    if (restartResult.stderr) {
-      console.error('Nginx restart stderr:', restartResult.stderr);
-    }
-
-    console.log('Deployment successful! You can now access your app at http://opextracker.com');
 
     ssh.dispose();
   } catch (error) {
