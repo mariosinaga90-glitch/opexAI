@@ -380,10 +380,7 @@ const ProductivityAchievement = () => {
 
     return [
       { name: 'Total Tiket Auto', value: autoCount },
-      { name: 'Total Ticket FNA', value: fnaCount },
-      { name: 'Total Ticket PM Site', value: siteCount },
-      { name: 'Total Ticket PM Genset', value: gensetCount },
-      { name: 'Total Data PIC', value: picCount }
+      { name: 'Total Ticket FNA', value: fnaCount }
     ].filter(item => item.value > 0);
   }, [datasets, filters]);
   const donutDataStatus = useMemo(() => {
