@@ -449,7 +449,14 @@ const ProductivityAchievement = () => {
       
       const checkInStr = String(checkInRaw || 'No Check In');
       // Ambil bagian tanggal saja jika formatnya DateTime (misal "2024-05-10 14:00")
-      const checkIn = checkInStr.split(' ')[0]; 
+      let checkIn = checkInStr.split(' ')[0]; 
+      
+      // FIX: Jika checkIn berupa angka desimal (format serial date Excel misal 45422.3),
+      // hilangkan desimal atau ubah titik menjadi strip agar tidak error di Recharts (karena Recharts menganggap titik sebagai nested object path)
+      if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
+        checkIn = String(Math.floor(Number(checkInRaw)));
+      }
+      checkIn = checkIn.replace(/\./g, '-'); 
       
       const nop = row[autoNopCol] ? String(row[autoNopCol]).trim().toLowerCase() : null;
       const pic = nop ? (nopToPic[nop] || 'Unknown PIC') : 'Unknown PIC';
