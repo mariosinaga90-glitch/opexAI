@@ -4,7 +4,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, Legend, ResponsiveContainer,
   LineChart, Line, AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
-import { UploadCloud, FileSpreadsheet, Settings2, Download, Activity, Table as TableIcon, LayoutGrid, X, FileUp } from 'lucide-react';
+import { UploadCloud, FileSpreadsheet, Settings2, Download, Activity, Table as TableIcon, LayoutGrid, X, FileUp, Loader2 } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
 import './Dashboard.css';
 import { API_BASE_URL } from '../config';
@@ -25,6 +25,18 @@ const DATASET_CONFIGS = [
   { id: 'pmGenset', label: 'Ticket PM Genset', color: '#f59e0b' },
   { id: 'dataPic', label: 'Data PIC', color: '#c084fc' }
 ];
+
+const getPreviewColumns = (configId, allColumns) => {
+  if (configId === 'dataPic') {
+    const targetKeywords = ['pic', 'nop', 'cluster', 'role'];
+    const matched = allColumns.filter(col => {
+      const lower = col.toLowerCase();
+      return targetKeywords.some(kw => lower.includes(kw));
+    });
+    if (matched.length > 0) return matched;
+  }
+  return allColumns.slice(0, 8);
+};
 
 const ProductivityAchievement = () => {
   const [datasets, setDatasets] = useState({
@@ -429,8 +441,15 @@ const ProductivityAchievement = () => {
   };
 
   return (
-    <div className="dashboard-container" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', overflowY: 'auto', height: '100%', backgroundColor: '#0b1120' }}>
+    <div className="dashboard-container" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', overflowY: 'auto', height: '100%', backgroundColor: '#0b1120', position: 'relative' }}>
       
+      {loading && (
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(11, 17, 32, 0.8)', zIndex: 9999, display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', backdropFilter: 'blur(4px)' }}>
+          <Loader2 style={{ color: 'var(--primary-color)', animation: 'spin 1.5s linear infinite' }} size={48} />
+          <p style={{ marginTop: '1rem', color: 'white', fontWeight: 600, fontSize: '1.125rem' }}>Memproses Data...</p>
+        </div>
+      )}
+
       {/* Header */}
       <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white' }}>
@@ -545,7 +564,7 @@ const ProductivityAchievement = () => {
                         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', color: '#e2e8f0', fontSize: '0.75rem' }}>
                           <thead style={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', position: 'sticky', top: 0 }}>
                             <tr>
-                              {ds.columns.slice(0, 8).map(col => (
+                              {getPreviewColumns(config.id, ds.columns).map(col => (
                                 <th key={col} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', whiteSpace: 'nowrap' }}>{col}</th>
                               ))}
                             </tr>
@@ -553,8 +572,8 @@ const ProductivityAchievement = () => {
                           <tbody>
                             {ds.data.slice(0, 10).map((row, i) => (
                               <tr key={i} style={{ backgroundColor: i % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent' }}>
-                                {ds.columns.slice(0, 8).map(col => (
-                                  <td key={`${i}-${col}`} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                {getPreviewColumns(config.id, ds.columns).map(col => (
+                                  <td key={`${i}-${col}`} style={{ padding: '0.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                     {row[col]}
                                   </td>
                                 ))}
