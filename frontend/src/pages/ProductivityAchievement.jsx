@@ -534,7 +534,7 @@ const ProductivityAchievement = () => {
     });
     
     // Find Ticket Auto columns
-    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
+    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'pic');
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
     const autoTicketCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket number swfm')) || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
@@ -712,11 +712,11 @@ const ProductivityAchievement = () => {
     });
     
     // Find Ticket FNA columns for PIC
-    const fnaPicCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('nama karyawan'));
+    const fnaPicCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('nama karyawan'));
     const fnaNopCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const fnaTicketCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'no ticket') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
     
-    // FME uses fmeConfig.timeCol for dates
+    // FME uses fmeConfig.timeCol for dates, add robust fallbacks for FNA
     const fnaTimeCol = fmeConfig.timeCol || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('waktu lapor')) || 'Waktu Lapor';
 
     // Tahap 1: Ekstrak semua checkIn valid untuk menentukan maksimal 31 hari terakhir
@@ -725,6 +725,12 @@ const ProductivityAchievement = () => {
     
     fnaData.forEach(row => {
       let checkInRaw = row[fnaTimeCol];
+      if (!checkInRaw) {
+        // Fallback robust like ticket auto
+        const fallback = Object.keys(row).find(k => k.toLowerCase().includes('waktu') || k.toLowerCase().includes('date') || k.toLowerCase().includes('check in'));
+        if (fallback) checkInRaw = row[fallback];
+      }
+      
       let checkIn = null;
       if (checkInRaw) {
         if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
