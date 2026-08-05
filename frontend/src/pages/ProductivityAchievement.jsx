@@ -598,7 +598,7 @@ const ProductivityAchievement = () => {
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
     // Sort descending agar tiket yang muncul di beberapa hari dihitung di hari terakhirnya saja
-    parsedData.sort((a, b) => b.checkIn.localeCompare(a.checkIn));
+    parsedData.sort((a, b) => (b.checkIn || '').localeCompare(a.checkIn || ''));
     
     const globalTicketSet = new Set();
 
@@ -784,7 +784,7 @@ const ProductivityAchievement = () => {
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
     // Sort descending agar tiket yang muncul di beberapa hari dihitung di hari terakhirnya saja
-    parsedData.sort((a, b) => b.checkIn.localeCompare(a.checkIn));
+    parsedData.sort((a, b) => (b.checkIn || '').localeCompare(a.checkIn || ''));
     
     const globalFnaSet = new Set();
 
