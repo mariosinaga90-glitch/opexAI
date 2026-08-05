@@ -625,6 +625,123 @@ const ProductivityAchievement = () => {
     };
   }, [filteredData, datasets.dataPic, dateRange]);
 
+  const ticketFnaTeamData = useMemo(() => {
+    const isDateRangeActive = Boolean(dateRange.start || dateRange.end);
+    const nopToPic = {};
+    const picData = filteredData.filter(row => row._source === 'dataPic');
+    const fnaData = filteredData.filter(row => row._source === 'ticketFna');
+    
+    // Find column names case-insensitively just in case
+    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
+
+    picData.forEach(row => {
+      const picName = row[picNameCol] || 'Unknown';
+      if (row[picNopCol]) {
+        nopToPic[String(row[picNopCol]).trim().toLowerCase()] = picName;
+      }
+      if (row[picNameCol]) {
+        nopToPic[String(row[picNameCol]).trim().toLowerCase()] = picName;
+      }
+    });
+
+    const checkInSet = new Set();
+    const groupedByPic = {};
+    
+    // Inisialisasi semua PIC yang lolos filter ke dalam tabel (walau tiketnya 0)
+    Object.values(nopToPic).forEach(picName => {
+      if (!groupedByPic[picName]) {
+        groupedByPic[picName] = { name: picName, Total: 0 };
+      }
+    });
+    
+    // Find Ticket FNA columns for PIC
+    const fnaPicCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('nama karyawan'));
+    const fnaNopCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
+    
+    // FME uses fmeConfig.timeCol for dates
+    const fnaTimeCol = fmeConfig.timeCol || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('waktu lapor')) || 'Waktu Lapor';
+
+    // Tahap 1: Ekstrak semua checkIn valid untuk menentukan maksimal 31 hari terakhir
+    const parsedData = [];
+    const allDates = new Set();
+    
+    fnaData.forEach(row => {
+      let checkInRaw = row[fnaTimeCol];
+      let checkIn = null;
+      if (checkInRaw) {
+        if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
+          const excelDays = Math.floor(Number(checkInRaw));
+          const jsDate = new Date((excelDays - 25569) * 86400 * 1000);
+          const yyyy = jsDate.getUTCFullYear();
+          const mm = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+          const dd = String(jsDate.getUTCDate()).padStart(2, '0');
+          checkIn = `${yyyy}-${mm}-${dd}`;
+        } else {
+          const checkInStr = String(checkInRaw).split(' ')[0];
+          if (/^\d{4}-\d{2}-\d{2}$/.test(checkInStr)) {
+            checkIn = checkInStr;
+          } else {
+            const jsDate = new Date(checkInStr);
+            if (!isNaN(jsDate.getTime())) {
+              const yyyy = jsDate.getFullYear();
+              const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
+              const dd = String(jsDate.getDate()).padStart(2, '0');
+              checkIn = `${yyyy}-${mm}-${dd}`;
+            } else {
+              checkIn = checkInStr.replace(/\./g, '-');
+            }
+          }
+        }
+      }
+
+      if (checkIn && /^\d{4}-\d{2}/.test(checkIn)) {
+        allDates.add(checkIn);
+      }
+      
+      parsedData.push({ row, checkIn });
+    });
+
+    const validDatesArray = Array.from(allDates).sort();
+    let allowedDates = new Set(validDatesArray);
+    
+    if (!isDateRangeActive && validDatesArray.length > 0) {
+      const latestDateStr = validDatesArray[validDatesArray.length - 1]; 
+      const latestMonth = latestDateStr.substring(0, 7); 
+      const singleMonthDates = validDatesArray.filter(date => date.startsWith(latestMonth));
+      allowedDates = new Set(singleMonthDates);
+    }
+
+    // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
+    parsedData.forEach(({ row, checkIn }) => {
+      if (checkIn && /^\d{4}-\d{2}/.test(checkIn) && !allowedDates.has(checkIn)) {
+        return;
+      }
+      if (!checkIn) checkIn = 'No Check In';
+      
+      let lookupVal = fnaPicCol ? row[fnaPicCol] : null;
+      if (!lookupVal && fnaNopCol) {
+        lookupVal = row[fnaNopCol];
+      }
+      
+      const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
+      // Jika pic tidak ditemukan di mapping Data PIC, abaikan/hilangkan data ini
+      if (!lookupKey || !nopToPic[lookupKey]) {
+        return; 
+      }
+      
+      const pic = nopToPic[lookupKey];
+      checkInSet.add(checkIn);
+      groupedByPic[pic][checkIn] = (groupedByPic[pic][checkIn] || 0) + 1;
+      groupedByPic[pic].Total += 1;
+    });
+
+    return {
+      data: Object.values(groupedByPic).sort((a,b) => b.Total - a.Total).slice(0, 50), 
+      columns: Array.from(checkInSet).sort()
+    };
+  }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol]);
+
   const formatDateForDisplay = (dateStr) => {
     const jsDate = new Date(dateStr);
     if (!isNaN(jsDate.getTime())) {
@@ -1077,6 +1194,52 @@ const ProductivityAchievement = () => {
                           })}
                           <td style={{ position: 'sticky', bottom: 0, right: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>
                             {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Ticket FNA Pivot Table */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
+              <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket FNA</h3>
+                <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '350px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }} className="custom-scrollbar">
+                  <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.75rem' }}>
+                    <thead>
+                      <tr>
+                        <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 3, backgroundColor: '#0f172a', padding: '0.4rem 0.6rem', textAlign: 'left', minWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>PIC</th>
+                        {ticketFnaTeamData.columns.map(col => (
+                          <th key={col} style={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: '#0f172a', padding: '0.4rem 0.2rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '30px' }}>{formatDateForDisplay(col)}</th>
+                        ))}
+                        <th style={{ position: 'sticky', top: 0, right: 0, zIndex: 3, backgroundColor: '#0f172a', padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ticketFnaTeamData.data.map((row, idx) => {
+                        const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
+                        return (
+                          <tr key={idx} style={{ backgroundColor: rowBg }}>
+                            <td style={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{row.name}</td>
+                            {ticketFnaTeamData.columns.map(col => (
+                              <td key={col} style={{ padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.2)' }}>{row[col] || 0}</td>
+                            ))}
+                            <td style={{ position: 'sticky', right: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none', color: '#10b981' }}>{row.Total}</td>
+                          </tr>
+                        );
+                      })}
+                      {ticketFnaTeamData.data.length > 0 && (
+                        <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
+                          <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Grand Total</td>
+                          {ticketFnaTeamData.columns.map(col => {
+                            const colTotal = ticketFnaTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
+                            return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 2, backgroundColor: '#1e293b', padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                          })}
+                          <td style={{ position: 'sticky', bottom: 0, right: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>
+                            {ticketFnaTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
                           </td>
                         </tr>
                       )}
