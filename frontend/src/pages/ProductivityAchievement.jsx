@@ -560,12 +560,16 @@ const ProductivityAchievement = () => {
       parsedData.push({ row, checkIn });
     });
 
-    // Ambil maksimal 31 tanggal terakhir HANYA jika Date Slicer tidak aktif
+    // Jika Date Slicer tidak aktif, tampilkan HANYA rentang tanggal dalam SATU bulan yang sama (bulan paling baru)
     const validDatesArray = Array.from(allDates).sort();
     let allowedDates = new Set(validDatesArray);
     
-    if (!isDateRangeActive) {
-      allowedDates = new Set(validDatesArray.slice(-31));
+    if (!isDateRangeActive && validDatesArray.length > 0) {
+      const latestDateStr = validDatesArray[validDatesArray.length - 1]; // cth: '2026-08-05'
+      const latestMonth = latestDateStr.substring(0, 7); // cth: '2026-08'
+      
+      const singleMonthDates = validDatesArray.filter(date => date.startsWith(latestMonth));
+      allowedDates = new Set(singleMonthDates);
     }
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
