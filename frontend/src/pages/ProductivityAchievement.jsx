@@ -361,10 +361,18 @@ const ProductivityAchievement = () => {
   const filteredData = useMemo(() => {
     return activeData.filter(row => {
       // 1. Slicers
+      const allowedProductivitySlicers = ['role', 'cluster to', 'nop'];
+      
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All') {
-          // Jika filter aktif, baris data HARUS memiliki kolom ini dan nilainya harus cocok.
-          // Jika tidak ada (undefined) atau tidak cocok, buang baris ini (sehingga slicer benar-benar memfilter semua tabel)
+          // Khusus tabel Productivity Team (ticketAuto & dataPic), abaikan slicer selain Role, Cluster TO, dan NOP
+          if (row._source === 'ticketAuto' || row._source === 'dataPic') {
+            if (!allowedProductivitySlicers.includes(key.toLowerCase().trim())) {
+              continue; // Lewati filter ini (misal Severity tidak akan memfilter tabel ini)
+            }
+          }
+
+          // Strict filtering untuk slicer yang berlaku
           if (row[key] === undefined || String(row[key]) !== String(val)) {
             return false;
           }
