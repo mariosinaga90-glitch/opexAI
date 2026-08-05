@@ -633,11 +633,12 @@ const ProductivityAchievement = () => {
       
       let ticketId = null;
       if (autoTicketCol) {
-        // Jika kolom tiket ada, ambil nilainya (jika kosong, bernilai null/falsy)
+        // Jika kolom tiket ada, ambil nilainya
         ticketId = row[autoTicketCol] ? String(row[autoTicketCol]).trim() : null;
       } else {
-        // Jika file Excel sama sekali tidak punya kolom tiket, hitung tiap baris sebagai 1 tiket
-        ticketId = `row_${Math.random()}`;
+        // Gunakan isi baris itu sendiri untuk mendeteksi baris duplikat.
+        // Jika di Excel ada baris yang tersalin 50x, stringify-nya sama, sehingga hanya dihitung 1x.
+        ticketId = JSON.stringify(row);
       }
       
       if (ticketId) {
@@ -715,10 +716,10 @@ const ProductivityAchievement = () => {
     // Find Ticket FNA columns for PIC
     const fnaPicCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('nama karyawan'));
     const fnaNopCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
-    const fnaTicketCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'date');
+    const fnaTicketCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'no ticket') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
     
-    // FME uses fmeConfig.timeCol for dates, add robust fallbacks for FNA
-    const fnaTimeCol = fmeConfig.timeCol || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('waktu lapor')) || 'Waktu Lapor';
+    // Eksklusif mencari kolom 'Date' sesuai permintaan
+    const fnaTimeCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'date') || 'Date';
 
     // Tahap 1: Ekstrak semua checkIn valid untuk menentukan maksimal 31 hari terakhir
     const parsedData = [];
@@ -810,7 +811,8 @@ const ProductivityAchievement = () => {
       if (fnaTicketCol) {
         ticketId = row[fnaTicketCol] ? String(row[fnaTicketCol]).trim() : null;
       } else {
-        ticketId = `row_${Math.random()}`;
+        // Jika tidak ada kolom tiket, gunakan isi baris untuk mencegah hitungan duplikat
+        ticketId = JSON.stringify(row);
       }
       
       if (ticketId) {
