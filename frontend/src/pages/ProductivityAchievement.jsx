@@ -496,9 +496,9 @@ const ProductivityAchievement = () => {
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
 
-    // Tahap 1: Temukan bulan (YYYY-MM) paling terbaru dari data yang ada
-    let latestMonth = '';
+    // Tahap 1: Ekstrak semua checkIn valid untuk menentukan maksimal 31 hari terakhir
     const parsedData = [];
+    const allDates = new Set();
     
     autoData.forEach(row => {
       let checkInRaw = row[autoCheckInCol];
@@ -531,18 +531,21 @@ const ProductivityAchievement = () => {
       }
 
       if (checkIn && /^\d{4}-\d{2}/.test(checkIn)) {
-        const ym = checkIn.substring(0, 7);
-        if (ym > latestMonth) latestMonth = ym;
+        allDates.add(checkIn);
       }
       
       parsedData.push({ row, checkIn });
     });
 
-    // Tahap 2: Hanya gunakan data yang masuk dalam bulan terbaru (1 bulan saja), KECUALI jika Date Slicer aktif
+    // Ambil maksimal 31 tanggal terakhir dari data yang sudah terfilter
+    const validDatesArray = Array.from(allDates).sort();
+    const allowedDates = new Set(validDatesArray.slice(-31));
+
+    // Tahap 2: Hanya gunakan data yang masuk ke dalam 31 tanggal terakhir
     parsedData.forEach(({ row, checkIn }) => {
-      // Hanya biarkan lewat jika bulan sesuai latestMonth, ATAU jika tidak ada valid date sama sekali
-      if (!isDateRangeActive && latestMonth && checkIn && /^\d{4}-\d{2}/.test(checkIn) && !checkIn.startsWith(latestMonth)) {
-        return; // skip data dari bulan sebelumnya
+      // Jika memiliki tanggal valid namun tidak masuk dalam 31 hari terakhir, lewati
+      if (checkIn && /^\d{4}-\d{2}/.test(checkIn) && !allowedDates.has(checkIn)) {
+        return;
       }
       if (!checkIn) checkIn = 'No Check In';
       
@@ -576,7 +579,7 @@ const ProductivityAchievement = () => {
   const formatDateForDisplay = (dateStr) => {
     const jsDate = new Date(dateStr);
     if (!isNaN(jsDate.getTime())) {
-      return jsDate.getDate().toString();
+      return `${jsDate.getDate()}/${jsDate.getMonth() + 1}`;
     }
     return dateStr;
   };
