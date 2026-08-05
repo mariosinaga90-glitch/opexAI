@@ -372,8 +372,9 @@ const ProductivityAchievement = () => {
             }
           }
 
-          // Strict filtering untuk slicer yang berlaku
-          if (row[key] === undefined || String(row[key]) !== String(val)) {
+          // Strict filtering untuk slicer yang berlaku (dengan case-insensitive key check)
+          const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
+          if (!actualKey || String(row[actualKey]) !== String(val)) {
             return false;
           }
         }
