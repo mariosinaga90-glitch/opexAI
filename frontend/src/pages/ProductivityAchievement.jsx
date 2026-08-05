@@ -483,6 +483,13 @@ const ProductivityAchievement = () => {
     const checkInSet = new Set();
     const groupedByPic = {};
     
+    // Inisialisasi semua PIC yang lolos filter ke dalam tabel (walau tiketnya 0)
+    Object.values(nopToPic).forEach(picName => {
+      if (!groupedByPic[picName]) {
+        groupedByPic[picName] = { name: picName, Total: 0 };
+      }
+    });
+    
     // Find Ticket Auto columns
     const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
@@ -554,9 +561,7 @@ const ProductivityAchievement = () => {
 
       checkInSet.add(checkIn);
 
-      if (!groupedByPic[pic]) {
-        groupedByPic[pic] = { name: pic, Total: 0 };
-      }
+      // groupedByPic[pic] sudah pasti ada karena sudah diinisialisasi di atas
       groupedByPic[pic][checkIn] = (groupedByPic[pic][checkIn] || 0) + 1;
       groupedByPic[pic].Total += 1;
     });
