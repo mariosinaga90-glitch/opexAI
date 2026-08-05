@@ -1043,7 +1043,7 @@ const ProductivityAchievement = () => {
             {/* Productivity Team Pivot Table */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
               <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity Team (Pivot Table)</h3>
+                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto</h3>
                 <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '350px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }} className="custom-scrollbar">
                   <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.75rem' }}>
                     <thead>
