@@ -511,21 +511,28 @@ const ProductivityAchievement = () => {
       let checkIn = null;
       if (checkInRaw) {
         if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
-          const jsDate = new Date((Number(checkInRaw) - 25569) * 86400 * 1000);
-          const yyyy = jsDate.getFullYear();
-          const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
-          const dd = String(jsDate.getDate()).padStart(2, '0');
+          // Buang desimal (waktu) dari serial Excel agar murni jadi midnight UTC, mencegah timezone shift
+          const excelDays = Math.floor(Number(checkInRaw));
+          const jsDate = new Date((excelDays - 25569) * 86400 * 1000);
+          const yyyy = jsDate.getUTCFullYear();
+          const mm = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+          const dd = String(jsDate.getUTCDate()).padStart(2, '0');
           checkIn = `${yyyy}-${mm}-${dd}`;
         } else {
           const checkInStr = String(checkInRaw).split(' ')[0];
-          const jsDate = new Date(checkInStr);
-          if (!isNaN(jsDate.getTime())) {
-            const yyyy = jsDate.getFullYear();
-            const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
-            const dd = String(jsDate.getDate()).padStart(2, '0');
-            checkIn = `${yyyy}-${mm}-${dd}`;
+          // Jika string sudah rapi berformat YYYY-MM-DD, langsung gunakan
+          if (/^\d{4}-\d{2}-\d{2}$/.test(checkInStr)) {
+            checkIn = checkInStr;
           } else {
-            checkIn = checkInStr.replace(/\./g, '-');
+            const jsDate = new Date(checkInStr);
+            if (!isNaN(jsDate.getTime())) {
+              const yyyy = jsDate.getFullYear();
+              const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
+              const dd = String(jsDate.getDate()).padStart(2, '0');
+              checkIn = `${yyyy}-${mm}-${dd}`;
+            } else {
+              checkIn = checkInStr.replace(/\./g, '-');
+            }
           }
         }
       }
