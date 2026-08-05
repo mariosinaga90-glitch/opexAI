@@ -275,14 +275,38 @@ const ProductivityAchievement = () => {
   // DATA COMBINATIONS
   // -----------------------------------------------------
   const fmeData = useMemo(() => {
+    // Build mapping dari NOP/PIC Name ke baris Data PIC
+    const picMapping = {};
+    const picDataRaw = datasets.dataPic?.data || [];
+    const dataPicCols = datasets.dataPic?.columns || [];
+    const picNopCol = dataPicCols.find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const picNameCol = dataPicCols.find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
+
+    picDataRaw.forEach(picRow => {
+      if (picRow[picNopCol]) picMapping[String(picRow[picNopCol]).trim().toLowerCase()] = picRow;
+      if (picRow[picNameCol]) picMapping[String(picRow[picNameCol]).trim().toLowerCase()] = picRow;
+    });
+
+    const enrichRow = (row, nopColName, picTakeOverColName) => {
+      let lookupVal = picTakeOverColName ? row[picTakeOverColName] : null;
+      if (!lookupVal && nopColName) lookupVal = row[nopColName];
+      const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
+      const picInfo = lookupKey && picMapping[lookupKey] ? picMapping[lookupKey] : {};
+      return { ...picInfo, ...row };
+    };
+
+    const autoCols = datasets.ticketAuto?.columns || [];
+    const autoNopCol = autoCols.find(c => c.toLowerCase().trim() === 'nop');
+    const autoPicTakeOverCol = autoCols.find(c => c.toLowerCase().trim().includes('pic take over'));
+
     return [
-      ...datasets.ticketAuto.data.map(row => ({ ...row, _source: 'ticketAuto' })), 
+      ...datasets.ticketAuto.data.map(row => ({ ...enrichRow(row, autoNopCol, autoPicTakeOverCol), _source: 'ticketAuto' })), 
       ...datasets.ticketFna.data.map(row => ({ ...row, _source: 'ticketFna' })),
       ...datasets.pmSite.data.map(row => ({ ...row, _source: 'pmSite' })),
       ...datasets.pmGenset.data.map(row => ({ ...row, _source: 'pmGenset' })),
       ...datasets.dataPic.data.map(row => ({ ...row, _source: 'dataPic' }))
     ];
-  }, [datasets.ticketAuto.data, datasets.ticketFna.data, datasets.pmSite.data, datasets.pmGenset.data, datasets.dataPic.data]);
+  }, [datasets.ticketAuto, datasets.ticketFna, datasets.pmSite, datasets.pmGenset, datasets.dataPic]);
 
   const fmeColumns = useMemo(() => {
     const cols = new Set([
@@ -338,8 +362,11 @@ const ProductivityAchievement = () => {
     return activeData.filter(row => {
       // 1. Slicers
       for (const [key, val] of Object.entries(filters)) {
-        if (val !== 'All' && String(row[key]) !== String(val)) {
-          return false;
+        if (val !== 'All') {
+          // Hanya terapkan filter jika kolom benar-benar ada pada dataset baris ini
+          if (row[key] !== undefined && String(row[key]) !== String(val)) {
+            return false;
+          }
         }
       }
       
@@ -397,28 +424,14 @@ const ProductivityAchievement = () => {
   }, [filteredData, fmeConfig.metricCol]);
 
   const donutData = useMemo(() => {
-    const applyFilters = (dataArray) => {
-      return dataArray.filter(row => {
-        for (const [key, val] of Object.entries(filters)) {
-          if (val !== 'All' && String(row[key]) !== String(val)) {
-            return false;
-          }
-        }
-        return true;
-      });
-    };
-
-    const autoCount = applyFilters(datasets.ticketAuto.data).length;
-    const fnaCount = applyFilters(datasets.ticketFna.data).length;
-    const siteCount = applyFilters(datasets.pmSite.data).length;
-    const gensetCount = applyFilters(datasets.pmGenset.data).length;
-    const picCount = applyFilters(datasets.dataPic.data).length;
+    const autoCount = filteredData.filter(r => r._source === 'ticketAuto').length;
+    const fnaCount = filteredData.filter(r => r._source === 'ticketFna').length;
 
     return [
       { name: 'Total Tiket Auto', value: autoCount },
       { name: 'Total Ticket FNA', value: fnaCount }
     ].filter(item => item.value > 0);
-  }, [datasets, filters]);
+  }, [filteredData]);
   const donutDataStatus = useMemo(() => {
     if (!fmeConfig.statusCol) return [];
     const grouped = {};
@@ -449,7 +462,7 @@ const ProductivityAchievement = () => {
 
   const productivityTeamData = useMemo(() => {
     const nopToPic = {};
-    const picData = datasets.dataPic?.data || [];
+    const picData = filteredData.filter(row => row._source === 'dataPic');
     const autoData = filteredData.filter(row => row._source === 'ticketAuto');
     
     // Find column names case-insensitively just in case
