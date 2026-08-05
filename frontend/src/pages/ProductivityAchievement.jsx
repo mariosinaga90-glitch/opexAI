@@ -1013,7 +1013,7 @@ const ProductivityAchievement = () => {
                           <tr key={idx} style={{ backgroundColor: rowBg }}>
                             <td style={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{row.name}</td>
                             {productivityTeamData.columns.map(col => (
-                              <td key={col} style={{ padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.2)' }}>{row[col] || '-'}</td>
+                              <td key={col} style={{ padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.2)' }}>{row[col] || 0}</td>
                             ))}
                             <td style={{ position: 'sticky', right: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none', color: '#10b981' }}>{row.Total}</td>
                           </tr>
@@ -1024,7 +1024,7 @@ const ProductivityAchievement = () => {
                           <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Grand Total</td>
                           {productivityTeamData.columns.map(col => {
                             const colTotal = productivityTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                            return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 2, backgroundColor: '#1e293b', padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || '-'}</td>;
+                            return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 2, backgroundColor: '#1e293b', padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
                           })}
                           <td style={{ position: 'sticky', bottom: 0, right: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>
                             {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
