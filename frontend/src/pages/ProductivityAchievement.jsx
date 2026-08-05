@@ -534,7 +534,8 @@ const ProductivityAchievement = () => {
     });
     
     // Find Ticket Auto columns
-    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'pic');
+    // HANYA mencari kolom yang mengandung 'pic take over' sesuai permintaan
+    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
     const autoTicketCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket number swfm')) || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
@@ -714,7 +715,7 @@ const ProductivityAchievement = () => {
     // Find Ticket FNA columns for PIC
     const fnaPicCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('nama karyawan'));
     const fnaNopCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
-    const fnaTicketCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'no ticket') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
+    const fnaTicketCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'date');
     
     // FME uses fmeConfig.timeCol for dates, add robust fallbacks for FNA
     const fnaTimeCol = fmeConfig.timeCol || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('waktu lapor')) || 'Waktu Lapor';
@@ -723,7 +724,7 @@ const ProductivityAchievement = () => {
     const parsedData = [];
     const allDates = new Set();
     
-    fnaData.forEach(row => {
+    fnaData.forEach((row, rowIndex) => {
       let checkInRaw = row[fnaTimeCol];
       if (!checkInRaw) {
         // Fallback robust like ticket auto
