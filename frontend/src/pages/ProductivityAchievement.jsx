@@ -538,7 +538,7 @@ const ProductivityAchievement = () => {
     const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
-    const autoTicketCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket number swfm')) || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
+    const autoTicketCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'ticket number swfm') || 'Ticket Number SWFM';
 
     // Tahap 1: Ekstrak semua checkIn valid untuk menentukan maksimal 31 hari terakhir
     const parsedData = [];
