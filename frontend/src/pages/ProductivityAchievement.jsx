@@ -529,6 +529,7 @@ const ProductivityAchievement = () => {
     const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
+    const autoTicketCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket number swfm')) || (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
 
     // Tahap 1: Ekstrak semua checkIn valid untuk menentukan maksimal 31 hari terakhir
     const parsedData = [];
@@ -619,13 +620,30 @@ const ProductivityAchievement = () => {
       
       checkInSet.add(checkIn);
 
-      // groupedByPic[pic] sudah pasti ada karena sudah diinisialisasi di atas
-      groupedByPic[pic][checkIn] = (groupedByPic[pic][checkIn] || 0) + 1;
-      groupedByPic[pic].Total += 1;
+      // Simpan ticket ID ke dalam Set untuk menghindari duplikat dan baris kosong
+      groupedByPic[pic][checkIn] = groupedByPic[pic][checkIn] || new Set();
+      const ticketId = autoTicketCol && row[autoTicketCol] ? String(row[autoTicketCol]).trim() : `row_${Math.random()}`; // Fallback jika tidak ada kolom tiket
+      if (ticketId) {
+        groupedByPic[pic][checkIn].add(ticketId);
+      }
+    });
+
+    const finalData = Object.values(groupedByPic).map(picObj => {
+      const finalObj = { name: picObj.name, Total: 0 };
+      for (const col of checkInSet) {
+        if (picObj[col]) {
+          const count = picObj[col].size;
+          if (count > 0) {
+            finalObj[col] = count;
+            finalObj.Total += count;
+          }
+        }
+      }
+      return finalObj;
     });
 
     return {
-      data: Object.values(groupedByPic).sort((a,b) => b.Total - a.Total).slice(0, 50), // limit top 50 PICs to prevent overwhelming chart
+      data: finalData.sort((a,b) => b.Total - a.Total).slice(0, 50), // limit top 50 PICs
       columns: Array.from(checkInSet).sort()
     };
   }, [filteredData, datasets.dataPic, dateRange]);
@@ -663,6 +681,7 @@ const ProductivityAchievement = () => {
     // Find Ticket FNA columns for PIC
     const fnaPicCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over')) || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('nama karyawan'));
     const fnaNopCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
+    const fnaTicketCol = (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim() === 'no ticket') || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('ticket'));
     
     // FME uses fmeConfig.timeCol for dates
     const fnaTimeCol = fmeConfig.timeCol || (datasets.ticketFna?.columns || []).find(c => c.toLowerCase().trim().includes('waktu lapor')) || 'Waktu Lapor';
@@ -744,12 +763,30 @@ const ProductivityAchievement = () => {
       }
       
       checkInSet.add(checkIn);
-      groupedByPic[pic][checkIn] = (groupedByPic[pic][checkIn] || 0) + 1;
-      groupedByPic[pic].Total += 1;
+      
+      groupedByPic[pic][checkIn] = groupedByPic[pic][checkIn] || new Set();
+      const ticketId = fnaTicketCol && row[fnaTicketCol] ? String(row[fnaTicketCol]).trim() : `row_${Math.random()}`;
+      if (ticketId) {
+        groupedByPic[pic][checkIn].add(ticketId);
+      }
+    });
+
+    const finalData = Object.values(groupedByPic).map(picObj => {
+      const finalObj = { name: picObj.name, Total: 0 };
+      for (const col of checkInSet) {
+        if (picObj[col]) {
+          const count = picObj[col].size;
+          if (count > 0) {
+            finalObj[col] = count;
+            finalObj.Total += count;
+          }
+        }
+      }
+      return finalObj;
     });
 
     return {
-      data: Object.values(groupedByPic).sort((a,b) => b.Total - a.Total).slice(0, 50), 
+      data: finalData.sort((a,b) => b.Total - a.Total).slice(0, 50), 
       columns: Array.from(checkInSet).sort()
     };
   }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol]);
