@@ -8,8 +8,7 @@ const password = 'Simanjorang83';
 async function checkServer() {
   try {
     await ssh.connect({ host, username, password });
-    const dockerResult = await ssh.execCommand('docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | grep -i opex');
-    console.log('\n--- OPEX CONTAINERS ---');
+    const dockerResult = await ssh.execCommand('docker exec dnudzs4iz4nfn5cptv0d93ib-151540128130 cat /app/frontend/dist/index.html');
     console.log(dockerResult.stdout);
     ssh.dispose();
   } catch (error) {

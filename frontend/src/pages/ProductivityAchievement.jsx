@@ -374,8 +374,8 @@ const ProductivityAchievement = () => {
       if (dateRange.start || dateRange.end) {
         let rowDateStr = row[fmeConfig.timeCol];
         
-        // Coba baca dari kolom 'Check In At' jika tidak ada di kolom waktu fmeConfig, khususnya untuk ticketAuto
-        if (!rowDateStr && row._source === 'ticketAuto') {
+        // Coba baca dari kolom 'Check In At' khusus untuk ticketAuto agar filternya sinkron dengan tabel Productivity Team
+        if (row._source === 'ticketAuto') {
           const autoCheckInCol = Object.keys(row).find(c => c.toLowerCase().trim().includes('check in at')) || 'Check In At';
           rowDateStr = row[autoCheckInCol];
         }
