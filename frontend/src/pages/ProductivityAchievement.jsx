@@ -616,13 +616,7 @@ const ProductivityAchievement = () => {
         if (key) pic = nopToPic[key];
       }
       
-      // 2. Jika tidak ditemukan (misal salah ketik), gunakan NOP (lebih pasti)
-      if (!pic && autoNopCol && row[autoNopCol]) {
-        const key = String(row[autoNopCol]).trim().toLowerCase();
-        if (key) pic = nopToPic[key];
-      }
-      
-      // 3. Jika masih tidak ada di Data PIC, abaikan
+      // 2. Jika masih tidak ada di Data PIC, abaikan
       if (!pic) {
         return; 
       }
@@ -802,13 +796,7 @@ const ProductivityAchievement = () => {
         if (key) pic = nopToPic[key];
       }
       
-      // 2. Jika tidak ditemukan (misal salah ketik), gunakan NOP (lebih pasti)
-      if (!pic && fnaNopCol && row[fnaNopCol]) {
-        const key = String(row[fnaNopCol]).trim().toLowerCase();
-        if (key) pic = nopToPic[key];
-      }
-      
-      // 3. Jika masih tidak ada di Data PIC, abaikan
+      // 2. Jika masih tidak ada di Data PIC, abaikan
       if (!pic) {
         return; 
       }
