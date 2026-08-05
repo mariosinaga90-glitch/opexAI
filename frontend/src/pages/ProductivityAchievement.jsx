@@ -508,11 +508,12 @@ const ProductivityAchievement = () => {
     picData.forEach(row => {
       const picName = row[picNameCol] || 'Unknown';
       if (row[picNopCol]) {
-        nopToPic[String(row[picNopCol]).trim().toLowerCase()] = picName;
+        const key = String(row[picNopCol]).trim().toLowerCase();
+        if (key) nopToPic[key] = picName;
       }
       if (row[picNameCol]) {
-        // Juga map nama ke nama itu sendiri (berjaga-jaga jika Ticket Auto isinya langsung nama)
-        nopToPic[String(row[picNameCol]).trim().toLowerCase()] = picName;
+        const key = String(row[picNameCol]).trim().toLowerCase();
+        if (key) nopToPic[key] = picName;
       }
     });
 
@@ -605,13 +606,13 @@ const ProductivityAchievement = () => {
       // 1. Coba cari berdasarkan PIC Take Over / Nama
       if (autoPicTakeOverCol && row[autoPicTakeOverCol]) {
         const key = String(row[autoPicTakeOverCol]).trim().toLowerCase();
-        pic = nopToPic[key];
+        if (key) pic = nopToPic[key];
       }
       
       // 2. Jika tidak ditemukan (misal salah ketik), gunakan NOP (lebih pasti)
       if (!pic && autoNopCol && row[autoNopCol]) {
         const key = String(row[autoNopCol]).trim().toLowerCase();
-        pic = nopToPic[key];
+        if (key) pic = nopToPic[key];
       }
       
       // 3. Jika masih tidak ada di Data PIC, abaikan
@@ -623,7 +624,16 @@ const ProductivityAchievement = () => {
 
       // Simpan ticket ID ke dalam Set untuk menghindari duplikat dan baris kosong
       groupedByPic[pic][checkIn] = groupedByPic[pic][checkIn] || new Set();
-      const ticketId = autoTicketCol && row[autoTicketCol] ? String(row[autoTicketCol]).trim() : `row_${Math.random()}`; // Fallback jika tidak ada kolom tiket
+      
+      let ticketId = null;
+      if (autoTicketCol) {
+        // Jika kolom tiket ada, ambil nilainya (jika kosong, bernilai null/falsy)
+        ticketId = row[autoTicketCol] ? String(row[autoTicketCol]).trim() : null;
+      } else {
+        // Jika file Excel sama sekali tidak punya kolom tiket, hitung tiap baris sebagai 1 tiket
+        ticketId = `row_${Math.random()}`;
+      }
+      
       if (ticketId) {
         groupedByPic[pic][checkIn].add(ticketId);
       }
@@ -671,10 +681,12 @@ const ProductivityAchievement = () => {
     picData.forEach(row => {
       const picName = row[picNameCol] || 'Unknown';
       if (row[picNopCol]) {
-        nopToPic[String(row[picNopCol]).trim().toLowerCase()] = picName;
+        const key = String(row[picNopCol]).trim().toLowerCase();
+        if (key) nopToPic[key] = picName;
       }
       if (row[picNameCol]) {
-        nopToPic[String(row[picNameCol]).trim().toLowerCase()] = picName;
+        const key = String(row[picNameCol]).trim().toLowerCase();
+        if (key) nopToPic[key] = picName;
       }
     });
 
@@ -758,13 +770,13 @@ const ProductivityAchievement = () => {
       // 1. Coba cari berdasarkan PIC Take Over / Nama
       if (fnaPicCol && row[fnaPicCol]) {
         const key = String(row[fnaPicCol]).trim().toLowerCase();
-        pic = nopToPic[key];
+        if (key) pic = nopToPic[key];
       }
       
       // 2. Jika tidak ditemukan (misal salah ketik), gunakan NOP (lebih pasti)
       if (!pic && fnaNopCol && row[fnaNopCol]) {
         const key = String(row[fnaNopCol]).trim().toLowerCase();
-        pic = nopToPic[key];
+        if (key) pic = nopToPic[key];
       }
       
       // 3. Jika masih tidak ada di Data PIC, abaikan
@@ -775,7 +787,14 @@ const ProductivityAchievement = () => {
       checkInSet.add(checkIn);
       
       groupedByPic[pic][checkIn] = groupedByPic[pic][checkIn] || new Set();
-      const ticketId = fnaTicketCol && row[fnaTicketCol] ? String(row[fnaTicketCol]).trim() : `row_${Math.random()}`;
+      
+      let ticketId = null;
+      if (fnaTicketCol) {
+        ticketId = row[fnaTicketCol] ? String(row[fnaTicketCol]).trim() : null;
+      } else {
+        ticketId = `row_${Math.random()}`;
+      }
+      
       if (ticketId) {
         groupedByPic[pic][checkIn].add(ticketId);
       }
