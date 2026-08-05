@@ -112,6 +112,7 @@ const ProductivityAchievement = () => {
   // Filter State
   const [filters, setFilters] = useState({});
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [rankFilter, setRankFilter] = useState('Semua');
   const [activeTab, setActiveTab] = useState('raw_data'); // Default to raw_data initially so they see the upload boxes
   const [showConfig, setShowConfig] = useState(true);
 
@@ -642,11 +643,20 @@ const ProductivityAchievement = () => {
       return finalObj;
     });
 
+    let sortedData = finalData;
+    if (rankFilter === 'Teratas') {
+      sortedData = sortedData.sort((a,b) => b.Total - a.Total);
+    } else if (rankFilter === 'Terbawah') {
+      sortedData = sortedData.sort((a,b) => a.Total - b.Total);
+    } else {
+      sortedData = sortedData.sort((a,b) => a.name.localeCompare(b.name));
+    }
+
     return {
-      data: finalData.sort((a,b) => a.name.localeCompare(b.name)).slice(0, 50), // limit top 50 PICs
+      data: sortedData.slice(0, 50), // limit top 50 PICs
       columns: Array.from(checkInSet).sort()
     };
-  }, [filteredData, datasets.dataPic, dateRange]);
+  }, [filteredData, datasets.dataPic, dateRange, rankFilter]);
 
   const ticketFnaTeamData = useMemo(() => {
     const isDateRangeActive = Boolean(dateRange.start || dateRange.end);
@@ -785,11 +795,20 @@ const ProductivityAchievement = () => {
       return finalObj;
     });
 
+    let sortedData = finalData;
+    if (rankFilter === 'Teratas') {
+      sortedData = sortedData.sort((a,b) => b.Total - a.Total);
+    } else if (rankFilter === 'Terbawah') {
+      sortedData = sortedData.sort((a,b) => a.Total - b.Total);
+    } else {
+      sortedData = sortedData.sort((a,b) => a.name.localeCompare(b.name));
+    }
+
     return {
-      data: finalData.sort((a,b) => a.name.localeCompare(b.name)).slice(0, 50), 
+      data: sortedData.slice(0, 50), 
       columns: Array.from(checkInSet).sort()
     };
-  }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol]);
+  }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol, rankFilter]);
 
   const formatDateForDisplay = (dateStr) => {
     const jsDate = new Date(dateStr);
@@ -918,6 +937,18 @@ const ProductivityAchievement = () => {
               onChange={(e) => setDateRange({...dateRange, end: e.target.value})}
               style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '0.75rem', outline: 'none', fontWeight: 600, colorScheme: 'dark' }}
             />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.05)', padding: '0.25rem 0.75rem', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginRight: '0.5rem' }}>Rank PIC:</span>
+            <select 
+              value={rankFilter} 
+              onChange={(e) => setRankFilter(e.target.value)}
+              style={{ background: 'transparent', border: 'none', color: 'white', fontSize: '0.75rem', outline: 'none', fontWeight: 600, cursor: 'pointer' }}
+            >
+              <option value="Semua">Semua (A-Z)</option>
+              <option value="Teratas">Teratas</option>
+              <option value="Terbawah">Terbawah</option>
+            </select>
           </div>
         </div>
       )}
