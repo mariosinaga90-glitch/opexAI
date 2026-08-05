@@ -381,18 +381,34 @@ const ProductivityAchievement = () => {
         }
 
         if (rowDateStr) {
-          let jsDate;
+          let yyyy_mm_dd = null;
           if (!isNaN(rowDateStr) && Number(rowDateStr) > 10000) {
-            jsDate = new Date((Number(rowDateStr) - 25569) * 86400 * 1000);
+            // Excel Date -> Paksa ambil hari saja, konversi ke string YYYY-MM-DD agar kebal zona waktu
+            const excelDays = Math.floor(Number(rowDateStr));
+            const jsDate = new Date((excelDays - 25569) * 86400 * 1000);
+            const yyyy = jsDate.getUTCFullYear();
+            const mm = String(jsDate.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(jsDate.getUTCDate()).padStart(2, '0');
+            yyyy_mm_dd = `${yyyy}-${mm}-${dd}`;
           } else {
-            jsDate = new Date(String(rowDateStr).split(' ')[0]);
+            // String Date
+            const dateStr = String(rowDateStr).split(' ')[0];
+            if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+              yyyy_mm_dd = dateStr;
+            } else {
+              const jsDate = new Date(dateStr);
+              if (!isNaN(jsDate.getTime())) {
+                const yyyy = jsDate.getFullYear();
+                const mm = String(jsDate.getMonth() + 1).padStart(2, '0');
+                const dd = String(jsDate.getDate()).padStart(2, '0');
+                yyyy_mm_dd = `${yyyy}-${mm}-${dd}`;
+              }
+            }
           }
           
-          if (!isNaN(jsDate.getTime())) {
-            const time = jsDate.getTime();
-            if (dateRange.start && time < new Date(dateRange.start).getTime()) return false;
-            // set end date to end of day
-            if (dateRange.end && time > new Date(dateRange.end).getTime() + 86399999) return false;
+          if (yyyy_mm_dd) {
+            if (dateRange.start && yyyy_mm_dd < dateRange.start) return false;
+            if (dateRange.end && yyyy_mm_dd > dateRange.end) return false;
           }
         }
       }
