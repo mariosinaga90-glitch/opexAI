@@ -598,20 +598,25 @@ const ProductivityAchievement = () => {
       }
       if (!checkIn) checkIn = 'No Check In';
       
-      // Coba ambil dari PIC Take Over, jika tidak ada/kosong, fallback ke NOP
-      let lookupVal = autoPicTakeOverCol ? row[autoPicTakeOverCol] : null;
-      if (!lookupVal && autoNopCol) {
-        lookupVal = row[autoNopCol];
+      let pic = null;
+      
+      // 1. Coba cari berdasarkan PIC Take Over / Nama
+      if (autoPicTakeOverCol && row[autoPicTakeOverCol]) {
+        const key = String(row[autoPicTakeOverCol]).trim().toLowerCase();
+        pic = nopToPic[key];
       }
       
-      const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
-      // Jika pic tidak ditemukan di mapping Data PIC, abaikan/hilangkan data ini
-      if (!lookupKey || !nopToPic[lookupKey]) {
-        return; // skip forEach iteration
+      // 2. Jika tidak ditemukan (misal salah ketik), gunakan NOP (lebih pasti)
+      if (!pic && autoNopCol && row[autoNopCol]) {
+        const key = String(row[autoNopCol]).trim().toLowerCase();
+        pic = nopToPic[key];
       }
       
-      const pic = nopToPic[lookupKey];
-
+      // 3. Jika masih tidak ada di Data PIC, abaikan
+      if (!pic) {
+        return; 
+      }
+      
       checkInSet.add(checkIn);
 
       // groupedByPic[pic] sudah pasti ada karena sudah diinisialisasi di atas
@@ -719,18 +724,25 @@ const ProductivityAchievement = () => {
       }
       if (!checkIn) checkIn = 'No Check In';
       
-      let lookupVal = fnaPicCol ? row[fnaPicCol] : null;
-      if (!lookupVal && fnaNopCol) {
-        lookupVal = row[fnaNopCol];
+      let pic = null;
+      
+      // 1. Coba cari berdasarkan PIC Take Over / Nama
+      if (fnaPicCol && row[fnaPicCol]) {
+        const key = String(row[fnaPicCol]).trim().toLowerCase();
+        pic = nopToPic[key];
       }
       
-      const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
-      // Jika pic tidak ditemukan di mapping Data PIC, abaikan/hilangkan data ini
-      if (!lookupKey || !nopToPic[lookupKey]) {
+      // 2. Jika tidak ditemukan (misal salah ketik), gunakan NOP (lebih pasti)
+      if (!pic && fnaNopCol && row[fnaNopCol]) {
+        const key = String(row[fnaNopCol]).trim().toLowerCase();
+        pic = nopToPic[key];
+      }
+      
+      // 3. Jika masih tidak ada di Data PIC, abaikan
+      if (!pic) {
         return; 
       }
       
-      const pic = nopToPic[lookupKey];
       checkInSet.add(checkIn);
       groupedByPic[pic][checkIn] = (groupedByPic[pic][checkIn] || 0) + 1;
       groupedByPic[pic].Total += 1;
