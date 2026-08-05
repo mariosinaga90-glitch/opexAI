@@ -597,6 +597,11 @@ const ProductivityAchievement = () => {
     }
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
+    // Sort descending agar tiket yang muncul di beberapa hari dihitung di hari terakhirnya saja
+    parsedData.sort((a, b) => b.checkIn.localeCompare(a.checkIn));
+    
+    const globalTicketSet = new Set();
+
     parsedData.forEach(({ row, checkIn }) => {
       // Jika tidak memiliki tanggal valid, atau tidak masuk dalam rentang tanggal yg diizinkan, lewati
       if (!checkIn || !/^\d{4}-\d{2}/.test(checkIn) || !allowedDates.has(checkIn)) {
@@ -638,7 +643,11 @@ const ProductivityAchievement = () => {
       }
       
       if (ticketId) {
-        groupedByPic[pic][checkIn].add(ticketId);
+        // Cegah penghitungan tiket yang sama lebih dari 1x meskipun muncul di banyak tanggal berbeda
+        if (!globalTicketSet.has(ticketId)) {
+          globalTicketSet.add(ticketId);
+          groupedByPic[pic][checkIn].add(ticketId);
+        }
       }
     });
 
@@ -774,6 +783,11 @@ const ProductivityAchievement = () => {
     }
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
+    // Sort descending agar tiket yang muncul di beberapa hari dihitung di hari terakhirnya saja
+    parsedData.sort((a, b) => b.checkIn.localeCompare(a.checkIn));
+    
+    const globalFnaSet = new Set();
+
     parsedData.forEach(({ row, checkIn }) => {
       // Jika tidak memiliki tanggal valid, atau tidak masuk dalam rentang tanggal yg diizinkan, lewati
       if (!checkIn || !/^\d{4}-\d{2}/.test(checkIn) || !allowedDates.has(checkIn)) {
@@ -812,7 +826,10 @@ const ProductivityAchievement = () => {
       }
       
       if (ticketId) {
-        groupedByPic[pic][checkIn].add(ticketId);
+        if (!globalFnaSet.has(ticketId)) {
+          globalFnaSet.add(ticketId);
+          groupedByPic[pic][checkIn].add(ticketId);
+        }
       }
     });
 
