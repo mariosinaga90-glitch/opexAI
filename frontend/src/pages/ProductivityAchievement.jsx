@@ -363,8 +363,9 @@ const ProductivityAchievement = () => {
       // 1. Slicers
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All') {
-          // Hanya terapkan filter jika kolom benar-benar ada pada dataset baris ini
-          if (row[key] !== undefined && String(row[key]) !== String(val)) {
+          // Jika filter aktif, baris data HARUS memiliki kolom ini dan nilainya harus cocok.
+          // Jika tidak ada (undefined) atau tidak cocok, buang baris ini (sehingga slicer benar-benar memfilter semua tabel)
+          if (row[key] === undefined || String(row[key]) !== String(val)) {
             return false;
           }
         }
