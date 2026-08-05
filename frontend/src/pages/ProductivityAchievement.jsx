@@ -395,8 +395,12 @@ const ProductivityAchievement = () => {
         
         // Coba baca dari kolom 'Check In At' khusus untuk ticketAuto agar filternya sinkron dengan tabel Productivity Team
         if (row._source === 'ticketAuto') {
-          const autoCheckInCol = Object.keys(row).find(c => c.toLowerCase().trim().includes('check in at')) || 'Check In At';
+          const autoCheckInCol = Object.keys(row).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
           rowDateStr = row[autoCheckInCol];
+        } else if (row._source === 'ticketFna') {
+          // Khusus FNA baca dari kolom 'Date' sesuai settingan
+          const fnaTimeCol = Object.keys(row).find(c => c.toLowerCase().trim() === 'date') || 'Date';
+          rowDateStr = row[fnaTimeCol];
         }
 
         if (rowDateStr) {
