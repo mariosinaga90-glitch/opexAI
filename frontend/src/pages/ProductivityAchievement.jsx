@@ -544,11 +544,15 @@ const ProductivityAchievement = () => {
       parsedData.push({ row, checkIn });
     });
 
-    // Ambil maksimal 31 tanggal terakhir dari data yang sudah terfilter
+    // Ambil maksimal 31 tanggal terakhir HANYA jika Date Slicer tidak aktif
     const validDatesArray = Array.from(allDates).sort();
-    const allowedDates = new Set(validDatesArray.slice(-31));
+    let allowedDates = new Set(validDatesArray);
+    
+    if (!isDateRangeActive) {
+      allowedDates = new Set(validDatesArray.slice(-31));
+    }
 
-    // Tahap 2: Hanya gunakan data yang masuk ke dalam 31 tanggal terakhir
+    // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
     parsedData.forEach(({ row, checkIn }) => {
       // Jika memiliki tanggal valid namun tidak masuk dalam 31 hari terakhir, lewati
       if (checkIn && /^\d{4}-\d{2}/.test(checkIn) && !allowedDates.has(checkIn)) {
