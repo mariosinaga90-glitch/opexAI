@@ -461,6 +461,7 @@ const ProductivityAchievement = () => {
   }, [filteredData, fmeConfig.timeCol, fmeConfig.statusCol]);
 
   const productivityTeamData = useMemo(() => {
+    const isDateRangeActive = Boolean(dateRange.start || dateRange.end);
     const nopToPic = {};
     const picData = filteredData.filter(row => row._source === 'dataPic');
     const autoData = filteredData.filter(row => row._source === 'ticketAuto');
@@ -537,10 +538,10 @@ const ProductivityAchievement = () => {
       parsedData.push({ row, checkIn });
     });
 
-    // Tahap 2: Hanya gunakan data yang masuk dalam bulan terbaru (1 bulan saja)
+    // Tahap 2: Hanya gunakan data yang masuk dalam bulan terbaru (1 bulan saja), KECUALI jika Date Slicer aktif
     parsedData.forEach(({ row, checkIn }) => {
       // Hanya biarkan lewat jika bulan sesuai latestMonth, ATAU jika tidak ada valid date sama sekali
-      if (latestMonth && checkIn && /^\d{4}-\d{2}/.test(checkIn) && !checkIn.startsWith(latestMonth)) {
+      if (!isDateRangeActive && latestMonth && checkIn && /^\d{4}-\d{2}/.test(checkIn) && !checkIn.startsWith(latestMonth)) {
         return; // skip data dari bulan sebelumnya
       }
       if (!checkIn) checkIn = 'No Check In';
@@ -570,7 +571,7 @@ const ProductivityAchievement = () => {
       data: Object.values(groupedByPic).sort((a,b) => b.Total - a.Total).slice(0, 50), // limit top 50 PICs to prevent overwhelming chart
       columns: Array.from(checkInSet).sort()
     };
-  }, [filteredData, datasets.dataPic]);
+  }, [filteredData, datasets.dataPic, dateRange]);
 
   const formatDateForDisplay = (dateStr) => {
     const jsDate = new Date(dateStr);
