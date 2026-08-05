@@ -351,7 +351,7 @@ const ProductivityAchievement = () => {
       });
 
       // Setup initial filters
-      const allowedFilters = ['severity', 'site class', 'cluster to', 'sub cluster', 'nop', 'sla status', 'role', 'nama karyawan', 'pic take over ticket'];
+      const allowedFilters = ['cluster to', 'sub cluster', 'nop', 'role', 'nama karyawan'];
       const newFilters = {};
       fmeColumns.forEach(col => {
         if (allowedFilters.includes(col.toLowerCase().trim())) {
