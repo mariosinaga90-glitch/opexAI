@@ -292,7 +292,15 @@ const ProductivityAchievement = () => {
       if (!lookupVal && nopColName) lookupVal = row[nopColName];
       const lookupKey = lookupVal ? String(lookupVal).trim().toLowerCase() : null;
       const picInfo = lookupKey && picMapping[lookupKey] ? picMapping[lookupKey] : {};
-      return { ...picInfo, ...row };
+      
+      // Filter out falsy/empty values from row so they don't overwrite valid picInfo data
+      const cleanedRow = {};
+      for (const [k, v] of Object.entries(row)) {
+        if (v !== undefined && v !== null && v !== '') {
+          cleanedRow[k] = v;
+        }
+      }
+      return { ...picInfo, ...cleanedRow };
     };
 
     const autoCols = datasets.ticketAuto?.columns || [];
@@ -372,9 +380,9 @@ const ProductivityAchievement = () => {
             }
           }
 
-          // Strict filtering untuk slicer yang berlaku (dengan case-insensitive key check)
+          // Strict filtering untuk slicer yang berlaku (dengan case-insensitive key & value check)
           const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
-          if (!actualKey || String(row[actualKey]) !== String(val)) {
+          if (!actualKey || String(row[actualKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
             return false;
           }
         }
