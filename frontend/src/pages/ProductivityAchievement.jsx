@@ -779,8 +779,6 @@ const ProductivityAchievement = () => {
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
     // Sort descending agar tiket yang muncul di beberapa hari dihitung di hari terakhirnya saja
     parsedData.sort((a, b) => (b.checkIn || '').localeCompare(a.checkIn || ''));
-    
-    const globalFnaSet = new Set();
 
     parsedData.forEach(({ row, checkIn }) => {
       // Jika tidak memiliki tanggal valid, atau tidak masuk dalam rentang tanggal yg diizinkan, lewati
@@ -796,7 +794,13 @@ const ProductivityAchievement = () => {
         if (key) pic = nopToPic[key];
       }
       
-      // 2. Jika masih tidak ada di Data PIC, abaikan
+      // 2. Jika tidak ditemukan, coba gunakan NOP (Ticket FNA membutuhkan ini)
+      if (!pic && fnaNopCol && row[fnaNopCol]) {
+        const key = String(row[fnaNopCol]).trim().toLowerCase();
+        if (key) pic = nopToPic[key];
+      }
+      
+      // 3. Jika masih tidak ada di Data PIC, abaikan
       if (!pic) {
         return; 
       }
@@ -814,10 +818,7 @@ const ProductivityAchievement = () => {
       }
       
       if (ticketId) {
-        if (!globalFnaSet.has(ticketId)) {
-          globalFnaSet.add(ticketId);
-          groupedByPic[pic][checkIn].add(ticketId);
-        }
+        groupedByPic[pic][checkIn].add(ticketId);
       }
     });
 
