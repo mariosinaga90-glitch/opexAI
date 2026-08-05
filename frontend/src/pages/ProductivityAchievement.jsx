@@ -488,6 +488,10 @@ const ProductivityAchievement = () => {
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
 
+    // Tahap 1: Temukan bulan (YYYY-MM) paling terbaru dari data yang ada
+    let latestMonth = '';
+    const parsedData = [];
+    
     autoData.forEach(row => {
       let checkInRaw = row[autoCheckInCol];
       if (!checkInRaw) {
@@ -496,7 +500,7 @@ const ProductivityAchievement = () => {
         if (fallbackCheckIn) checkInRaw = row[fallbackCheckIn];
       }
       
-      let checkIn = 'No Check In';
+      let checkIn = null;
       if (checkInRaw) {
         if (!isNaN(checkInRaw) && Number(checkInRaw) > 10000) {
           const jsDate = new Date((Number(checkInRaw) - 25569) * 86400 * 1000);
@@ -517,6 +521,22 @@ const ProductivityAchievement = () => {
           }
         }
       }
+
+      if (checkIn && /^\d{4}-\d{2}/.test(checkIn)) {
+        const ym = checkIn.substring(0, 7);
+        if (ym > latestMonth) latestMonth = ym;
+      }
+      
+      parsedData.push({ row, checkIn });
+    });
+
+    // Tahap 2: Hanya gunakan data yang masuk dalam bulan terbaru (1 bulan saja)
+    parsedData.forEach(({ row, checkIn }) => {
+      // Hanya biarkan lewat jika bulan sesuai latestMonth, ATAU jika tidak ada valid date sama sekali
+      if (latestMonth && checkIn && /^\d{4}-\d{2}/.test(checkIn) && !checkIn.startsWith(latestMonth)) {
+        return; // skip data dari bulan sebelumnya
+      }
+      if (!checkIn) checkIn = 'No Check In';
       
       // Coba ambil dari PIC Take Over, jika tidak ada/kosong, fallback ke NOP
       let lookupVal = autoPicTakeOverCol ? row[autoPicTakeOverCol] : null;
