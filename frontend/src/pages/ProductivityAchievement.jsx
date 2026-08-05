@@ -546,11 +546,7 @@ const ProductivityAchievement = () => {
     
     autoData.forEach(row => {
       let checkInRaw = row[autoCheckInCol];
-      if (!checkInRaw) {
-        // Fallback search
-        const fallbackCheckIn = Object.keys(row).find(k => k.toLowerCase().includes('check in'));
-        if (fallbackCheckIn) checkInRaw = row[fallbackCheckIn];
-      }
+      // TIDAK ADA FALLBACK. Jika kolom 'Check In At' kosong, biarkan kosong!
       
       let checkIn = null;
       if (checkInRaw) {
