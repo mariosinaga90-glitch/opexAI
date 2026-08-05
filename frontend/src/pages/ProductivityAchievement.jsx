@@ -601,11 +601,10 @@ const ProductivityAchievement = () => {
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
     parsedData.forEach(({ row, checkIn }) => {
-      // Jika memiliki tanggal valid namun tidak masuk dalam 31 hari terakhir, lewati
-      if (checkIn && /^\d{4}-\d{2}/.test(checkIn) && !allowedDates.has(checkIn)) {
+      // Jika tidak memiliki tanggal valid, atau tidak masuk dalam rentang tanggal yg diizinkan, lewati
+      if (!checkIn || !/^\d{4}-\d{2}/.test(checkIn) || !allowedDates.has(checkIn)) {
         return;
       }
-      if (!checkIn) checkIn = 'No Check In';
       
       let pic = null;
       
@@ -772,10 +771,10 @@ const ProductivityAchievement = () => {
 
     // Tahap 2: Hanya gunakan data yang valid (sesuai allowedDates)
     parsedData.forEach(({ row, checkIn }) => {
-      if (checkIn && /^\d{4}-\d{2}/.test(checkIn) && !allowedDates.has(checkIn)) {
+      // Jika tidak memiliki tanggal valid, atau tidak masuk dalam rentang tanggal yg diizinkan, lewati
+      if (!checkIn || !/^\d{4}-\d{2}/.test(checkIn) || !allowedDates.has(checkIn)) {
         return;
       }
-      if (!checkIn) checkIn = 'No Check In';
       
       let pic = null;
       
