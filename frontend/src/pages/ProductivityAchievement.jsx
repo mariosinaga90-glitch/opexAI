@@ -505,15 +505,21 @@ const ProductivityAchievement = () => {
     const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
     const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
 
+    const isValidKey = (k) => {
+      if (!k) return false;
+      const invalidKeys = ['-', 'n/a', 'na', '#n/a', '0', 'null', 'undefined', ''];
+      return !invalidKeys.includes(k);
+    };
+
     picData.forEach(row => {
       const picName = row[picNameCol] || 'Unknown';
       if (row[picNopCol]) {
         const key = String(row[picNopCol]).trim().toLowerCase();
-        if (key) nopToPic[key] = picName;
+        if (isValidKey(key)) nopToPic[key] = picName;
       }
       if (row[picNameCol]) {
         const key = String(row[picNameCol]).trim().toLowerCase();
-        if (key) nopToPic[key] = picName;
+        if (isValidKey(key)) nopToPic[key] = picName;
       }
     });
 
@@ -678,15 +684,21 @@ const ProductivityAchievement = () => {
     const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
     const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
 
+    const isValidKey = (k) => {
+      if (!k) return false;
+      const invalidKeys = ['-', 'n/a', 'na', '#n/a', '0', 'null', 'undefined', ''];
+      return !invalidKeys.includes(k);
+    };
+
     picData.forEach(row => {
       const picName = row[picNameCol] || 'Unknown';
       if (row[picNopCol]) {
         const key = String(row[picNopCol]).trim().toLowerCase();
-        if (key) nopToPic[key] = picName;
+        if (isValidKey(key)) nopToPic[key] = picName;
       }
       if (row[picNameCol]) {
         const key = String(row[picNameCol]).trim().toLowerCase();
-        if (key) nopToPic[key] = picName;
+        if (isValidKey(key)) nopToPic[key] = picName;
       }
     });
 
