@@ -643,7 +643,7 @@ const ProductivityAchievement = () => {
     });
 
     return {
-      data: finalData.sort((a,b) => b.Total - a.Total).slice(0, 50), // limit top 50 PICs
+      data: finalData.sort((a,b) => a.name.localeCompare(b.name)).slice(0, 50), // limit top 50 PICs
       columns: Array.from(checkInSet).sort()
     };
   }, [filteredData, datasets.dataPic, dateRange]);
@@ -786,7 +786,7 @@ const ProductivityAchievement = () => {
     });
 
     return {
-      data: finalData.sort((a,b) => b.Total - a.Total).slice(0, 50), 
+      data: finalData.sort((a,b) => a.name.localeCompare(b.name)).slice(0, 50), 
       columns: Array.from(checkInSet).sort()
     };
   }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol]);
