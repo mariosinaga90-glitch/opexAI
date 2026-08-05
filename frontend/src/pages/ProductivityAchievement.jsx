@@ -534,8 +534,8 @@ const ProductivityAchievement = () => {
     });
     
     // Find Ticket Auto columns
-    // HANYA mencari kolom yang mengandung 'pic take over' sesuai permintaan
-    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim().includes('pic take over'));
+    // HANYA mencari kolom 'pic take over ticket' sesuai permintaan eksplisit
+    const autoPicTakeOverCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'pic take over ticket');
     const autoNopCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'nop');
     const autoCheckInCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
     const autoTicketCol = (datasets.ticketAuto?.columns || []).find(c => c.toLowerCase().trim() === 'ticket number swfm') || 'Ticket Number SWFM';
