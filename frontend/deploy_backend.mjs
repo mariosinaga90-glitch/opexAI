@@ -28,7 +28,7 @@ async function runDeploy() {
     console.log('Upload complete.');
 
     console.log('Searching for active Coolify application container...');
-    const containerResult = await ssh.execCommand("docker ps --format '{{.Names}}' | grep dnudzs4iz4nfn5cptv0d93ib");
+    const containerResult = await ssh.execCommand("docker ps --format '{{.Names}}' | grep dnudzs4iz4nfn5cptv0d93ib | head -n 1");
     const containerName = containerResult.stdout.trim();
     
     if (containerName) {
