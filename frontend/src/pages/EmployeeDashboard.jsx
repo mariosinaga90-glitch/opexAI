@@ -367,7 +367,13 @@ function EmployeeDashboardOverview() {
 function EmployeeDashboard() {
   const location = useLocation();
   const [currentHash, setCurrentHash] = useState(location.hash);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user') || '{}'));
+  const [user, setUser] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('user') || '{}');
+    } catch (e) {
+      return {};
+    }
+  });
 
   useEffect(() => {
     setCurrentHash(location.hash);
@@ -375,7 +381,11 @@ function EmployeeDashboard() {
 
   useEffect(() => {
     const handleUserUpdate = () => {
-      setUser(JSON.parse(localStorage.getItem('user') || '{}'));
+      try {
+        setUser(JSON.parse(localStorage.getItem('user') || '{}'));
+      } catch (e) {
+        console.error('Error parsing user data:', e);
+      }
     };
     window.addEventListener('user-updated', handleUserUpdate);
     return () => window.removeEventListener('user-updated', handleUserUpdate);

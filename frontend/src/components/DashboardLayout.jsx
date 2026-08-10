@@ -36,17 +36,21 @@ function DashboardLayout({ role }) {
 
   useEffect(() => {
     const syncUser = () => {
-      const storedUser = localStorage.getItem('user');
-      if (!storedUser) {
-        navigate('/');
-      } else {
-        const parsedUser = JSON.parse(storedUser);
-        // Optional: Check if role matches route
-        if (parsedUser.role !== role) {
-          navigate(`/${parsedUser.role}`);
+      try {
+        const storedUser = localStorage.getItem('user');
+        if (!storedUser) {
+          navigate('/');
         } else {
-          setUser(parsedUser);
+          const parsedUser = JSON.parse(storedUser);
+          if (parsedUser.role !== role) {
+            navigate(`/${parsedUser.role}`);
+          } else {
+            setUser(parsedUser);
+          }
         }
+      } catch (e) {
+        console.error('Error in syncUser:', e);
+        navigate('/');
       }
     };
 
@@ -210,7 +214,7 @@ function DashboardLayout({ role }) {
               onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
               title="Menu Profil"
             >
-              {user.name.charAt(0).toUpperCase()}
+              {user && user.name ? user.name.charAt(0).toUpperCase() : 'U'}
             </div>
 
             {/* Profile Dropdown Menu */}
