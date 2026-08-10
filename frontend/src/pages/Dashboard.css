@@ -790,15 +790,16 @@ textarea.form-control {
 @media (max-width: 768px) {
   .dashboard-sidebar {
     position: fixed;
-    left: 0;
+    left: -300px;
     top: 0;
     height: 100vh;
-    transform: translateX(-100%);
     box-shadow: none;
+    z-index: 100;
+    transition: left 0.3s ease;
   }
   
   .dashboard-sidebar.open {
-    transform: translateX(0);
+    left: 0;
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
   }
   
