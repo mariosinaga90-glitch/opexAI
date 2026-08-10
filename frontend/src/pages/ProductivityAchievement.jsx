@@ -76,7 +76,7 @@ const ProductivityAchievement = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`${API_BASE_URL}/dashboard-data`);
+        const res = await fetch(`${API_BASE_URL}/dashboard-data`, { credentials: 'include' });
         if (res.ok) {
           const serverData = await res.json();
           setDatasets(prev => {
@@ -145,6 +145,7 @@ const ProductivityAchievement = () => {
         const res = await fetch(`${API_BASE_URL}/dashboard-data`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({
             datasetId,
             fileName,
@@ -212,6 +213,7 @@ const ProductivityAchievement = () => {
               const res = await fetch(`${API_BASE_URL}/dashboard-data`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                   datasetId: config.id,
                   fileName: `${file.name} - ${sheetName}`,
