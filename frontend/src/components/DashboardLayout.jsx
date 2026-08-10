@@ -252,26 +252,8 @@ function DashboardLayout({ role }) {
         </main>
       </div>
 
-      {/* Bottom Navigation for Mobile */}
-      <nav className="bottom-nav">
-        {navItems.filter(item => item.name !== 'Edit Profil' && item.name !== 'Pengaturan').slice(0, 5).map((item, index) => {
-          const Icon = item.icon;
-          const itemPathname = item.path.split('#')[0];
-          const itemHash = item.path.includes('#') ? '#' + item.path.split('#')[1] : '';
-          const isActive = location.pathname === itemPathname && location.hash === itemHash;
-          
-          return (
-            <Link 
-              key={index} 
-              to={item.path} 
-              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
-            >
-              <Icon size={item.name === 'Dashboard' ? 22 : 24} />
-              {item.name === 'Dashboard' && <span>Dashboard</span>}
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Bottom Navigation for Mobile dihilangkan (Semua akses menu via Sidebar) */}
+
 
       {/* Floating Tutorial Guide */}
       <TutorialGuide />
