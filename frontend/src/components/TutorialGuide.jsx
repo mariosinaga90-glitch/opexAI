@@ -60,8 +60,7 @@ const tutorials = [
   }
 ];
 
-const TutorialGuide = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const TutorialGuide = ({ isOpen, onClose }) => {
   const [expandedId, setExpandedId] = useState('pengajuan'); // Default open first
 
   const toggleAccordion = (id) => {
@@ -70,21 +69,16 @@ const TutorialGuide = () => {
 
   return (
     <>
-      {/* Floating Action Button */}
-      <button className="tutorial-fab" onClick={() => setIsOpen(true)} title="Panduan Penggunaan">
-        <HelpCircle size={28} />
-      </button>
-
       {/* Tutorial Modal Overlay */}
       {isOpen && (
-        <div className="tutorial-overlay" onClick={() => setIsOpen(false)}>
+        <div className="tutorial-overlay" onClick={onClose}>
           <div className="tutorial-modal animate-fade-in-up" onClick={(e) => e.stopPropagation()}>
             <div className="tutorial-header">
               <div className="tutorial-header-title">
                 <HelpCircle size={24} className="tutorial-icon-pulse" />
-                <h2>Panduan Penggunaan</h2>
+                <h2>Panduan Pengguna</h2>
               </div>
-              <button className="tutorial-close-btn" onClick={() => setIsOpen(false)}>
+              <button className="tutorial-close-btn" onClick={onClose}>
                 <X size={24} />
               </button>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User, Download, TrendingUp } from 'lucide-react';
+import { LayoutDashboard, FileText, CheckSquare, Settings, LogOut, Users, Menu, Search, X, BatteryCharging, User, Download, TrendingUp, HelpCircle } from 'lucide-react';
 import TutorialGuide from './TutorialGuide';
 import '../pages/Dashboard.css';
 
@@ -8,6 +8,7 @@ function DashboardLayout({ role }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [installPrompt, setInstallPrompt] = useState(null);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
@@ -158,6 +159,15 @@ function DashboardLayout({ role }) {
               </Link>
             );
           })}
+          
+          <button 
+            className="nav-item text-info" 
+            onClick={() => { setIsTutorialOpen(true); closeSidebar(); }}
+            style={{ border: 'none', background: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit', color: 'var(--accent-blue)' }}
+          >
+            <HelpCircle size={20} />
+            <span>Panduan Pengguna</span>
+          </button>
         </nav>
         
         <div className="sidebar-footer">
@@ -255,8 +265,8 @@ function DashboardLayout({ role }) {
       {/* Bottom Navigation for Mobile dihilangkan (Semua akses menu via Sidebar) */}
 
 
-      {/* Floating Tutorial Guide */}
-      <TutorialGuide />
+      {/* Tutorial Guide Modal */}
+      <TutorialGuide isOpen={isTutorialOpen} onClose={() => setIsTutorialOpen(false)} />
     </div>
   );
 }
