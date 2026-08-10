@@ -26,6 +26,9 @@ function App() {
           <Route path="backup-power" element={<AdminBackupPowerView />} />
           <Route path="productivity" element={<ProductivityAchievement />} />
         </Route>
+        
+        {/* Fallback route for 404 */}
+        <Route path="*" element={<div style={{ padding: '2rem', textAlign: 'center', color: 'white' }}><h1>404 - Halaman Tidak Ditemukan</h1><p>Silakan kembali ke halaman utama.</p><a href="/" style={{ color: 'var(--primary-color)' }}>Ke Halaman Utama</a></div>} />
       </Routes>
     </Router>
   );

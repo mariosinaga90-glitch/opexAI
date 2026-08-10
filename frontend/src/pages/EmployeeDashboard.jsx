@@ -391,7 +391,7 @@ function EmployeeDashboard() {
     return () => window.removeEventListener('user-updated', handleUserUpdate);
   }, []);
 
-  const isProfileIncomplete = !user.name || !user.email || !user.team || !user.cluster || !user.microCluster || !user.phoneNumber || !user.nik;
+  const isProfileIncomplete = !user?.name || !user?.email || !user?.team || !user?.cluster || !user?.microCluster || !user?.phoneNumber || !user?.nik;
 
   const renderContent = () => {
     switch (currentHash) {

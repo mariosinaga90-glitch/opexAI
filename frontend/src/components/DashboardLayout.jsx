@@ -42,7 +42,10 @@ function DashboardLayout({ role }) {
           navigate('/');
         } else {
           const parsedUser = JSON.parse(storedUser);
-          if (parsedUser.role !== role) {
+          if (!parsedUser || !parsedUser.role) {
+            localStorage.removeItem('user');
+            navigate('/');
+          } else if (parsedUser.role !== role) {
             navigate(`/${parsedUser.role}`);
           } else {
             setUser(parsedUser);
@@ -205,8 +208,8 @@ function DashboardLayout({ role }) {
           </div>
           <div className="topbar-profile" ref={profileMenuRef} style={{ position: 'relative' }}>
             <div className="profile-info">
-              <span className="profile-name">{user.name}</span>
-              <span className="profile-role">{user.team || user.role}</span>
+              <span className="profile-name">{user?.name || 'User'}</span>
+              <span className="profile-role">{user?.team || user?.role || 'Karyawan'}</span>
             </div>
             <div 
               className="profile-avatar" 
