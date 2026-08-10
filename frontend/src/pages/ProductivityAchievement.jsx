@@ -109,16 +109,23 @@ const ProductivityAchievement = () => {
     metricCol: ''
   });
 
-  // Cek role user
-  const userString = localStorage.getItem('user');
-  const user = userString ? JSON.parse(userString) : null;
-  const isEmployee = user && user.role !== 'admin';
+  // Cek role user secara aman untuk mencegah crash jika localStorage corrupt
+  let isEmployee = false;
+  try {
+    const userString = localStorage.getItem('user');
+    if (userString && userString !== 'undefined') {
+      const user = JSON.parse(userString);
+      isEmployee = user && user.role !== 'admin';
+    }
+  } catch (err) {
+    console.error('Error parsing user data:', err);
+  }
 
   // Filter State
   const [filters, setFilters] = useState({});
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [rankFilter, setRankFilter] = useState('Semua');
-  const [activeTab, setActiveTab] = useState(isEmployee ? 'dashboard_fme' : 'raw_data'); // Default to raw_data for admin, dashboard_fme for employee
+  const [activeTab, setActiveTab] = useState('dashboard_fme'); // Default to dashboard_fme
   const [showConfig, setShowConfig] = useState(true);
 
   const dashboardRef = useRef(null);
@@ -940,11 +947,6 @@ const ProductivityAchievement = () => {
 
       {/* Navigation Tabs */}
       <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-        {!isEmployee && (
-          <button onClick={() => setActiveTab('raw_data')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'raw_data' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'raw_data' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <TableIcon size={16} /> RAW Data
-          </button>
-        )}
         <button onClick={() => setActiveTab('dashboard_fme')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'dashboard_fme' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'dashboard_fme' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <LayoutGrid size={16} /> Dashboard FME
         </button>
