@@ -12,6 +12,29 @@
     <title>OpexTac — Operational Funds & Realization</title>
   </head>
   <body>
+    <script>
+      // Force clear old Service Worker cache that may be serving stale/broken JS bundles
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          var cleared = false;
+          registrations.forEach(function(registration) {
+            registration.unregister();
+            cleared = true;
+          });
+          if (cleared && 'caches' in window) {
+            caches.keys().then(function(names) {
+              names.forEach(function(name) { caches.delete(name); });
+            }).then(function() {
+              // Only reload once to avoid infinite loop
+              if (!sessionStorage.getItem('sw_cleared')) {
+                sessionStorage.setItem('sw_cleared', '1');
+                window.location.reload();
+              }
+            });
+          }
+        });
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
