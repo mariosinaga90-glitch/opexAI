@@ -361,11 +361,27 @@ const ProductivityAchievement = () => {
     const autoNopCol = autoCols.find(c => c.toLowerCase().trim() === 'nop');
     const autoPicTakeOverCol = autoCols.find(c => c.toLowerCase().trim().includes('pic take over'));
 
+    const fnaCols = datasets.ticketFna?.columns || [];
+    const fnaNopCol = fnaCols.find(c => c.toLowerCase().trim() === 'nop');
+    const fnaPicCol = fnaCols.find(c => c.toLowerCase().trim().includes('pic take over')) 
+                   || fnaCols.find(c => c.toLowerCase().trim() === 'pic')
+                   || fnaCols.find(c => c.toLowerCase().trim().includes('nama'));
+
+    const pmSiteCols = datasets.pmSite?.columns || [];
+    const pmSiteNopCol = pmSiteCols.find(c => c.toLowerCase().trim() === 'nop');
+    const pmSitePicCol = pmSiteCols.find(c => c.toLowerCase().trim() === 'pic')
+                      || pmSiteCols.find(c => c.toLowerCase().trim().includes('nama'));
+
+    const pmGensetCols = datasets.pmGenset?.columns || [];
+    const pmGensetNopCol = pmGensetCols.find(c => c.toLowerCase().trim() === 'nop');
+    const pmGensetPicCol = pmGensetCols.find(c => c.toLowerCase().trim() === 'pic')
+                        || pmGensetCols.find(c => c.toLowerCase().trim().includes('nama'));
+
     return [
       ...(datasets.ticketAuto?.data || []).map(row => ({ ...enrichRow(row, autoNopCol, autoPicTakeOverCol), _source: 'ticketAuto' })), 
-      ...(datasets.ticketFna?.data || []).map(row => ({ ...row, _source: 'ticketFna' })),
-      ...(datasets.pmSite?.data || []).map(row => ({ ...row, _source: 'pmSite' })),
-      ...(datasets.pmGenset?.data || []).map(row => ({ ...row, _source: 'pmGenset' })),
+      ...(datasets.ticketFna?.data || []).map(row => ({ ...enrichRow(row, fnaNopCol, fnaPicCol), _source: 'ticketFna' })),
+      ...(datasets.pmSite?.data || []).map(row => ({ ...enrichRow(row, pmSiteNopCol, pmSitePicCol), _source: 'pmSite' })),
+      ...(datasets.pmGenset?.data || []).map(row => ({ ...enrichRow(row, pmGensetNopCol, pmGensetPicCol), _source: 'pmGenset' })),
       ...(datasets.dataPic?.data || []).map(row => ({ ...row, _source: 'dataPic' }))
     ];
   }, [datasets.ticketAuto, datasets.ticketFna, datasets.pmSite, datasets.pmGenset, datasets.dataPic]);
