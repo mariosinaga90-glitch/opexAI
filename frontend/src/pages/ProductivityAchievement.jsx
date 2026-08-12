@@ -522,17 +522,8 @@ const ProductivityAchievement = () => {
 
     return enrichedData.filter(row => {
       // 1. Slicers
-      const allowedProductivitySlicers = ['role', 'cluster to', 'nop'];
-      
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All') {
-          // Khusus tabel Productivity Team (ticketAuto, ticketFna, dataPic), abaikan slicer selain Cluster TO, dan NOP agar tabel tetap sinkron
-          if (['ticketAuto', 'ticketFna', 'dataPic'].includes(row._source)) {
-            if (!allowedProductivitySlicers.includes(key.toLowerCase().trim())) {
-              continue; 
-            }
-          }
-
           // Strict filtering untuk slicer yang berlaku
           const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
           if (!actualKey || String(row[actualKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
@@ -593,7 +584,13 @@ const ProductivityAchievement = () => {
 
   // Dynamic Extract Unique Values for Dropdowns
   const getUniqueValues = (col) => {
-    const unique = new Set(activeData.map(row => String(row[col])));
+    const unique = new Set();
+    activeData.forEach(row => {
+      const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === col.toLowerCase().trim());
+      if (actualKey && row[actualKey] !== undefined && row[actualKey] !== null && String(row[actualKey]).trim() !== '') {
+        unique.add(String(row[actualKey]).trim());
+      }
+    });
     return Array.from(unique).filter(v => v !== 'undefined' && v !== 'null').sort();
   };
 
