@@ -1444,25 +1444,25 @@ const ProductivityAchievement = () => {
 
                   return (
                     <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '1 1 450px', minWidth: '350px' }}>
-                      <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>Summary Team</h3>
+                      <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1.1rem', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>Summary Team</h3>
                       
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem', flex: 1 }}>
                         {/* Column 1: Total PIC */}
                         <div style={{ backgroundColor: '#3b82f6', borderRadius: '8px', padding: '0.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '1rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Total Team</span>
-                              <i className="fas fa-users" style={{ fontSize: '1rem', opacity: 0.9 }}></i>
+                              <span style={{ fontSize: '1rem', fontWeight: 600 }}>Total Team</span>
+                              <i className="fas fa-users" style={{ fontSize: '1.25rem', opacity: 0.9 }}></i>
                             </div>
-                            <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{totalPIC}</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{totalPIC}</div>
                           </div>
                           
-                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'space-around' }}>
                             {['TS', 'MBP', 'PM'].map(role => (
                               <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.total || 0}</span>
-                                <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Total Team</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
+                                <span style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.total || 0}</span>
+                                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>Total Team</span>
                               </div>
                             ))}
                           </div>
@@ -1470,20 +1470,20 @@ const ProductivityAchievement = () => {
 
                         {/* Column 2: Good Prod */}
                         <div style={{ backgroundColor: '#374151', borderRadius: '8px', padding: '0.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '1rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Good Prod</span>
-                              <i className="fas fa-check" style={{ fontSize: '1rem', opacity: 0.9 }}></i>
+                              <span style={{ fontSize: '1rem', fontWeight: 600 }}>Good Prod</span>
+                              <i className="fas fa-check" style={{ fontSize: '1.25rem', opacity: 0.9 }}></i>
                             </div>
-                            <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{summary.MBP.good + summary.PM.good + summary.TS.good}</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{summary.MBP.good + summary.PM.good + summary.TS.good}</div>
                           </div>
                           
-                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'space-around' }}>
                             {['TS', 'MBP', 'PM'].map(role => (
                               <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.good || 0}</span>
-                                <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Good Prod</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
+                                <span style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.good || 0}</span>
+                                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>Good Prod</span>
                               </div>
                             ))}
                           </div>
@@ -1491,20 +1491,20 @@ const ProductivityAchievement = () => {
 
                         {/* Column 3: Poor Prod */}
                         <div style={{ backgroundColor: '#eab308', borderRadius: '8px', padding: '0.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '1rem' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Poor Prod</span>
-                              <i className="fas fa-exclamation-triangle" style={{ fontSize: '1rem', opacity: 0.9 }}></i>
+                              <span style={{ fontSize: '1rem', fontWeight: 600 }}>Poor Prod</span>
+                              <i className="fas fa-exclamation-triangle" style={{ fontSize: '1.25rem', opacity: 0.9 }}></i>
                             </div>
-                            <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{summary.MBP.poor + summary.PM.poor + summary.TS.poor}</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{summary.MBP.poor + summary.PM.poor + summary.TS.poor}</div>
                           </div>
                           
-                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '1rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', justifyContent: 'space-around' }}>
                             {['TS', 'MBP', 'PM'].map(role => (
                               <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
-                                <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.poor || 0}</span>
-                                <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Poor Prod</span>
+                                <span style={{ fontSize: '0.9rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
+                                <span style={{ fontSize: '1.5rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.poor || 0}</span>
+                                <span style={{ fontSize: '0.8rem', opacity: 0.8 }}>Poor Prod</span>
                               </div>
                             ))}
                           </div>
