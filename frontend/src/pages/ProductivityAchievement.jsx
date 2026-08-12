@@ -147,7 +147,6 @@ const ProductivityAchievement = () => {
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   const [rankFilter, setRankFilter] = useState('Semua');
   const [activeTab, setActiveTab] = useState(isEmployee ? 'dashboard_fme' : 'raw_data'); // Default to raw_data for admin, dashboard_fme for employee
-  const [showConfig, setShowConfig] = useState(true);
 
   const dashboardRef = useRef(null);
 
@@ -1091,9 +1090,6 @@ const ProductivityAchievement = () => {
                 )}
               </>
             )}
-            <button onClick={() => setShowConfig(!showConfig)} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: showConfig ? 'rgba(255,255,255,0.1)' : 'transparent', color: 'white', cursor: 'pointer' }}>
-              <Settings2 size={16} /> Konfigurasi FME
-            </button>
             <button onClick={handleExportPDF} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', background: 'var(--primary-color)', color: '#0f172a', fontWeight: 600, cursor: 'pointer' }}>
               <Download size={16} /> Export PDF
             </button>
@@ -1261,40 +1257,6 @@ const ProductivityAchievement = () => {
         fmeData.length > 0 ? (
           <div ref={dashboardRef} className="export-container animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#0b1120', padding: '0.5rem' }}>
             
-            {/* Configuration Panel */}
-            {showConfig && (
-              <div className="glass-panel animate-fade-in-down" style={{ padding: '1rem', marginBottom: '1rem', backgroundColor: 'rgba(15, 23, 42, 0.8)', border: '1px solid rgba(56, 189, 248, 0.3)' }}>
-                <h4 style={{ margin: '0 0 1rem 0', color: 'var(--primary-color)', fontSize: '0.875rem' }}>MAPPING KOLOM (Penting untuk visualisasi)</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Sumbu Waktu (Time/Date)</label>
-                    <select value={fmeConfig.timeCol} onChange={(e) => setFmeConfig({...fmeConfig, timeCol: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', background: '#0f172a', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
-                      {fmeColumns.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Kategori Utama (Role/Region)</label>
-                    <select value={fmeConfig.categoryCol} onChange={(e) => setFmeConfig({...fmeConfig, categoryCol: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', background: '#0f172a', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
-                      {fmeColumns.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Status (Kondisi/Warna)</label>
-                    <select value={fmeConfig.statusCol} onChange={(e) => setFmeConfig({...fmeConfig, statusCol: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', background: '#0f172a', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
-                      {fmeColumns.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Metrik (Angka / Opsional)</label>
-                    <select value={fmeConfig.metricCol} onChange={(e) => setFmeConfig({...fmeConfig, metricCol: e.target.value})} style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', background: '#0f172a', color: 'white', border: '1px solid rgba(255,255,255,0.2)' }}>
-                      <option value="">-- Hanya Hitung Baris --</option>
-                      {fmeColumns.map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* Top KPIs */}
             {renderLayoutWrapper('top-kpis',
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
