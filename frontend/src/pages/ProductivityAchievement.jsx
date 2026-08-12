@@ -1386,16 +1386,16 @@ const ProductivityAchievement = () => {
                   {customStatusCards.map((card, index) => {
                     const color = getColorForStatus(card.status, index);
                     return (
-                      <div key={card.status} style={{ backgroundColor: color, borderRadius: '10px', padding: '1rem 1.25rem', color: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', minWidth: '220px', flex: '1 0 auto' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1rem', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '0.75rem', marginBottom: '0.75rem' }}>
-                          <span style={{ fontSize: '2rem', fontWeight: 800, lineHeight: 1 }}>{card.total}</span>
-                          <span style={{ fontSize: '0.9rem', fontWeight: 700, textTransform: 'uppercase', textAlign: 'right', lineHeight: 1.2 }}>{card.status}</span>
+                      <div key={card.status} style={{ backgroundColor: color, borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', minWidth: '220px', flex: '1 0 auto' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+                          <span style={{ fontSize: '1.75rem', fontWeight: 800, lineHeight: 1 }}>{card.total}</span>
+                          <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', textAlign: 'right', lineHeight: 1.1 }}>{card.status}</span>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', fontSize: '0.85rem' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.8rem' }}>
                           {Object.entries(card.categories).map(([cat, count]) => (
                             <div key={cat} style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ opacity: 0.9, fontWeight: 500 }}>{cat}</span>
-                              <span style={{ fontWeight: 800, fontSize: '1.2rem' }}>{count}</span>
+                              <span style={{ opacity: 0.9, fontWeight: 600 }}>{cat}</span>
+                              <span style={{ fontWeight: 800, fontSize: '1.05rem', marginTop: '0.1rem' }}>{count}</span>
                             </div>
                           ))}
                         </div>
