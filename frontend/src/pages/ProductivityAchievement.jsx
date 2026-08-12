@@ -982,6 +982,35 @@ const ProductivityAchievement = () => {
     return Object.values(grouped).sort((a,b) => b.total - a.total);
   }, [filteredData, fmeConfig.statusCol, fmeConfig.categoryCol]);
 
+  const customStatusCards = useMemo(() => {
+    const buildCard = (datasetKey, title, groupCol) => {
+      const ds = datasets[datasetKey];
+      if (!ds || !ds.data || ds.data.length === 0) {
+        return { status: title, total: 0, categories: {} };
+      }
+      
+      const categories = {};
+      ds.data.forEach(row => {
+        const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === groupCol.toLowerCase().trim());
+        const val = actualKey && row[actualKey] ? String(row[actualKey]) : 'Unknown';
+        categories[val] = (categories[val] || 0) + 1;
+      });
+      
+      const sortedCategories = Object.fromEntries(
+        Object.entries(categories).sort((a, b) => b[1] - a[1])
+      );
+      
+      return { status: title, total: ds.data.length, categories: sortedCategories };
+    };
+
+    return [
+      buildCard('ticketAuto', 'Ticket Auto', 'Ticket SWFM Status'),
+      buildCard('ticketFna', 'Ticket FNA', 'visit'),
+      buildCard('pmSite', 'Ticket PM Site', 'Status'),
+      buildCard('pmGenset', 'Ticket PM Genset', 'Status')
+    ];
+  }, [datasets]);
+
   const getColorForStatus = (status, index) => {
     const s = status.toLowerCase();
     if (s.includes('good') || s.includes('baik') || s.includes('active')) return STATUS_COLORS['Good'];
@@ -1353,7 +1382,7 @@ const ProductivityAchievement = () => {
                 
                 {/* Status Breakdown Cards - Horizontal di atas tabel */}
                 <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
-                  {statusCards.slice(0, 4).map((card, index) => {
+                  {customStatusCards.map((card, index) => {
                     const color = getColorForStatus(card.status, index);
                     return (
                       <div key={card.status} style={{ backgroundColor: color, borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', minWidth: '160px', flex: '1 0 auto' }}>
