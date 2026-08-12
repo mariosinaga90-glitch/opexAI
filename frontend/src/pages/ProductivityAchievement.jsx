@@ -401,20 +401,76 @@ const ProductivityAchievement = () => {
   // FILTERING (Applies to active dashboard data)
   // -----------------------------------------------------
   const filteredData = useMemo(() => {
-    return activeData.filter(row => {
+    // --- PRE-PROCESSING: Inject Role/Cluster/NOP from dataPic to other datasets ---
+    const picDataRaw = activeData.filter(r => r._source === 'dataPic');
+    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
+    
+    const picLookup = {};
+    const isValidKey = (k) => k && !['-', 'n/a', 'na', '#n/a', '0', 'null', 'undefined', ''].includes(k);
+    picDataRaw.forEach(row => {
+      const nop = row[picNopCol] ? String(row[picNopCol]).trim().toLowerCase() : null;
+      const name = row[picNameCol] ? String(row[picNameCol]).trim().toLowerCase() : null;
+      if (isValidKey(nop)) picLookup[nop] = row;
+      if (isValidKey(name)) picLookup[name] = row;
+    });
+
+    const enrichedData = activeData.map(row => {
+      if (row._source === 'dataPic') return row;
+      
+      let picKey1 = null;
+      let picKey2 = null;
+      
+      const getCol = (searchStrs) => Object.keys(row).find(c => searchStrs.some(s => c.toLowerCase().trim().includes(s)));
+      
+      if (row._source === 'ticketAuto') {
+        const nopCol = getCol(['nop']);
+        const picCol = getCol(['pic take over ticket', 'pic']);
+        if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
+        if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
+      } else if (row._source === 'ticketFna') {
+        const nopCol = getCol(['nop']);
+        const picCol = getCol(['pic take over', 'pic', 'nama karyawan']);
+        if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
+        if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
+      } else if (row._source === 'pmSite' || row._source === 'pmGenset') {
+        const nopCol = getCol(['nop']);
+        const picCol = getCol(['pic', 'nama']);
+        if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
+        if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
+      }
+
+      const matchedPic = picLookup[picKey1] || picLookup[picKey2];
+      if (matchedPic) {
+        const newRow = { ...row };
+        Object.keys(filters).forEach(filterKey => {
+          const existingKey = Object.keys(row).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
+          if (!existingKey) {
+            const matchedCol = Object.keys(matchedPic).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
+            if (matchedCol) {
+              newRow[filterKey] = matchedPic[matchedCol]; // Inject missing filter column (e.g. Role)
+            }
+          }
+        });
+        return newRow;
+      }
+      return row;
+    });
+
+    return enrichedData.filter(row => {
       // 1. Slicers
       const allowedProductivitySlicers = ['role', 'cluster to', 'nop'];
       
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All') {
-          // Khusus tabel Productivity Team (ticketAuto & dataPic), abaikan slicer selain Role, Cluster TO, dan NOP
-          if (row._source === 'ticketAuto' || row._source === 'dataPic') {
+          // Khusus tabel Productivity Team (ticketAuto, ticketFna, dataPic), abaikan slicer selain Role, Cluster TO, dan NOP agar tabel tetap sinkron
+          if (['ticketAuto', 'ticketFna', 'dataPic'].includes(row._source)) {
             if (!allowedProductivitySlicers.includes(key.toLowerCase().trim())) {
-              continue; // Lewati filter ini (misal Severity tidak akan memfilter tabel ini)
+              continue; 
             }
           }
 
-          // Strict filtering untuk slicer yang berlaku (dengan case-insensitive key & value check)
+          // Strict filtering untuk slicer yang berlaku
           const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
           if (!actualKey || String(row[actualKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
             return false;
@@ -426,7 +482,6 @@ const ProductivityAchievement = () => {
       if (dateRange.start || dateRange.end) {
         let rowDateStr = row[fmeConfig.timeCol];
         
-        // Coba baca dari kolom 'Check In At' khusus untuk ticketAuto agar filternya sinkron dengan tabel Productivity Team
         if (row._source === 'ticketAuto') {
           const autoCheckInCol = Object.keys(row).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
           rowDateStr = row[autoCheckInCol];
