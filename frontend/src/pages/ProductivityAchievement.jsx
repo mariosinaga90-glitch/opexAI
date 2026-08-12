@@ -1381,12 +1381,12 @@ const ProductivityAchievement = () => {
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Nama</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>NOP</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Cluster TO</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Ticket Auto + FNA</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Status</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Nama</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>NOP</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Cluster TO</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Ticket Auto + FNA</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1399,12 +1399,12 @@ const ProductivityAchievement = () => {
                           const statusColor = isGood ? '#10b981' : '#ef4444';
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
-                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.name}</td>
-                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.role}</td>
-                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.nop}</td>
-                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.cluster}</td>
-                              <td style={{ padding: '0.6rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', fontWeight: 'bold', color: '#38bdf8', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{row.Total}</td>
-                              <td style={{ padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', color: statusColor, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                              <td style={{ padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.name}</td>
+                              <td style={{ padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.role}</td>
+                              <td style={{ padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.nop}</td>
+                              <td style={{ padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.cluster}</td>
+                              <td style={{ padding: '0.3rem 0.5rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', fontWeight: 'bold', color: '#38bdf8', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{row.Total}</td>
+                              <td style={{ padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', color: statusColor, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                 <span style={{ backgroundColor: isGood ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)', padding: '2px 8px', borderRadius: '4px' }}>{statusText}</span>
                               </td>
                             </tr>
@@ -1474,11 +1474,11 @@ const ProductivityAchievement = () => {
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
-                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
                           {productivityTeamData.columns.map(col => (
-                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
+                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1486,22 +1486,22 @@ const ProductivityAchievement = () => {
                           const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
-                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
                               {productivityTeamData.columns.map(col => (
-                                <td key={col} style={{ padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
+                                <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
-                              <td style={{ backgroundColor: rowBg, padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
                             </tr>
                           );
                         })}
                         {productivityTeamData.data.length > 0 && (
                           <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
-                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
                             {productivityTeamData.columns.map(col => {
                               const colTotal = productivityTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
                             })}
-                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
                               {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
                             </td>
                           </tr>
@@ -1522,11 +1522,11 @@ const ProductivityAchievement = () => {
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
-                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
                           {ticketFnaTeamData.columns.map(col => (
-                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
+                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1534,22 +1534,22 @@ const ProductivityAchievement = () => {
                           const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
-                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
                               {ticketFnaTeamData.columns.map(col => (
-                                <td key={col} style={{ padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
+                                <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
-                              <td style={{ backgroundColor: rowBg, padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
                             </tr>
                           );
                         })}
                         {ticketFnaTeamData.data.length > 0 && (
                           <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
-                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
                             {ticketFnaTeamData.columns.map(col => {
                               const colTotal = ticketFnaTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
                             })}
-                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
                               {ticketFnaTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
                             </td>
                           </tr>
