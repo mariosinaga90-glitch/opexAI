@@ -1375,7 +1375,7 @@ const ProductivityAchievement = () => {
                 </div>
 
                 {/* Container for Productivity Table and Summary Team */}
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'stretch' }}>
                   {/* Productivity Table */}
                   <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0, flex: '1 1 600px' }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity</h3>
