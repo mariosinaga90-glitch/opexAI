@@ -1422,15 +1422,15 @@ const ProductivityAchievement = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto + FNA</h3>
-                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '400px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
-                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
                           {combinedTicketTeamData.columns.map(col => (
-                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
+                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1438,22 +1438,22 @@ const ProductivityAchievement = () => {
                           const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
-                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
                               {combinedTicketTeamData.columns.map(col => (
-                                <td key={col} style={{ padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
+                                <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
-                              <td style={{ backgroundColor: rowBg, padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
                             </tr>
                           );
                         })}
                         {combinedTicketTeamData.data.length > 0 && (
                           <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
-                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
                             {combinedTicketTeamData.columns.map(col => {
                               const colTotal = combinedTicketTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
                             })}
-                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
                               {combinedTicketTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
                             </td>
                           </tr>
