@@ -314,8 +314,27 @@ const ProductivityAchievement = () => {
     const picMapping = {};
     const picDataRaw = datasets.dataPic?.data || [];
     const dataPicCols = datasets.dataPic?.columns || [];
-    const picNopCol = dataPicCols.find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
-    const picNameCol = dataPicCols.find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
+    
+    const getColName = (searchStrs) => {
+      const lowerKeys = dataPicCols.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower === s);
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const regex = new RegExp(`\\b${s}\\b`);
+        const match = lowerKeys.find(k => regex.test(k.lower));
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower.includes(s));
+        if (match) return match.original;
+      }
+      return null;
+    };
+    
+    const picNopCol = getColName(['nop']) || 'NOP';
+    const picNameCol = getColName(['pic', 'nama karyawan', 'nama']) || 'PIC';
 
     picDataRaw.forEach(picRow => {
       if (picRow[picNopCol]) picMapping[String(picRow[picNopCol]).trim().toLowerCase()] = picRow;
@@ -403,8 +422,29 @@ const ProductivityAchievement = () => {
   const filteredData = useMemo(() => {
     // --- PRE-PROCESSING: Inject Role/Cluster/NOP from dataPic to other datasets ---
     const picDataRaw = activeData.filter(r => r._source === 'dataPic');
-    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
-    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
+    const dataPicCols = datasets.dataPic?.columns || [];
+    
+    // Robust column matching for Data PIC
+    const getColName = (searchStrs) => {
+      const lowerKeys = dataPicCols.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower === s);
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const regex = new RegExp(`\\b${s}\\b`);
+        const match = lowerKeys.find(k => regex.test(k.lower));
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower.includes(s));
+        if (match) return match.original;
+      }
+      return null;
+    };
+    
+    const picNopCol = getColName(['nop']) || 'NOP';
+    const picNameCol = getColName(['pic', 'nama karyawan', 'nama']) || 'PIC';
     
     const picLookup = {};
     const isValidKey = (k) => k && !['-', 'n/a', 'na', '#n/a', '0', 'null', 'undefined', ''].includes(k);
@@ -617,9 +657,28 @@ const ProductivityAchievement = () => {
     const autoData = filteredData.filter(row => row._source === 'ticketAuto');
     
     // Find column names case-insensitively just in case
-    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
-    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
-    const picRoleCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'role') || 'Role';
+    const dataPicCols = datasets.dataPic?.columns || [];
+    const getColName = (searchStrs) => {
+      const lowerKeys = dataPicCols.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower === s);
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const regex = new RegExp(`\\b${s}\\b`);
+        const match = lowerKeys.find(k => regex.test(k.lower));
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower.includes(s));
+        if (match) return match.original;
+      }
+      return null;
+    };
+    
+    const picNopCol = getColName(['nop']) || 'NOP';
+    const picNameCol = getColName(['pic', 'nama karyawan', 'nama']) || 'PIC';
+    const picRoleCol = getColName(['role']) || 'Role';
 
     const isValidKey = (k) => {
       if (!k) return false;
@@ -803,9 +862,28 @@ const ProductivityAchievement = () => {
     const fnaData = filteredData.filter(row => row._source === 'ticketFna');
     
     // Find column names case-insensitively just in case
-    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
-    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic') || 'PIC';
-    const picRoleCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'role') || 'Role';
+    const dataPicCols = datasets.dataPic?.columns || [];
+    const getColName = (searchStrs) => {
+      const lowerKeys = dataPicCols.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower === s);
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const regex = new RegExp(`\\b${s}\\b`);
+        const match = lowerKeys.find(k => regex.test(k.lower));
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower.includes(s));
+        if (match) return match.original;
+      }
+      return null;
+    };
+    
+    const picNopCol = getColName(['nop']) || 'NOP';
+    const picNameCol = getColName(['pic', 'nama karyawan', 'nama']) || 'PIC';
+    const picRoleCol = getColName(['role']) || 'Role';
 
     const isValidKey = (k) => {
       if (!k) return false;
@@ -981,13 +1059,35 @@ const ProductivityAchievement = () => {
   }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol, rankFilter]);
 
   const combinedTicketTeamData = useMemo(() => {
+    // We combine productivityTeamData.data and ticketFnaTeamData.data
+    // And group by PIC to show combined 'Total'
+    // To also show Role, NOP, Cluster TO, we look them up from picData
+    const dataPicCols = datasets.dataPic?.columns || [];
+    const getColName = (searchStrs) => {
+      const lowerKeys = dataPicCols.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower === s);
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const regex = new RegExp(`\\b${s}\\b`);
+        const match = lowerKeys.find(k => regex.test(k.lower));
+        if (match) return match.original;
+      }
+      for (const s of searchStrs) {
+        const match = lowerKeys.find(k => k.lower.includes(s));
+        if (match) return match.original;
+      }
+      return null;
+    };
+    
+    const picNopCol = getColName(['nop']) || 'NOP';
+    const picClusterCol = getColName(['cluster to', 'cluster']) || 'Cluster TO';
+    const picNameCol = getColName(['pic', 'nama karyawan', 'nama']) || 'PIC';
+    const picRoleCol = getColName(['role']) || 'Role';
+
     const autoData = productivityTeamData.fullData || [];
     const fnaData = ticketFnaTeamData.fullData || [];
-    
-    const picRoleCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'role') || 'Role';
-    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
-    const picClusterCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'cluster to' || c.toLowerCase().trim() === 'cluster') || 'Cluster TO';
-    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic' || c.toLowerCase().trim() === 'nama') || 'PIC';
 
     const picDetailsMap = {};
     if (datasets.dataPic?.data) {
