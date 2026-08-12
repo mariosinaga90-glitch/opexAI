@@ -1443,7 +1443,7 @@ const ProductivityAchievement = () => {
                   });
 
                   return (
-                    <div className="glass-panel" style={{ width: '280px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '0 0 280px' }}>
+                    <div className="glass-panel" style={{ width: '340px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '0 0 340px' }}>
                       <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>Summary Team</h3>
                       
                       {/* Total Team Card */}
