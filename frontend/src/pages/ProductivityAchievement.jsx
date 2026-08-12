@@ -65,8 +65,14 @@ const ProductivityAchievement = () => {
     ticketFna: { data: [], columns: [], fileName: '' },
     pmSite: { data: [], columns: [], fileName: '' },
     pmGenset: { data: [], columns: [], fileName: '' },
-    dataPic: { data: [], columns: [], fileName: '' }
+    dataPic: { data: [], columns: [], fileName: '' },
+    fmeLayout: { data: [], columns: [], fileName: '' }
   });
+
+  const defaultLayout = ['top-kpis', 'donuts', 'productivity-table', 'pivot-table', 'raw-auto', 'raw-fna'];
+  const [layoutOrder, setLayoutOrder] = useState(defaultLayout);
+  const [isEditLayoutMode, setIsEditLayoutMode] = useState(false);
+  const [isSavingLayout, setIsSavingLayout] = useState(false);
 
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -75,6 +81,7 @@ const ProductivityAchievement = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
+      setError('');
       try {
         const res = await fetch(`${API_BASE_URL}/dashboard-data`, { credentials: 'include' });
         if (res.ok) {
@@ -92,15 +99,29 @@ const ProductivityAchievement = () => {
             });
             return newDatasets;
           });
+        } else if (res.status === 401 || res.status === 403) {
+          setError('Sesi login Anda telah habis. Silakan login ulang.');
+        } else {
+          setError(`Gagal mengambil data dari server (Error ${res.status}). Coba muat ulang halaman.`);
         }
       } catch (err) {
         console.error('Gagal mengambil data dashboard:', err);
+        setError('Gagal terhubung ke server. Periksa koneksi internet Anda dan coba muat ulang halaman.');
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, []);
+
+  // Update layout from server data if available
+  useEffect(() => {
+    if (datasets.fmeLayout?.data && Array.isArray(datasets.fmeLayout.data) && datasets.fmeLayout.data.length > 0) {
+      // Validate that it contains valid keys, or just use it directly
+      setLayoutOrder(datasets.fmeLayout.data);
+    }
+  }, [datasets.fmeLayout]);
+
   // Dashboard FME Config State
   const [fmeConfig, setFmeConfig] = useState({
     timeCol: '',
@@ -323,35 +344,35 @@ const ProductivityAchievement = () => {
     const autoPicTakeOverCol = autoCols.find(c => c.toLowerCase().trim().includes('pic take over'));
 
     return [
-      ...datasets.ticketAuto.data.map(row => ({ ...enrichRow(row, autoNopCol, autoPicTakeOverCol), _source: 'ticketAuto' })), 
-      ...datasets.ticketFna.data.map(row => ({ ...row, _source: 'ticketFna' })),
-      ...datasets.pmSite.data.map(row => ({ ...row, _source: 'pmSite' })),
-      ...datasets.pmGenset.data.map(row => ({ ...row, _source: 'pmGenset' })),
-      ...datasets.dataPic.data.map(row => ({ ...row, _source: 'dataPic' }))
+      ...(datasets.ticketAuto?.data || []).map(row => ({ ...enrichRow(row, autoNopCol, autoPicTakeOverCol), _source: 'ticketAuto' })), 
+      ...(datasets.ticketFna?.data || []).map(row => ({ ...row, _source: 'ticketFna' })),
+      ...(datasets.pmSite?.data || []).map(row => ({ ...row, _source: 'pmSite' })),
+      ...(datasets.pmGenset?.data || []).map(row => ({ ...row, _source: 'pmGenset' })),
+      ...(datasets.dataPic?.data || []).map(row => ({ ...row, _source: 'dataPic' }))
     ];
   }, [datasets.ticketAuto, datasets.ticketFna, datasets.pmSite, datasets.pmGenset, datasets.dataPic]);
 
   const fmeColumns = useMemo(() => {
     const cols = new Set([
-      ...datasets.ticketAuto.columns, 
-      ...datasets.ticketFna.columns,
-      ...datasets.pmSite.columns,
-      ...datasets.pmGenset.columns,
-      ...datasets.dataPic.columns
+      ...(datasets.ticketAuto?.columns || []), 
+      ...(datasets.ticketFna?.columns || []),
+      ...(datasets.pmSite?.columns || []),
+      ...(datasets.pmGenset?.columns || []),
+      ...(datasets.dataPic?.columns || [])
     ]);
     return Array.from(cols);
-  }, [datasets.ticketAuto.columns, datasets.ticketFna.columns, datasets.pmSite.columns, datasets.pmGenset.columns, datasets.dataPic.columns]);
+  }, [datasets.ticketAuto, datasets.ticketFna, datasets.pmSite, datasets.pmGenset, datasets.dataPic]);
 
   const pmData = useMemo(() => {
-    return [...datasets.pmSite.data, ...datasets.pmGenset.data];
-  }, [datasets.pmSite.data, datasets.pmGenset.data]);
+    return [...(datasets.pmSite?.data || []), ...(datasets.pmGenset?.data || [])];
+  }, [datasets.pmSite, datasets.pmGenset]);
 
   // Determine which data is active based on tab
   const activeData = activeTab === 'dashboard_fme' ? fmeData : (activeTab === 'achievement_pm' ? pmData : fmeData);
   const activeColumns = activeTab === 'dashboard_fme' ? fmeColumns : (activeTab === 'achievement_pm' ? [] : fmeColumns); // Simplify for PM for now
 
   // Setup Initial Config for FME if data exists and config is empty
-  useMemo(() => {
+  useEffect(() => {
     if (fmeData.length > 0 && !fmeConfig.timeCol) {
       let suggestedTime = fmeColumns.find(c => c.toLowerCase().includes('date') || c.toLowerCase().includes('month') || c.toLowerCase().includes('waktu')) || fmeColumns[0];
       let suggestedCat = fmeColumns.find(c => c.toLowerCase().includes('region') || c.toLowerCase().includes('area') || c.toLowerCase().includes('role')) || fmeColumns[1];
@@ -495,7 +516,7 @@ const ProductivityAchievement = () => {
     return Object.entries(grouped).map(([name, value]) => ({ name, value })).sort((a,b) => b.value - a.value);
   }, [filteredData, fmeConfig.statusCol]);
   const trendData = useMemo(() => {
-    if (!fmeConfig.timeCol) return [];
+    if (!fmeConfig.timeCol) return { data: [], statuses: [] };
     const timeMap = {};
     const allStatuses = new Set();
     
@@ -688,6 +709,7 @@ const ProductivityAchievement = () => {
 
     return {
       data: sortedData.slice(0, 50), // limit top 50 PICs
+      fullData: sortedData,
       columns: Array.from(checkInSet).sort()
     };
   }, [filteredData, datasets.dataPic, dateRange, rankFilter]);
@@ -865,9 +887,78 @@ const ProductivityAchievement = () => {
 
     return {
       data: sortedData.slice(0, 50), 
+      fullData: sortedData,
       columns: Array.from(checkInSet).sort()
     };
   }, [filteredData, datasets.dataPic, dateRange, fmeConfig.timeCol, rankFilter]);
+
+  const combinedTicketTeamData = useMemo(() => {
+    const autoData = productivityTeamData.fullData || [];
+    const fnaData = ticketFnaTeamData.fullData || [];
+    
+    const picRoleCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'role') || 'Role';
+    const picNopCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'nop') || 'NOP';
+    const picClusterCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'cluster to' || c.toLowerCase().trim() === 'cluster') || 'Cluster TO';
+    const picNameCol = (datasets.dataPic?.columns || []).find(c => c.toLowerCase().trim() === 'pic' || c.toLowerCase().trim() === 'nama') || 'PIC';
+
+    const picDetailsMap = {};
+    if (datasets.dataPic?.data) {
+      datasets.dataPic.data.forEach(row => {
+        const name = row[picNameCol];
+        if (name) {
+          picDetailsMap[name] = {
+            role: row[picRoleCol] || '-',
+            nop: row[picNopCol] || '-',
+            cluster: row[picClusterCol] || '-'
+          };
+        }
+      });
+    }
+    
+    const allCols = new Set([
+      ...(productivityTeamData.columns || []),
+      ...(ticketFnaTeamData.columns || [])
+    ]);
+    const columns = Array.from(allCols).sort();
+    
+    const grouped = {};
+    const mergeData = (dataArray) => {
+      dataArray.forEach(row => {
+        if (!grouped[row.name]) {
+          grouped[row.name] = { 
+            name: row.name, 
+            Total: 0,
+            role: picDetailsMap[row.name]?.role || '-',
+            nop: picDetailsMap[row.name]?.nop || '-',
+            cluster: picDetailsMap[row.name]?.cluster || '-'
+          };
+        }
+        columns.forEach(col => {
+          if (row[col]) {
+            grouped[row.name][col] = (grouped[row.name][col] || 0) + row[col];
+          }
+        });
+        grouped[row.name].Total += (row.Total || 0);
+      });
+    };
+    
+    mergeData(autoData);
+    mergeData(fnaData);
+    
+    let sortedData = Object.values(grouped);
+    if (rankFilter === 'Teratas') {
+      sortedData = sortedData.sort((a,b) => b.Total - a.Total);
+    } else if (rankFilter === 'Terbawah') {
+      sortedData = sortedData.sort((a,b) => a.Total - b.Total);
+    } else {
+      sortedData = sortedData.sort((a,b) => a.name.localeCompare(b.name));
+    }
+    
+    return {
+      data: sortedData.slice(0, 50),
+      columns
+    };
+  }, [productivityTeamData, ticketFnaTeamData, rankFilter, datasets.dataPic]);
 
   const formatDateForDisplay = (dateStr) => {
     const jsDate = new Date(dateStr);
@@ -918,6 +1009,59 @@ const ProductivityAchievement = () => {
     return null;
   };
 
+  const moveLayoutItem = (id, direction) => {
+    const index = layoutOrder.indexOf(id);
+    if (index === -1) return;
+    const newLayout = [...layoutOrder];
+    if (direction === 'up' && index > 0) {
+      [newLayout[index - 1], newLayout[index]] = [newLayout[index], newLayout[index - 1]];
+    } else if (direction === 'down' && index < newLayout.length - 1) {
+      [newLayout[index + 1], newLayout[index]] = [newLayout[index], newLayout[index + 1]];
+    }
+    setLayoutOrder(newLayout);
+  };
+
+  const saveLayoutToBackend = async () => {
+    setIsSavingLayout(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/dashboard-data`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          datasetId: 'fmeLayout',
+          fileName: 'layout_config',
+          data: layoutOrder,
+          columns: []
+        }),
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('Gagal menyimpan layout');
+      alert('Susunan layout berhasil disimpan untuk semua perangkat!');
+      setIsEditLayoutMode(false);
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      setIsSavingLayout(false);
+    }
+  };
+
+  const renderLayoutWrapper = (id, children) => {
+    const index = layoutOrder.indexOf(id);
+    const displayIndex = index === -1 ? 99 : index; // if not in layoutOrder for some reason, put at end
+    
+    return (
+      <div key={id} style={{ order: displayIndex, position: 'relative', border: isEditLayoutMode ? '2px dashed #38bdf8' : 'none', padding: isEditLayoutMode ? '1.5rem 0.5rem 0.5rem 0.5rem' : 0, borderRadius: '8px', backgroundColor: isEditLayoutMode ? 'rgba(56, 189, 248, 0.05)' : 'transparent', width: '100%' }}>
+        {isEditLayoutMode && (
+          <div style={{ position: 'absolute', top: '-12px', right: '10px', display: 'flex', gap: '0.5rem', zIndex: 50 }}>
+            <button onClick={() => moveLayoutItem(id, 'up')} disabled={index === 0} style={{ padding: '4px 12px', background: index === 0 ? '#475569' : '#38bdf8', border: 'none', borderRadius: '4px', cursor: index === 0 ? 'not-allowed' : 'pointer', color: 'white', fontWeight: 'bold' }}>↑ Naik</button>
+            <button onClick={() => moveLayoutItem(id, 'down')} disabled={index === layoutOrder.length - 1} style={{ padding: '4px 12px', background: index === layoutOrder.length - 1 ? '#475569' : '#38bdf8', border: 'none', borderRadius: '4px', cursor: index === layoutOrder.length - 1 ? 'not-allowed' : 'pointer', color: 'white', fontWeight: 'bold' }}>↓ Turun</button>
+          </div>
+        )}
+        {children}
+      </div>
+    );
+  };
+
   return (
     <div className="dashboard-container" style={{ display: 'flex', flexDirection: 'column', padding: '1rem', overflowY: 'auto', height: '100%', backgroundColor: '#0b1120', position: 'relative' }}>
       
@@ -934,7 +1078,19 @@ const ProductivityAchievement = () => {
           <Activity className="text-primary" /> Productivity & Analytics
         </h1>
         {activeTab === 'dashboard_fme' && fmeData.length > 0 && (
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            {!isEmployee && (
+              <>
+                <button onClick={() => setIsEditLayoutMode(!isEditLayoutMode)} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid rgba(56, 189, 248, 0.5)', background: isEditLayoutMode ? 'rgba(56, 189, 248, 0.2)' : 'transparent', color: '#38bdf8', cursor: 'pointer' }}>
+                  <LayoutGrid size={16} /> {isEditLayoutMode ? 'Batal Edit Layout' : 'Ubah Posisi'}
+                </button>
+                {isEditLayoutMode && (
+                  <button onClick={saveLayoutToBackend} disabled={isSavingLayout} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', background: '#10b981', color: '#0f172a', fontWeight: 600, cursor: isSavingLayout ? 'not-allowed' : 'pointer' }}>
+                    {isSavingLayout ? <Loader2 size={16} className="spin" /> : <Settings2 size={16} />} Simpan Posisi
+                  </button>
+                )}
+              </>
+            )}
             <button onClick={() => setShowConfig(!showConfig)} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.2)', background: showConfig ? 'rgba(255,255,255,0.1)' : 'transparent', color: 'white', cursor: 'pointer' }}>
               <Settings2 size={16} /> Konfigurasi FME
             </button>
@@ -1034,7 +1190,7 @@ const ProductivityAchievement = () => {
           </div>
 
           {/* RAW DATA UPLOAD SECTIONS */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', paddingRight: '0.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', paddingRight: '0.5rem' }}>
           {DATASET_CONFIGS.map(config => {
             const ds = datasets[config.id];
             const hasData = ds.data.length > 0;
@@ -1140,255 +1296,310 @@ const ProductivityAchievement = () => {
             )}
 
             {/* Top KPIs */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-              <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Records</span>
-                <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'white' }}>{topKpis.count.toLocaleString('id-ID')}</span>
+            {renderLayoutWrapper('top-kpis',
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Records</span>
+                  <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'white' }}>{topKpis.count.toLocaleString('id-ID')}</span>
+                </div>
+                {fmeConfig.metricCol && (
+                  <>
+                    <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Total {fmeConfig.metricCol}</span>
+                      <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-color)' }}>{topKpis.sum.toLocaleString('id-ID', {maximumFractionDigits:2})}</span>
+                    </div>
+                    <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Avg {fmeConfig.metricCol}</span>
+                      <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--accent-color)' }}>{topKpis.avg.toLocaleString('id-ID', {maximumFractionDigits:2})}</span>
+                    </div>
+                  </>
+                )}
+                <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Unique {fmeConfig.categoryCol}</span>
+                   <span style={{ fontSize: '1.75rem', fontWeight: 700, color: '#34d399' }}>{getUniqueValues(fmeConfig.categoryCol).length}</span>
+                </div>
               </div>
-              {fmeConfig.metricCol && (
-                <>
-                  <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Total {fmeConfig.metricCol}</span>
-                    <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--primary-color)' }}>{topKpis.sum.toLocaleString('id-ID', {maximumFractionDigits:2})}</span>
-                  </div>
-                  <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Avg {fmeConfig.metricCol}</span>
-                    <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--accent-color)' }}>{topKpis.avg.toLocaleString('id-ID', {maximumFractionDigits:2})}</span>
-                  </div>
-                </>
-              )}
-              <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                 <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Unique {fmeConfig.categoryCol}</span>
-                 <span style={{ fontSize: '1.75rem', fontWeight: 700, color: '#34d399' }}>{getUniqueValues(fmeConfig.categoryCol).length}</span>
-              </div>
-            </div>
+            )}
 
             {/* Middle Section: 2 Donut Charts */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              {/* Donut Chart 1: Total Ticket */}
-              <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Total Ticket</h3>
-                <div style={{ flex: 1 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie 
-                        data={donutData} 
-                        cx="50%" 
-                        cy="50%" 
-                        innerRadius={45} 
-                        outerRadius={70} 
-                        paddingAngle={2} 
-                        dataKey="value" 
-                        nameKey="name" 
-                        label={renderCustomLabel}
-                        labelLine={false}
-                        style={{ fontSize: '0.75rem' }}
-                      >
-                        {donutData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={getColorForStatus(entry.name, index)} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }} formatter={(value) => value.replace('Total Ticket ', '').replace('Total Tiket ', '').replace('Total ', '')} />
-                    </PieChart>
-                  </ResponsiveContainer>
+            {renderLayoutWrapper('donuts',
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+                {/* Donut Chart 1: Total Ticket */}
+                <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
+                  <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Total Ticket</h3>
+                  <div style={{ flex: 1 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie 
+                          data={donutData} 
+                          cx="50%" 
+                          cy="50%" 
+                          innerRadius={45} 
+                          outerRadius={70} 
+                          paddingAngle={2} 
+                          dataKey="value" 
+                          nameKey="name" 
+                          label={renderCustomLabel}
+                          labelLine={false}
+                          style={{ fontSize: '0.75rem' }}
+                        >
+                          {donutData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={getColorForStatus(entry.name, index)} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip content={<CustomTooltip />} />
+                        <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }} formatter={(value) => value.replace('Total Ticket ', '').replace('Total Tiket ', '').replace('Total ', '')} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Donut Chart 2: Proporsi Status */}
+                <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
+                  <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Proporsi Status</h3>
+                  <div style={{ flex: 1 }}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie 
+                          data={donutDataStatus} 
+                          cx="50%" 
+                          cy="50%" 
+                          innerRadius={45} 
+                          outerRadius={70} 
+                          paddingAngle={2} 
+                          dataKey="value" 
+                          nameKey="name" 
+                          label={renderCustomLabel}
+                          labelLine={false}
+                          style={{ fontSize: '0.75rem' }}
+                        >
+                          {donutDataStatus.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={getColorForStatus(entry.name, index)} />
+                          ))}
+                        </Pie>
+                        <RechartsTooltip content={<CustomTooltip />} />
+                        <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }} formatter={(value) => value.replace('Total Ticket ', '').replace('Total Tiket ', '').replace('Total ', '')} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
-
-              {/* Donut Chart 2: Proporsi Status */}
-              <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Proporsi Status</h3>
-                <div style={{ flex: 1 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie 
-                        data={donutDataStatus} 
-                        cx="50%" 
-                        cy="50%" 
-                        innerRadius={45} 
-                        outerRadius={70} 
-                        paddingAngle={2} 
-                        dataKey="value" 
-                        nameKey="name" 
-                        label={renderCustomLabel}
-                        labelLine={false}
-                        style={{ fontSize: '0.75rem' }}
-                      >
-                        {donutDataStatus.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={getColorForStatus(entry.name, index)} />
-                        ))}
-                      </Pie>
-                      <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend verticalAlign="bottom" height={36} wrapperStyle={{ fontSize: '0.75rem' }} formatter={(value) => value.replace('Total Ticket ', '').replace('Total Tiket ', '').replace('Total ', '')} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </div>
-
-            {/* Stacked Bar Chart for Trends */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
-              <div className="glass-panel" style={{ padding: '1rem', height: '350px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Trend {fmeConfig.statusCol} per {fmeConfig.timeCol}</h3>
-                <div style={{ flex: 1 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={trendData.data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                      <XAxis dataKey="name" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                      <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                      <RechartsTooltip content={<CustomTooltip />} />
-                      <Legend />
-                      {trendData.statuses.map((status, index) => (
-                        <Bar key={status} dataKey={status} stackId="a" fill={getColorForStatus(status, index)} />
-                      ))}
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-            </div>
+            )}
 
             {/* Bottom Section: Area Chart & Status Breakdown Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '1rem' }}>
-              
-              {/* Line/Area Chart */}
-              <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Pergerakan Total per {fmeConfig.timeCol}</h3>
-                <div style={{ flex: 1 }}>
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={trendData.data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                      <defs>
-                        <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="var(--primary-color)" stopOpacity={0.4}/>
-                          <stop offset="95%" stopColor="var(--primary-color)" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                      <XAxis dataKey="name" stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                      <YAxis stroke="#94a3b8" tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                      <RechartsTooltip content={<CustomTooltip />} />
-                      <Area type="monotone" dataKey="Total" stroke="var(--primary-color)" strokeWidth={3} fillOpacity={1} fill="url(#colorTotal)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+            {renderLayoutWrapper('productivity-table',
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
+                
+                {/* Productivity Table */}
+                <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity</h3>
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
+                    <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Nama</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>NOP</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Cluster TO</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Ticket Auto + FNA</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {combinedTicketTeamData.data.map((row, idx) => {
+                          const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
+                          const totalHari = combinedTicketTeamData.columns.length;
+                          const target = totalHari * 2.5;
+                          const isGood = row.Total >= target;
+                          const statusText = isGood ? 'Good' : 'Poor';
+                          const statusColor = isGood ? '#10b981' : '#ef4444';
+                          return (
+                            <tr key={idx} style={{ backgroundColor: rowBg }}>
+                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.name}</td>
+                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.role}</td>
+                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.nop}</td>
+                              <td style={{ padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.cluster}</td>
+                              <td style={{ padding: '0.6rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', fontWeight: 'bold', color: '#38bdf8', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>{row.Total}</td>
+                              <td style={{ padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', color: statusColor, borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                <span style={{ backgroundColor: isGood ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)', padding: '2px 8px', borderRadius: '4px' }}>{statusText}</span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Status Breakdown Cards (Colored like reference) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem', overflowY: 'auto', maxHeight: '300px', paddingRight: '0.5rem' }}>
+                  {statusCards.map((card, index) => {
+                    const color = getColorForStatus(card.status, index);
+                    return (
+                      <div key={card.status} style={{ backgroundColor: color, borderRadius: '8px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
+                          <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>{card.total}</span>
+                          <span style={{ fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', textAlign: 'right' }}>{card.status}</span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.75rem' }}>
+                          {Object.entries(card.categories).map(([cat, count]) => (
+                            <div key={cat} style={{ display: 'flex', flexDirection: 'column' }}>
+                              <span style={{ opacity: 0.9 }}>{cat}</span>
+                              <span style={{ fontWeight: 700, fontSize: '0.875rem' }}>{count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            )}
+                       {/* Combined Ticket Auto + FNA Pivot Table */}
+            {renderLayoutWrapper('pivot-table',
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+                <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto + FNA</h3>
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '400px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
+                    <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          {combinedTicketTeamData.columns.map(col => (
+                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
+                          ))}
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {combinedTicketTeamData.data.map((row, idx) => {
+                          const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
+                          return (
+                            <tr key={idx} style={{ backgroundColor: rowBg }}>
+                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              {combinedTicketTeamData.columns.map(col => (
+                                <td key={col} style={{ padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
+                              ))}
+                              <td style={{ backgroundColor: rowBg, padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
+                            </tr>
+                          );
+                        })}
+                        {combinedTicketTeamData.data.length > 0 && (
+                          <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
+                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            {combinedTicketTeamData.columns.map(col => {
+                              const colTotal = combinedTicketTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
+                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                            })}
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                              {combinedTicketTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-
-              {/* Status Breakdown Cards (Colored like reference) */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '0.75rem', overflowY: 'auto', maxHeight: '300px', paddingRight: '0.5rem' }}>
-                {statusCards.map((card, index) => {
-                  const color = getColorForStatus(card.status, index);
-                  return (
-                    <div key={card.status} style={{ backgroundColor: color, borderRadius: '8px', padding: '1rem', color: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>
-                        <span style={{ fontSize: '1.25rem', fontWeight: 700 }}>{card.total}</span>
-                        <span style={{ fontSize: '0.875rem', fontWeight: 600, textTransform: 'uppercase', textAlign: 'right' }}>{card.status}</span>
-                      </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.75rem' }}>
-                        {Object.entries(card.categories).map(([cat, count]) => (
-                          <div key={cat} style={{ display: 'flex', flexDirection: 'column' }}>
-                            <span style={{ opacity: 0.9 }}>{cat}</span>
-                            <span style={{ fontWeight: 700, fontSize: '0.875rem' }}>{count}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
-            </div>
-
+            )}
+            
             {/* Productivity Team Pivot Table */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
-              <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto</h3>
-                <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '350px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }} className="custom-scrollbar">
-                  <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.75rem' }}>
-                    <thead>
-                      <tr>
-                        <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 3, backgroundColor: '#0f172a', padding: '0.4rem 0.6rem', textAlign: 'left', minWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>PIC</th>
-                        {productivityTeamData.columns.map(col => (
-                          <th key={col} style={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: '#0f172a', padding: '0.4rem 0.2rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '30px' }}>{formatDateForDisplay(col)}</th>
-                        ))}
-                        <th style={{ position: 'sticky', top: 0, right: 0, zIndex: 3, backgroundColor: '#0f172a', padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {productivityTeamData.data.map((row, idx) => {
-                        const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
-                        return (
-                          <tr key={idx} style={{ backgroundColor: rowBg }}>
-                            <td style={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{row.name}</td>
-                            {productivityTeamData.columns.map(col => (
-                              <td key={col} style={{ padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.2)' }}>{row[col] || 0}</td>
-                            ))}
-                            <td style={{ position: 'sticky', right: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none', color: '#10b981' }}>{row.Total}</td>
-                          </tr>
-                        );
-                      })}
-                      {productivityTeamData.data.length > 0 && (
-                        <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
-                          <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Grand Total</td>
-                          {productivityTeamData.columns.map(col => {
-                            const colTotal = productivityTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                            return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 2, backgroundColor: '#1e293b', padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
-                          })}
-                          <td style={{ position: 'sticky', bottom: 0, right: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>
-                            {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
-                          </td>
+            {renderLayoutWrapper('raw-auto',
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+                <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto</h3>
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '400px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
+                    <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          {productivityTeamData.columns.map(col => (
+                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
+                          ))}
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {productivityTeamData.data.map((row, idx) => {
+                          const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
+                          return (
+                            <tr key={idx} style={{ backgroundColor: rowBg }}>
+                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              {productivityTeamData.columns.map(col => (
+                                <td key={col} style={{ padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
+                              ))}
+                              <td style={{ backgroundColor: rowBg, padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
+                            </tr>
+                          );
+                        })}
+                        {productivityTeamData.data.length > 0 && (
+                          <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
+                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            {productivityTeamData.columns.map(col => {
+                              const colTotal = productivityTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
+                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                            })}
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                              {productivityTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
-
+            )}
+            
             {/* Ticket FNA Pivot Table */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem', marginTop: '1rem' }}>
-              <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket FNA</h3>
-                <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '350px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px' }} className="custom-scrollbar">
-                  <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '0.75rem' }}>
-                    <thead>
-                      <tr>
-                        <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 3, backgroundColor: '#0f172a', padding: '0.4rem 0.6rem', textAlign: 'left', minWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>PIC</th>
-                        {ticketFnaTeamData.columns.map(col => (
-                          <th key={col} style={{ position: 'sticky', top: 0, zIndex: 2, backgroundColor: '#0f172a', padding: '0.4rem 0.2rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '30px' }}>{formatDateForDisplay(col)}</th>
-                        ))}
-                        <th style={{ position: 'sticky', top: 0, right: 0, zIndex: 3, backgroundColor: '#0f172a', padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>Total</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {ticketFnaTeamData.data.map((row, idx) => {
-                        const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
-                        return (
-                          <tr key={idx} style={{ backgroundColor: rowBg }}>
-                            <td style={{ position: 'sticky', left: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>{row.name}</td>
-                            {ticketFnaTeamData.columns.map(col => (
-                              <td key={col} style={{ padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.2)' }}>{row[col] || 0}</td>
-                            ))}
-                            <td style={{ position: 'sticky', right: 0, zIndex: 1, backgroundColor: rowBg, padding: '0.4rem 0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none', color: '#10b981' }}>{row.Total}</td>
-                          </tr>
-                        );
-                      })}
-                      {ticketFnaTeamData.data.length > 0 && (
-                        <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
-                          <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>Grand Total</td>
-                          {ticketFnaTeamData.columns.map(col => {
-                            const colTotal = ticketFnaTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
-                            return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 2, backgroundColor: '#1e293b', padding: '0.4rem 0.2rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
-                          })}
-                          <td style={{ position: 'sticky', bottom: 0, right: 0, zIndex: 3, backgroundColor: '#1e293b', padding: '0.4rem 0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)', borderRight: 'none' }}>
-                            {ticketFnaTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
-                          </td>
+            {renderLayoutWrapper('raw-fna',
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+                <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                  <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket FNA</h3>
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '400px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
+                    <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
+                      <thead>
+                        <tr>
+                          <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          {ticketFnaTeamData.columns.map(col => (
+                            <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
+                          ))}
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>Total</th>
                         </tr>
-                      )}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {ticketFnaTeamData.data.map((row, idx) => {
+                          const rowBg = idx % 2 === 0 ? '#0f172a' : '#162032';
+                          return (
+                            <tr key={idx} style={{ backgroundColor: rowBg }}>
+                              <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              {ticketFnaTeamData.columns.map(col => (
+                                <td key={col} style={{ padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
+                              ))}
+                              <td style={{ backgroundColor: rowBg, padding: '0.6rem', textAlign: 'center', fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.05)', borderLeft: '1px solid rgba(255,255,255,0.1)', color: '#10b981' }}>{row.Total}</td>
+                            </tr>
+                          );
+                        })}
+                        {ticketFnaTeamData.data.length > 0 && (
+                          <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
+                            <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.6rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            {ticketFnaTeamData.columns.map(col => {
+                              const colTotal = ticketFnaTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
+                              return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
+                            })}
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.6rem', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.1)', borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                              {ticketFnaTeamData.data.reduce((sum, row) => sum + row.Total, 0)}
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+
 
           </div>
         ) : (
@@ -1423,4 +1634,46 @@ const ProductivityAchievement = () => {
   );
 };
 
-export default ProductivityAchievement;
+class ProductivityErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error, errorInfo) {
+    console.error("ProductivityAchievement Error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '2rem', color: 'white', backgroundColor: '#0b1120', height: '100%', overflowY: 'auto' }}>
+          <div className="glass-panel" style={{ padding: '2rem', border: '1px solid #ef4444' }}>
+            <h2 style={{ color: '#ef4444', marginTop: 0 }}>Aplikasi Mengalami Error (Crash)</h2>
+            <p>Maaf, ada masalah saat menampilkan Dashboard. Sistem gagal memproses salah satu data kolom dari file Excel.</p>
+            <p style={{ fontWeight: 'bold' }}>Pesan Error Teknis (Kirimkan ini ke tim IT):</p>
+            <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '1rem', color: '#fca5a5', overflowX: 'auto', borderRadius: '4px', border: '1px solid rgba(239,68,68,0.2)' }}>
+              {this.state.error && this.state.error.toString()}
+            </pre>
+            <button onClick={() => window.location.reload()} className="btn btn-outline" style={{ marginTop: '1.5rem', borderColor: '#ef4444', color: '#fca5a5' }}>
+              Muat Ulang Halaman
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const SafeProductivityAchievement = (props) => (
+  <ProductivityErrorBoundary>
+    <ProductivityAchievement {...props} />
+  </ProductivityErrorBoundary>
+);
+
+export default SafeProductivityAchievement;

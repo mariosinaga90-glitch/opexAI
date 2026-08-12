@@ -13,9 +13,11 @@ window.fetch = async function () {
   const response = await originalFetch(resource, config);
   
   // Handle unauthorized/expired token globally
+  // But DON'T redirect for dashboard-data requests — let the component handle it
   if (response.status === 401 || response.status === 403) {
-    // If not already on login page, redirect
-    if (window.location.pathname !== '/' && !window.location.pathname.startsWith('/login')) {
+    const url = typeof resource === 'string' ? resource : resource?.url || '';
+    const isDashboardData = url.includes('dashboard-data');
+    if (!isDashboardData && window.location.pathname !== '/' && !window.location.pathname.startsWith('/login')) {
       localStorage.removeItem('user');
       window.location.href = '/';
     }
