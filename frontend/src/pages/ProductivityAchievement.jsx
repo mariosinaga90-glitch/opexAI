@@ -394,7 +394,6 @@ const ProductivityAchievement = () => {
         }
       });
       setFilters(newFilters);
-      setShowConfig(false);
     }
   }, [fmeData, fmeColumns, fmeConfig.timeCol]);
 
