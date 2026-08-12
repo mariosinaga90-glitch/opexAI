@@ -1458,7 +1458,7 @@ const ProductivityAchievement = () => {
                           </div>
                           
                           <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {['MBP', 'PM', 'TS'].map(role => (
+                            {['TS', 'MBP', 'PM'].map(role => (
                               <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
                                 <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.total || 0}</span>
@@ -1479,7 +1479,7 @@ const ProductivityAchievement = () => {
                           </div>
                           
                           <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {['MBP', 'PM', 'TS'].map(role => (
+                            {['TS', 'MBP', 'PM'].map(role => (
                               <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
                                 <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.good || 0}</span>
@@ -1500,7 +1500,7 @@ const ProductivityAchievement = () => {
                           </div>
                           
                           <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            {['MBP', 'PM', 'TS'].map(role => (
+                            {['TS', 'MBP', 'PM'].map(role => (
                               <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
                                 <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
                                 <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.poor || 0}</span>
