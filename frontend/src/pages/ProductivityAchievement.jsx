@@ -454,8 +454,11 @@ const ProductivityAchievement = () => {
       }
 
       const matchedPic = picLookup[picKey1] || picLookup[picKey2];
+      const newRow = { ...row };
+      let enriched = false;
+
       if (matchedPic) {
-        const newRow = { ...row };
+        enriched = true;
         Object.keys(filters).forEach(filterKey => {
           const existingKey = Object.keys(row).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
           if (!existingKey) {
@@ -465,9 +468,16 @@ const ProductivityAchievement = () => {
             }
           }
         });
-        return newRow;
       }
-      return row;
+
+      // Aturan khusus: Ticket PM Site dan PM Genset selalu dianggap Role = 'PM'
+      if (row._source === 'pmSite' || row._source === 'pmGenset') {
+        enriched = true;
+        const roleKey = Object.keys(filters).find(k => k.toLowerCase().trim() === 'role') || 'Role';
+        newRow[roleKey] = 'PM'; // Memaksa Role menjadi PM
+      }
+
+      return enriched ? newRow : row;
     });
 
     return enrichedData.filter(row => {
