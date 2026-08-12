@@ -480,13 +480,6 @@ const ProductivityAchievement = () => {
         });
       }
 
-      // Aturan khusus: Ticket PM Site dan PM Genset selalu dianggap Role = 'PM'
-      if (row._source === 'pmSite' || row._source === 'pmGenset') {
-        enriched = true;
-        const roleKey = Object.keys(filters).find(k => k.toLowerCase().trim() === 'role') || 'Role';
-        newRow[roleKey] = 'PM'; // Memaksa Role menjadi PM
-      }
-
       return enriched ? newRow : row;
     });
 
