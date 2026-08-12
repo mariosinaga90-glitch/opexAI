@@ -423,12 +423,22 @@ const ProductivityAchievement = () => {
       
       const getCol = (searchStrs) => {
         const lowerKeys = Object.keys(row).map(k => ({ original: k, lower: k.toLowerCase().trim() }));
-        // Try exact match first
+        
+        // 1. Try exact match first
         for (const s of searchStrs) {
           const match = lowerKeys.find(k => k.lower === s);
           if (match) return match.original;
         }
-        // Fallback to includes
+        
+        // 2. Try regex word boundary match to prevent "topic" matching "pic"
+        for (const s of searchStrs) {
+          // Escape string for regex, though our searchStrs are simple alphanumeric
+          const regex = new RegExp(`\\b${s}\\b`);
+          const match = lowerKeys.find(k => regex.test(k.lower));
+          if (match) return match.original;
+        }
+
+        // 3. Last resort fallback to simple includes
         for (const s of searchStrs) {
           const match = lowerKeys.find(k => k.lower.includes(s));
           if (match) return match.original;
@@ -438,17 +448,17 @@ const ProductivityAchievement = () => {
       
       if (row._source === 'ticketAuto') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic', 'pic take over ticket']);
+        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       } else if (row._source === 'ticketFna') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic', 'pic take over', 'nama karyawan']);
+        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       } else if (row._source === 'pmSite' || row._source === 'pmGenset') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic', 'nama']);
+        const picCol = getCol(['pic', 'nama karyawan', 'nama']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       }
