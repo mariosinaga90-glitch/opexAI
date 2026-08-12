@@ -474,12 +474,9 @@ const ProductivityAchievement = () => {
       if (matchedPic) {
         enriched = true;
         Object.keys(filters).forEach(filterKey => {
-          const existingKey = Object.keys(row).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
-          if (!existingKey) {
-            const matchedCol = Object.keys(matchedPic).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
-            if (matchedCol) {
-              newRow[filterKey] = matchedPic[matchedCol]; // Inject missing filter column (e.g. Role)
-            }
+          const matchedCol = Object.keys(matchedPic).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
+          if (matchedCol) {
+            newRow[filterKey] = matchedPic[matchedCol]; // Memaksa update (overwrite) nilai dari Data PIC (Role, NOP, Cluster TO, dll)
           }
         });
       }
