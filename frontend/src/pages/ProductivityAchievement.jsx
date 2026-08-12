@@ -436,11 +436,10 @@ const ProductivityAchievement = () => {
   // FILTERING (Applies to active dashboard data)
   // -----------------------------------------------------
   const filteredData = useMemo(() => {
-    // --- PRE-PROCESSING: Inject Role/Cluster/NOP from dataPic to other datasets ---
-    const picDataRaw = activeData.filter(r => r._source === 'dataPic');
+    // --- Build a lookup: PIC name/NOP -> { Role, Cluster TO, ... } from Data PIC ---
     const dataPicCols = datasets.dataPic?.columns || [];
+    const dataPicRows = datasets.dataPic?.data || [];
     
-    // Robust column matching for Data PIC
     const getColName = (searchStrs) => {
       const lowerKeys = dataPicCols.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
       for (const s of searchStrs) {
@@ -459,91 +458,91 @@ const ProductivityAchievement = () => {
       return null;
     };
     
-    const picNopCol = getColName(['nop']) || 'NOP';
     const picNameCol = getColName(['pic', 'nama karyawan', 'nama']) || 'PIC';
-    
+    const picNopCol = getColName(['nop']) || 'NOP';
+    const picRoleCol = getColName(['role']) || 'Role';
+    const picClusterCol = getColName(['cluster to', 'cluster']) || 'Cluster TO';
+    const picSubClusterCol = getColName(['sub cluster']) || 'Sub Cluster';
+
+    // Build lookup map: lowercase key -> Data PIC row
     const picLookup = {};
-    const isValidKey = (k) => k && !['-', 'n/a', 'na', '#n/a', '0', 'null', 'undefined', ''].includes(k);
-    picDataRaw.forEach(row => {
-      const nop = row[picNopCol] ? String(row[picNopCol]).trim().toLowerCase() : null;
+    dataPicRows.forEach(row => {
       const name = row[picNameCol] ? String(row[picNameCol]).trim().toLowerCase() : null;
-      if (isValidKey(nop)) picLookup[nop] = row;
-      if (isValidKey(name)) picLookup[name] = row;
+      const nop = row[picNopCol] ? String(row[picNopCol]).trim().toLowerCase() : null;
+      const info = row; // Store the entire Data PIC row
+      if (name && name !== '-' && name !== '') picLookup[name] = info;
+      if (nop && nop !== '-' && nop !== '') picLookup[nop] = info;
     });
 
-    const enrichedData = activeData.map(row => {
-      if (row._source === 'dataPic') return row;
+    // Helper: find PIC column value from a ticket row
+    const findPicValue = (row) => {
+      const keys = Object.keys(row);
+      const lowerKeys = keys.map(k => ({ original: k, lower: k.toLowerCase().trim() }));
       
-      let picKey1 = null;
-      let picKey2 = null;
-      
-      const getCol = (searchStrs) => {
-        const lowerKeys = Object.keys(row).map(k => ({ original: k, lower: k.toLowerCase().trim() }));
-        
-        // 1. Try exact match first
-        for (const s of searchStrs) {
-          const match = lowerKeys.find(k => k.lower === s);
-          if (match) return match.original;
-        }
-        
-        // 2. Try regex word boundary match to prevent "topic" matching "pic"
-        for (const s of searchStrs) {
-          // Escape string for regex, though our searchStrs are simple alphanumeric
-          const regex = new RegExp(`\\b${s}\\b`);
-          const match = lowerKeys.find(k => regex.test(k.lower));
-          if (match) return match.original;
-        }
-
-        // 3. Last resort fallback to simple includes
-        for (const s of searchStrs) {
-          const match = lowerKeys.find(k => k.lower.includes(s));
-          if (match) return match.original;
-        }
-        return null;
-      };
-      
-      if (row._source === 'ticketAuto') {
-        const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan', 'nama']);
-        if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
-        if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
-      } else if (row._source === 'ticketFna') {
-        const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan', 'nama']);
-        if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
-        if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
-      } else if (row._source === 'pmSite' || row._source === 'pmGenset') {
-        const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic', 'nama karyawan', 'nama']);
-        if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
-        if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
+      // Priority order for finding PIC column
+      const searchOrder = ['pic take over ticket', 'pic take over', 'pic', 'nama karyawan', 'nama'];
+      for (const s of searchOrder) {
+        const match = lowerKeys.find(k => k.lower === s);
+        if (match && row[match.original]) return String(row[match.original]).trim().toLowerCase();
       }
+      for (const s of searchOrder) {
+        const match = lowerKeys.find(k => k.lower.includes(s));
+        if (match && row[match.original]) return String(row[match.original]).trim().toLowerCase();
+      }
+      return null;
+    };
 
-      const matchedPic = picLookup[picKey1] || picLookup[picKey2];
-      const newRow = { ...row };
-      let enriched = false;
+    // Helper: find NOP value from a ticket row
+    const findNopValue = (row) => {
+      const nopKey = Object.keys(row).find(k => k.toLowerCase().trim() === 'nop');
+      return nopKey && row[nopKey] ? String(row[nopKey]).trim().toLowerCase() : null;
+    };
 
-      if (matchedPic) {
-        enriched = true;
-        Object.keys(filters).forEach(filterKey => {
-          const matchedCol = Object.keys(matchedPic).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
-          if (matchedCol) {
-            newRow[filterKey] = matchedPic[matchedCol]; // Inject missing filter column (e.g. Role)
+    // Determine which filter keys map to Data PIC columns (Role, Cluster TO, Sub Cluster, NOP, Nama Karyawan)
+    const picBasedFilterKeys = new Set();
+    Object.keys(filters).forEach(filterKey => {
+      const fkLower = filterKey.toLowerCase().trim();
+      if (['role', 'cluster to', 'sub cluster'].includes(fkLower)) {
+        picBasedFilterKeys.add(filterKey);
+      }
+    });
+
+    return activeData.filter(row => {
+      // For dataPic rows, apply filters directly (they have all columns natively)
+      if (row._source === 'dataPic') {
+        for (const [key, val] of Object.entries(filters)) {
+          if (val !== 'All') {
+            const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
+            if (!actualKey || String(row[actualKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
+              return false;
+            }
           }
-        });
-      }
+        }
+      } else {
+        // For ticket rows (ticketAuto, ticketFna, pmSite, pmGenset):
+        // Resolve the PIC of this row to find their Data PIC entry
+        const picVal = findPicValue(row);
+        const nopVal = findNopValue(row);
+        const matchedPicRow = picLookup[picVal] || picLookup[nopVal] || null;
 
-      return enriched ? newRow : row;
-    });
-
-    return enrichedData.filter(row => {
-      // 1. Slicers
-      for (const [key, val] of Object.entries(filters)) {
-        if (val !== 'All') {
-          // Strict filtering untuk slicer yang berlaku
-          const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
-          if (!actualKey || String(row[actualKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
-            return false;
+        for (const [key, val] of Object.entries(filters)) {
+          if (val !== 'All') {
+            if (picBasedFilterKeys.has(key)) {
+              // For Role/Cluster TO/Sub Cluster: look up from Data PIC, not from the ticket row itself
+              if (!matchedPicRow) {
+                return false; // This ticket's PIC is not found in Data PIC, skip it
+              }
+              const picColKey = Object.keys(matchedPicRow).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
+              if (!picColKey || String(matchedPicRow[picColKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
+                return false;
+              }
+            } else {
+              // For NOP, Nama Karyawan, etc: check the row's own columns
+              const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === key.toLowerCase().trim());
+              if (!actualKey || String(row[actualKey]).toLowerCase().trim() !== String(val).toLowerCase().trim()) {
+                return false;
+              }
+            }
           }
         }
       }
@@ -556,7 +555,6 @@ const ProductivityAchievement = () => {
           const autoCheckInCol = Object.keys(row).find(c => c.toLowerCase().trim() === 'check in at') || 'Check In At';
           rowDateStr = row[autoCheckInCol];
         } else if (row._source === 'ticketFna') {
-          // Khusus FNA baca dari kolom 'Date' sesuai settingan
           const fnaTimeCol = Object.keys(row).find(c => c.toLowerCase().trim() === 'date') || 'Date';
           rowDateStr = row[fnaTimeCol];
         }
@@ -564,7 +562,6 @@ const ProductivityAchievement = () => {
         if (rowDateStr) {
           let yyyy_mm_dd = null;
           if (!isNaN(rowDateStr) && Number(rowDateStr) > 10000) {
-            // Excel Date -> Paksa ambil hari saja, konversi ke string YYYY-MM-DD agar kebal zona waktu
             const excelDays = Math.floor(Number(rowDateStr));
             const jsDate = new Date((excelDays - 25569) * 86400 * 1000);
             const yyyy = jsDate.getUTCFullYear();
@@ -572,7 +569,6 @@ const ProductivityAchievement = () => {
             const dd = String(jsDate.getUTCDate()).padStart(2, '0');
             yyyy_mm_dd = `${yyyy}-${mm}-${dd}`;
           } else {
-            // String Date
             const dateStr = String(rowDateStr).split(' ')[0];
             if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
               yyyy_mm_dd = dateStr;
@@ -596,7 +592,7 @@ const ProductivityAchievement = () => {
       
       return true;
     });
-  }, [activeData, filters, dateRange, fmeConfig.timeCol]);
+  }, [activeData, filters, dateRange, fmeConfig.timeCol, datasets.dataPic]);
 
   // Dynamic Extract Unique Values for Dropdowns
   const getUniqueValues = (col) => {
