@@ -1757,7 +1757,7 @@ const ProductivityAchievement = () => {
                       <thead>
                         <tr>
                           <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '80px', maxWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
                           {combinedTicketTeamData.columns.map(col => (
                             <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
@@ -1770,7 +1770,7 @@ const ProductivityAchievement = () => {
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
                               <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
-                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }} title={row.role}>{row.role}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.role}</td>
                               {combinedTicketTeamData.columns.map(col => (
                                 <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
@@ -1808,7 +1808,7 @@ const ProductivityAchievement = () => {
                       <thead>
                         <tr>
                           <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '80px', maxWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
                           {productivityTeamData.columns.map(col => (
                             <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
@@ -1821,7 +1821,7 @@ const ProductivityAchievement = () => {
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
                               <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
-                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }} title={row.role}>{row.role}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.role}</td>
                               {productivityTeamData.columns.map(col => (
                                 <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
@@ -1859,7 +1859,7 @@ const ProductivityAchievement = () => {
                       <thead>
                         <tr>
                           <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
-                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '80px', maxWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
                           {ticketFnaTeamData.columns.map(col => (
                             <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
@@ -1872,7 +1872,7 @@ const ProductivityAchievement = () => {
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
                               <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
-                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }} title={row.role}>{row.role}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap' }}>{row.role}</td>
                               {ticketFnaTeamData.columns.map(col => (
                                 <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
