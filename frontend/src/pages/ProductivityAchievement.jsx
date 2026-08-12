@@ -984,13 +984,14 @@ const ProductivityAchievement = () => {
 
   const customStatusCards = useMemo(() => {
     const buildCard = (datasetKey, title, groupCol) => {
-      const ds = datasets[datasetKey];
-      if (!ds || !ds.data || ds.data.length === 0) {
+      const datasetRows = filteredData.filter(row => row._source === datasetKey);
+      
+      if (datasetRows.length === 0) {
         return { status: title, total: 0, categories: {} };
       }
       
       const categories = {};
-      ds.data.forEach(row => {
+      datasetRows.forEach(row => {
         const actualKey = Object.keys(row).find(k => k.toLowerCase().trim() === groupCol.toLowerCase().trim());
         const val = actualKey && row[actualKey] ? String(row[actualKey]) : 'Unknown';
         categories[val] = (categories[val] || 0) + 1;
@@ -1000,7 +1001,7 @@ const ProductivityAchievement = () => {
         Object.entries(categories).sort((a, b) => b[1] - a[1])
       );
       
-      return { status: title, total: ds.data.length, categories: sortedCategories };
+      return { status: title, total: datasetRows.length, categories: sortedCategories };
     };
 
     return [
@@ -1009,7 +1010,7 @@ const ProductivityAchievement = () => {
       buildCard('pmSite', 'Ticket PM Site', 'Status'),
       buildCard('pmGenset', 'Ticket PM Genset', 'Status')
     ];
-  }, [datasets]);
+  }, [filteredData]);
 
   const getColorForStatus = (status, index) => {
     const s = status.toLowerCase();
