@@ -1446,44 +1446,67 @@ const ProductivityAchievement = () => {
                     <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '1 1 450px', minWidth: '350px' }}>
                       <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>Summary Team</h3>
                       
-                      {/* Total Team Card */}
-                      <div style={{ backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
-                        <div style={{ fontSize: '2.5rem', fontWeight: 700, color: '#38bdf8', lineHeight: '1' }}>{totalPIC}</div>
-                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Total Team (PIC)</div>
-                      </div>
-
-                      {/* Container for the 3 detail cards (TS, MBP, PM) */}
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
-                        {/* Rincian TS */}
-                        <div style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderTop: '4px solid #8b5cf6', display: 'flex', flexDirection: 'column' }}>
-                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', textAlign: 'center' }}>
-                            <span>Team TS: <span style={{ color: '#8b5cf6' }}>{summary.TS.total}</span></span>
+                        {/* Column 1: Total PIC */}
+                        <div style={{ backgroundColor: '#3b82f6', borderRadius: '8px', padding: '0.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Total Team</span>
+                              <i className="fas fa-users" style={{ fontSize: '1rem', opacity: 0.9 }}></i>
+                            </div>
+                            <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{totalPIC}</div>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', flex: 1, justifyContent: 'center' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}><span>Good:</span> <strong>{summary.TS.good}</strong></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ef4444' }}><span>Poor:</span> <strong>{summary.TS.poor}</strong></div>
+                          
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            {['MBP', 'PM', 'TS'].map(role => (
+                              <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.total || 0}</span>
+                                <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Total Team</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
 
-                        {/* Rincian MBP */}
-                        <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', padding: '1rem', borderTop: '4px solid #f59e0b', display: 'flex', flexDirection: 'column' }}>
-                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', textAlign: 'center' }}>
-                            <span>Team MBP: <span style={{ color: '#f59e0b' }}>{summary.MBP.total}</span></span>
+                        {/* Column 2: Good Prod */}
+                        <div style={{ backgroundColor: '#374151', borderRadius: '8px', padding: '0.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Good Prod</span>
+                              <i className="fas fa-check" style={{ fontSize: '1rem', opacity: 0.9 }}></i>
+                            </div>
+                            <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{summary.MBP.good + summary.PM.good + summary.TS.good}</div>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', flex: 1, justifyContent: 'center' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}><span>Good:</span> <strong>{summary.MBP.good}</strong></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ef4444' }}><span>Poor:</span> <strong>{summary.MBP.poor}</strong></div>
+                          
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            {['MBP', 'PM', 'TS'].map(role => (
+                              <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.good || 0}</span>
+                                <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Good Prod</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
 
-                        {/* Rincian PM */}
-                        <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderTop: '4px solid #3b82f6', display: 'flex', flexDirection: 'column' }}>
-                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', textAlign: 'center' }}>
-                            <span>Team PM: <span style={{ color: '#3b82f6' }}>{summary.PM.total}</span></span>
+                        {/* Column 3: Poor Prod */}
+                        <div style={{ backgroundColor: '#eab308', borderRadius: '8px', padding: '0.5rem', color: 'white', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                              <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Poor Prod</span>
+                              <i className="fas fa-exclamation-triangle" style={{ fontSize: '1rem', opacity: 0.9 }}></i>
+                            </div>
+                            <div style={{ fontSize: '1.75rem', fontWeight: 700, marginTop: '0.5rem', lineHeight: 1 }}>{summary.MBP.poor + summary.PM.poor + summary.TS.poor}</div>
                           </div>
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', flex: 1, justifyContent: 'center' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}><span>Good:</span> <strong>{summary.PM.good}</strong></div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ef4444' }}><span>Poor:</span> <strong>{summary.PM.poor}</strong></div>
+                          
+                          <div style={{ border: '1px solid rgba(255,255,255,0.4)', borderRadius: '6px', padding: '0.75rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                            {['MBP', 'PM', 'TS'].map(role => (
+                              <div key={role} style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 600, textTransform: 'uppercase', opacity: 0.9 }}>{role}</span>
+                                <span style={{ fontSize: '1.1rem', fontWeight: 700, lineHeight: 1.2 }}>{summary[role]?.poor || 0}</span>
+                                <span style={{ fontSize: '0.65rem', opacity: 0.8 }}>Poor Prod</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
                       </div>
