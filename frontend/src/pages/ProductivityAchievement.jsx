@@ -1649,6 +1649,7 @@ const ProductivityAchievement = () => {
                       <thead>
                         <tr>
                           <th style={{ position: 'sticky', top: 0, left: 0, zIndex: 10, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '100px', maxWidth: '150px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }}>PIC</th>
+                          <th style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.5rem', textAlign: 'left', minWidth: '80px', maxWidth: '120px', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>Role</th>
                           {combinedTicketTeamData.columns.map(col => (
                             <th key={col} style={{ position: 'sticky', top: 0, zIndex: 5, backgroundColor: '#0f172a', padding: '0.3rem 0.3rem', textAlign: 'center', whiteSpace: 'nowrap', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.1)', minWidth: '40px' }}>{formatDateForDisplay(col)}</th>
                           ))}
@@ -1661,6 +1662,7 @@ const ProductivityAchievement = () => {
                           return (
                             <tr key={idx} style={{ backgroundColor: rowBg }}>
                               <td style={{ position: 'sticky', left: 0, zIndex: 2, backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px', boxShadow: '2px 0 5px -2px rgba(0,0,0,0.5)' }} title={row.name}>{row.name}</td>
+                              <td style={{ backgroundColor: rowBg, padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '120px' }} title={row.role}>{row.role}</td>
                               {combinedTicketTeamData.columns.map(col => (
                                 <td key={col} style={{ padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.05)', borderBottom: '1px solid rgba(255,255,255,0.05)', color: row[col] ? '#38bdf8' : 'rgba(255,255,255,0.1)' }}>{row[col] || 0}</td>
                               ))}
@@ -1671,6 +1673,7 @@ const ProductivityAchievement = () => {
                         {combinedTicketTeamData.data.length > 0 && (
                           <tr style={{ backgroundColor: '#1e293b', fontWeight: 'bold' }}>
                             <td style={{ position: 'sticky', bottom: 0, left: 0, zIndex: 10, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)', boxShadow: '2px -2px 5px -2px rgba(0,0,0,0.5)' }}>Grand Total</td>
+                            <td style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.5rem', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}></td>
                             {combinedTicketTeamData.columns.map(col => {
                               const colTotal = combinedTicketTeamData.data.reduce((sum, row) => sum + (row[col] || 0), 0);
                               return <td key={col} style={{ position: 'sticky', bottom: 0, zIndex: 5, backgroundColor: '#1e293b', padding: '0.3rem 0.3rem', textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.1)', borderTop: '1px solid rgba(255,255,255,0.1)' }}>{colTotal || 0}</td>;
