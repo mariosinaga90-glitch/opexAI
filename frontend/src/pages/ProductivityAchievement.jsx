@@ -1374,8 +1374,10 @@ const ProductivityAchievement = () => {
                   })}
                 </div>
 
-                {/* Productivity Table */}
-                <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+                {/* Container for Productivity Table and Summary Team */}
+                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
+                  {/* Productivity Table */}
+                  <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0, flex: '1 1 600px' }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity</h3>
                   <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
@@ -1415,6 +1417,83 @@ const ProductivityAchievement = () => {
                   </div>
                 </div>
 
+                {/* Summary Team Panel */}
+                {(() => {
+                  const totalPIC = combinedTicketTeamData.data.length;
+                  const summary = {
+                    TS: { total: 0, good: 0, poor: 0 },
+                    MBP: { total: 0, good: 0, poor: 0 },
+                    PM: { total: 0, good: 0, poor: 0 },
+                  };
+                  const target = combinedTicketTeamData.columns.length * 2.5;
+
+                  combinedTicketTeamData.data.forEach(row => {
+                    const isGood = row.Total >= target;
+                    let r = (row.role || '').toUpperCase();
+                    let k = null;
+                    if (r.includes('TS')) k = 'TS';
+                    else if (r.includes('MBP')) k = 'MBP';
+                    else if (r.includes('PM')) k = 'PM';
+
+                    if (k) {
+                      summary[k].total++;
+                      if (isGood) summary[k].good++;
+                      else summary[k].poor++;
+                    }
+                  });
+
+                  return (
+                    <div className="glass-panel" style={{ width: '280px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '0 0 280px' }}>
+                      <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>Summary Team</h3>
+                      
+                      {/* Total Team Card */}
+                      <div style={{ backgroundColor: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.2)', borderRadius: '8px', padding: '1rem', textAlign: 'center' }}>
+                        <div style={{ fontSize: '2.5rem', fontWeight: 700, color: '#38bdf8', lineHeight: '1' }}>{totalPIC}</div>
+                        <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Total Team (PIC)</div>
+                      </div>
+
+                      {/* Rincian TS */}
+                      <div style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderLeft: '4px solid #8b5cf6' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
+                          <span>Team TS</span>
+                          <span style={{ color: '#8b5cf6' }}>{summary.TS.total} PIC</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px' }}>
+                          <span style={{ color: '#10b981', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Good:</span> <strong>{summary.TS.good}</strong></span>
+                          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
+                          <span style={{ color: '#ef4444', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Poor:</span> <strong>{summary.TS.poor}</strong></span>
+                        </div>
+                      </div>
+
+                      {/* Rincian MBP */}
+                      <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', padding: '1rem', borderLeft: '4px solid #f59e0b' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
+                          <span>Team MBP</span>
+                          <span style={{ color: '#f59e0b' }}>{summary.MBP.total} PIC</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px' }}>
+                          <span style={{ color: '#10b981', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Good:</span> <strong>{summary.MBP.good}</strong></span>
+                          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
+                          <span style={{ color: '#ef4444', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Poor:</span> <strong>{summary.MBP.poor}</strong></span>
+                        </div>
+                      </div>
+
+                      {/* Rincian PM */}
+                      <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderLeft: '4px solid #3b82f6' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
+                          <span>Team PM</span>
+                          <span style={{ color: '#3b82f6' }}>{summary.PM.total} PIC</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px' }}>
+                          <span style={{ color: '#10b981', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Good:</span> <strong>{summary.PM.good}</strong></span>
+                          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
+                          <span style={{ color: '#ef4444', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Poor:</span> <strong>{summary.PM.poor}</strong></span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+                </div>
               </div>
             )}
                        {/* Combined Ticket Auto + FNA Pivot Table */}
