@@ -488,12 +488,12 @@ const ProductivityAchievement = () => {
       
       if (row._source === 'ticketAuto') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan']);
+        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan', 'nama']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       } else if (row._source === 'ticketFna') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan']);
+        const picCol = getCol(['pic take over ticket', 'pic take over', 'pic', 'nama karyawan', 'nama']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       } else if (row._source === 'pmSite' || row._source === 'pmGenset') {
@@ -1091,10 +1091,11 @@ const ProductivityAchievement = () => {
       datasets.dataPic.data.forEach(row => {
         const name = row[picNameCol];
         if (name) {
-          picDetailsMap[name] = {
+          picDetailsMap[String(name).toLowerCase().trim()] = {
             role: row[picRoleCol] || '-',
             nop: row[picNopCol] || '-',
-            cluster: row[picClusterCol] || '-'
+            cluster: row[picClusterCol] || '-',
+            originalName: name
           };
         }
       });
@@ -1110,12 +1111,13 @@ const ProductivityAchievement = () => {
     const mergeData = (dataArray) => {
       dataArray.forEach(row => {
         if (!grouped[row.name]) {
+          const lookupPic = String(row.name).toLowerCase().trim();
           grouped[row.name] = { 
             name: row.name, 
             Total: 0,
-            role: picDetailsMap[row.name]?.role || '-',
-            nop: picDetailsMap[row.name]?.nop || '-',
-            cluster: picDetailsMap[row.name]?.cluster || '-'
+            role: picDetailsMap[lookupPic]?.role || '-',
+            nop: picDetailsMap[lookupPic]?.nop || '-',
+            cluster: picDetailsMap[lookupPic]?.cluster || '-'
           };
         }
         columns.forEach(col => {
