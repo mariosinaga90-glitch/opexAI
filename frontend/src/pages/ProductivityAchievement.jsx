@@ -421,16 +421,29 @@ const ProductivityAchievement = () => {
       let picKey1 = null;
       let picKey2 = null;
       
-      const getCol = (searchStrs) => Object.keys(row).find(c => searchStrs.some(s => c.toLowerCase().trim().includes(s)));
+      const getCol = (searchStrs) => {
+        const lowerKeys = Object.keys(row).map(k => ({ original: k, lower: k.toLowerCase().trim() }));
+        // Try exact match first
+        for (const s of searchStrs) {
+          const match = lowerKeys.find(k => k.lower === s);
+          if (match) return match.original;
+        }
+        // Fallback to includes
+        for (const s of searchStrs) {
+          const match = lowerKeys.find(k => k.lower.includes(s));
+          if (match) return match.original;
+        }
+        return null;
+      };
       
       if (row._source === 'ticketAuto') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic take over ticket', 'pic']);
+        const picCol = getCol(['pic', 'pic take over ticket']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       } else if (row._source === 'ticketFna') {
         const nopCol = getCol(['nop']);
-        const picCol = getCol(['pic take over', 'pic', 'nama karyawan']);
+        const picCol = getCol(['pic', 'pic take over', 'nama karyawan']);
         if (nopCol) picKey1 = String(row[nopCol]).trim().toLowerCase();
         if (picCol) picKey2 = String(row[picCol]).trim().toLowerCase();
       } else if (row._source === 'pmSite' || row._source === 'pmGenset') {
