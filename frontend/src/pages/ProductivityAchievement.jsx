@@ -1353,7 +1353,7 @@ const ProductivityAchievement = () => {
                 
                 {/* Status Breakdown Cards - Horizontal di atas tabel */}
                 <div style={{ display: 'flex', gap: '0.75rem', overflowX: 'auto', paddingBottom: '0.5rem', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
-                  {statusCards.map((card, index) => {
+                  {statusCards.slice(0, 4).map((card, index) => {
                     const color = getColorForStatus(card.status, index);
                     return (
                       <div key={card.status} style={{ backgroundColor: color, borderRadius: '8px', padding: '0.75rem 1rem', color: 'white', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', minWidth: '160px', flex: '1 0 auto' }}>
