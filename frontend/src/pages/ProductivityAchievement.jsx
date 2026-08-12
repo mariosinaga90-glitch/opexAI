@@ -386,7 +386,7 @@ const ProductivityAchievement = () => {
       });
 
       // Setup initial filters
-      const allowedFilters = ['cluster to', 'sub cluster', 'nop', 'role', 'nama karyawan'];
+      const allowedFilters = ['cluster to', 'sub cluster', 'nop', 'nama karyawan'];
       const newFilters = {};
       fmeColumns.forEach(col => {
         if (allowedFilters.includes(col.toLowerCase().trim())) {
@@ -485,11 +485,11 @@ const ProductivityAchievement = () => {
 
     return enrichedData.filter(row => {
       // 1. Slicers
-      const allowedProductivitySlicers = ['role', 'cluster to', 'nop'];
+      const allowedProductivitySlicers = ['cluster to', 'nop'];
       
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All') {
-          // Khusus tabel Productivity Team (ticketAuto, ticketFna, dataPic), abaikan slicer selain Role, Cluster TO, dan NOP agar tabel tetap sinkron
+          // Khusus tabel Productivity Team (ticketAuto, ticketFna, dataPic), abaikan slicer selain Cluster TO, dan NOP agar tabel tetap sinkron
           if (['ticketAuto', 'ticketFna', 'dataPic'].includes(row._source)) {
             if (!allowedProductivitySlicers.includes(key.toLowerCase().trim())) {
               continue; 
