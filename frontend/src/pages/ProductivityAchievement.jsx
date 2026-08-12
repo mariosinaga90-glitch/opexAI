@@ -386,7 +386,7 @@ const ProductivityAchievement = () => {
       });
 
       // Setup initial filters
-      const allowedFilters = ['cluster to', 'sub cluster', 'nop', 'nama karyawan'];
+      const allowedFilters = ['cluster to', 'sub cluster', 'nop', 'role', 'nama karyawan'];
       const newFilters = {};
       fmeColumns.forEach(col => {
         if (allowedFilters.includes(col.toLowerCase().trim())) {
@@ -470,12 +470,9 @@ const ProductivityAchievement = () => {
       if (matchedPic) {
         enriched = true;
         Object.keys(filters).forEach(filterKey => {
-          const existingKey = Object.keys(row).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
-          if (!existingKey) {
-            const matchedCol = Object.keys(matchedPic).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
-            if (matchedCol) {
-              newRow[filterKey] = matchedPic[matchedCol]; // Inject missing filter column (e.g. Role)
-            }
+          const matchedCol = Object.keys(matchedPic).find(k => k.toLowerCase().trim() === filterKey.toLowerCase().trim());
+          if (matchedCol) {
+            newRow[filterKey] = matchedPic[matchedCol]; // Inject missing filter column (e.g. Role)
           }
         });
       }
@@ -485,7 +482,7 @@ const ProductivityAchievement = () => {
 
     return enrichedData.filter(row => {
       // 1. Slicers
-      const allowedProductivitySlicers = ['cluster to', 'nop'];
+      const allowedProductivitySlicers = ['role', 'cluster to', 'nop'];
       
       for (const [key, val] of Object.entries(filters)) {
         if (val !== 'All') {
