@@ -1443,7 +1443,7 @@ const ProductivityAchievement = () => {
                   });
 
                   return (
-                    <div className="glass-panel" style={{ width: '340px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '0 0 340px' }}>
+                    <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '1rem', flex: '1 1 450px', minWidth: '350px' }}>
                       <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '1rem', color: 'white', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.75rem' }}>Summary Team</h3>
                       
                       {/* Total Team Card */}
@@ -1452,42 +1452,39 @@ const ProductivityAchievement = () => {
                         <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>Total Team (PIC)</div>
                       </div>
 
-                      {/* Rincian TS */}
-                      <div style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderLeft: '4px solid #8b5cf6' }}>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
-                          <span>Team TS</span>
-                          <span style={{ color: '#8b5cf6' }}>{summary.TS.total} PIC</span>
+                      {/* Container for the 3 detail cards (TS, MBP, PM) */}
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '0.75rem' }}>
+                        {/* Rincian TS */}
+                        <div style={{ backgroundColor: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderTop: '4px solid #8b5cf6', display: 'flex', flexDirection: 'column' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', textAlign: 'center' }}>
+                            <span>Team TS: <span style={{ color: '#8b5cf6' }}>{summary.TS.total}</span></span>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', flex: 1, justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}><span>Good:</span> <strong>{summary.TS.good}</strong></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ef4444' }}><span>Poor:</span> <strong>{summary.TS.poor}</strong></div>
+                          </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px' }}>
-                          <span style={{ color: '#10b981', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Good:</span> <strong>{summary.TS.good}</strong></span>
-                          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
-                          <span style={{ color: '#ef4444', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Poor:</span> <strong>{summary.TS.poor}</strong></span>
-                        </div>
-                      </div>
 
-                      {/* Rincian MBP */}
-                      <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', padding: '1rem', borderLeft: '4px solid #f59e0b' }}>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
-                          <span>Team MBP</span>
-                          <span style={{ color: '#f59e0b' }}>{summary.MBP.total} PIC</span>
+                        {/* Rincian MBP */}
+                        <div style={{ backgroundColor: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)', borderRadius: '8px', padding: '1rem', borderTop: '4px solid #f59e0b', display: 'flex', flexDirection: 'column' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', textAlign: 'center' }}>
+                            <span>Team MBP: <span style={{ color: '#f59e0b' }}>{summary.MBP.total}</span></span>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', flex: 1, justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}><span>Good:</span> <strong>{summary.MBP.good}</strong></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ef4444' }}><span>Poor:</span> <strong>{summary.MBP.poor}</strong></div>
+                          </div>
                         </div>
-                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px' }}>
-                          <span style={{ color: '#10b981', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Good:</span> <strong>{summary.MBP.good}</strong></span>
-                          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
-                          <span style={{ color: '#ef4444', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Poor:</span> <strong>{summary.MBP.poor}</strong></span>
-                        </div>
-                      </div>
 
-                      {/* Rincian PM */}
-                      <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderLeft: '4px solid #3b82f6' }}>
-                        <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', display: 'flex', justifyContent: 'space-between' }}>
-                          <span>Team PM</span>
-                          <span style={{ color: '#3b82f6' }}>{summary.PM.total} PIC</span>
-                        </div>
-                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px' }}>
-                          <span style={{ color: '#10b981', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Good:</span> <strong>{summary.PM.good}</strong></span>
-                          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }}></div>
-                          <span style={{ color: '#ef4444', flex: 1, display: 'flex', justifyContent: 'space-between' }}><span>Poor:</span> <strong>{summary.PM.poor}</strong></span>
+                        {/* Rincian PM */}
+                        <div style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', padding: '1rem', borderTop: '4px solid #3b82f6', display: 'flex', flexDirection: 'column' }}>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 600, color: 'white', marginBottom: '0.75rem', textAlign: 'center' }}>
+                            <span>Team PM: <span style={{ color: '#3b82f6' }}>{summary.PM.total}</span></span>
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', fontSize: '0.8rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', flex: 1, justifyContent: 'center' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#10b981' }}><span>Good:</span> <strong>{summary.PM.good}</strong></div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', color: '#ef4444' }}><span>Poor:</span> <strong>{summary.PM.poor}</strong></div>
+                          </div>
                         </div>
                       </div>
                     </div>
