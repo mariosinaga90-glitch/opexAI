@@ -415,9 +415,10 @@ const ProductivityAchievement = () => {
       if (isValidKey(name)) picLookup[name] = row;
     });
 
-    const getDatasetCol = (source, searchStrs) => {
+    const getDatasetCol = (source, searchStrs, rowKeys = []) => {
       const cols = datasets[source]?.columns || [];
-      const lowerCols = cols.map(c => ({ original: c, lower: c.toLowerCase().trim() }));
+      const allCols = Array.from(new Set([...cols, ...rowKeys]));
+      const lowerCols = allCols.map(c => ({ original: c, lower: c.toLowerCase().trim() }));
       for (const s of searchStrs) {
         const match = lowerCols.find(c => c.lower === s);
         if (match) return match.original;
@@ -434,23 +435,26 @@ const ProductivityAchievement = () => {
       return null;
     };
 
-    const colsMap = {
-      ticketAuto: {
-        nop: getDatasetCol('ticketAuto', ['nop']),
-        pic: getDatasetCol('ticketAuto', ['pic take over ticket', 'pic take over', 'pic', 'nama karyawan'])
-      },
-      ticketFna: {
-        nop: getDatasetCol('ticketFna', ['nop']),
-        pic: getDatasetCol('ticketFna', ['pic take over ticket', 'pic take over', 'pic', 'nama karyawan'])
-      },
-      pmSite: {
-        nop: getDatasetCol('pmSite', ['nop']),
-        pic: getDatasetCol('pmSite', ['pic', 'nama karyawan', 'nama'])
-      },
-      pmGenset: {
-        nop: getDatasetCol('pmGenset', ['nop']),
-        pic: getDatasetCol('pmGenset', ['pic', 'nama karyawan', 'nama'])
-      }
+    const getColsMap = (row) => {
+      const rowKeys = Object.keys(row);
+      return {
+        ticketAuto: {
+          nop: getDatasetCol('ticketAuto', ['nop'], rowKeys),
+          pic: getDatasetCol('ticketAuto', ['pic take over ticket', 'pic take over', 'pic', 'nama karyawan'], rowKeys)
+        },
+        ticketFna: {
+          nop: getDatasetCol('ticketFna', ['nop'], rowKeys),
+          pic: getDatasetCol('ticketFna', ['pic take over ticket', 'pic take over', 'pic', 'nama karyawan'], rowKeys)
+        },
+        pmSite: {
+          nop: getDatasetCol('pmSite', ['nop'], rowKeys),
+          pic: getDatasetCol('pmSite', ['pic', 'nama karyawan', 'nama'], rowKeys)
+        },
+        pmGenset: {
+          nop: getDatasetCol('pmGenset', ['nop'], rowKeys),
+          pic: getDatasetCol('pmGenset', ['pic', 'nama karyawan', 'nama'], rowKeys)
+        }
+      };
     };
 
     const enrichedData = activeData.map(row => {
@@ -459,6 +463,7 @@ const ProductivityAchievement = () => {
       let picKey1 = null;
       let picKey2 = null;
       
+      const colsMap = getColsMap(row);
       const sourceCols = colsMap[row._source];
       if (sourceCols) {
         const nopCol = sourceCols.nop;
