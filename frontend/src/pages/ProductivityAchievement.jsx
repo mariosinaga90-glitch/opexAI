@@ -1377,7 +1377,7 @@ const ProductivityAchievement = () => {
                 {/* Productivity Table */}
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity</h3>
-                  <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
@@ -1470,7 +1470,7 @@ const ProductivityAchievement = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto</h3>
-                  <div style={{ overflowX: 'auto', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
@@ -1518,7 +1518,7 @@ const ProductivityAchievement = () => {
               <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket FNA</h3>
-                  <div style={{ overflowX: 'auto', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
+                  <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
                       <thead>
                         <tr>
