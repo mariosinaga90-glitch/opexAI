@@ -1121,3 +1121,43 @@ textarea.form-control {
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Productivity Achievement Mobile Hacks */
+@media (max-width: 768px) {
+  .prod-header {
+    flex-wrap: wrap !important;
+    align-items: flex-start !important;
+  }
+  .prod-nav-tabs {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding-bottom: 0.25rem !important;
+  }
+  .prod-nav-tabs button {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+  }
+  /* Show custom scrollbar for tabs on mobile */
+  .prod-nav-tabs::-webkit-scrollbar {
+    height: 4px;
+  }
+  .prod-nav-tabs::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+  }
+  .prod-nav-tabs::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+  .prod-raw-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)) !important;
+  }
+  .prod-kpi-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)) !important;
+  }
+  .prod-donut-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  }
+  .prod-table-wrapper {
+    flex: 1 1 100% !important;
+  }
+}

@@ -1302,7 +1302,7 @@ const ProductivityAchievement = () => {
       )}
 
       {/* Header */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+      <header className="prod-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white' }}>
           <Activity className="text-primary" /> Productivity & Analytics
         </h1>
@@ -1330,16 +1330,16 @@ const ProductivityAchievement = () => {
       {error && <div style={{ padding: '1rem', backgroundColor: 'rgba(239, 68, 68, 0.2)', border: '1px solid #ef4444', color: '#fca5a5', borderRadius: '8px', marginBottom: '1rem' }}>{error}</div>}
 
       {/* Navigation Tabs */}
-      <div className="custom-scrollbar" style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)', overflowX: 'auto', WebkitOverflowScrolling: 'touch', paddingBottom: '0.25rem' }}>
+      <div className="prod-nav-tabs" style={{ display: 'flex', gap: '1rem', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
         {!isEmployee && (
-          <button onClick={() => setActiveTab('raw_data')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'raw_data' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'raw_data' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', flexShrink: 0 }}>
+          <button onClick={() => setActiveTab('raw_data')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'raw_data' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'raw_data' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <TableIcon size={16} /> RAW Data
           </button>
         )}
-        <button onClick={() => setActiveTab('dashboard_fme')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'dashboard_fme' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'dashboard_fme' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', flexShrink: 0 }}>
+        <button onClick={() => setActiveTab('dashboard_fme')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'dashboard_fme' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'dashboard_fme' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <LayoutGrid size={16} /> Dashboard FME
         </button>
-        <button onClick={() => setActiveTab('achievement_pm')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'achievement_pm' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'achievement_pm' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', flexShrink: 0 }}>
+        <button onClick={() => setActiveTab('achievement_pm')} style={{ padding: '0.5rem 1rem', background: 'none', border: 'none', borderBottom: activeTab === 'achievement_pm' ? '2px solid var(--primary-color)' : '2px solid transparent', color: activeTab === 'achievement_pm' ? 'white' : 'var(--text-muted)', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Activity size={16} /> Achievement PM
         </button>
       </div>
@@ -1416,7 +1416,7 @@ const ProductivityAchievement = () => {
           </div>
 
           {/* RAW DATA UPLOAD SECTIONS */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))', gap: '1.5rem' }}>
+          <div className="prod-raw-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', paddingRight: '0.5rem' }}>
           {DATASET_CONFIGS.map(config => {
             const ds = datasets[config.id];
             const hasData = ds.data.length > 0;
@@ -1487,9 +1487,9 @@ const ProductivityAchievement = () => {
         fmeData.length > 0 ? (
           <div ref={dashboardRef} className="export-container animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#0b1120', padding: '0.5rem' }}>
             
-            {/* Top KPIs Grid */}
+            {/* Top KPIs */}
             {renderLayoutWrapper('top-kpis',
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 150px), 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+              <div className="prod-kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                   <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Total Records</span>
                   <span style={{ fontSize: '1.75rem', fontWeight: 700, color: 'white' }}>{topKpis.count.toLocaleString('id-ID')}</span>
@@ -1515,7 +1515,7 @@ const ProductivityAchievement = () => {
 
             {/* Middle Section: 2 Donut Charts */}
             {renderLayoutWrapper('donuts',
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
+              <div className="prod-donut-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1rem' }}>
                 {/* Donut Chart 1: Total Ticket */}
                 <div className="glass-panel" style={{ padding: '1rem', height: '300px', display: 'flex', flexDirection: 'column' }}>
                   <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '0.875rem', color: 'white', textAlign: 'center' }}>Total Ticket</h3>
@@ -1608,7 +1608,7 @@ const ProductivityAchievement = () => {
                 {/* Container for Productivity Table and Summary Team */}
                 <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'stretch' }}>
                   {/* Productivity Table */}
-                  <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0, flex: '1 1 100%' }}>
+                  <div className="glass-panel prod-table-wrapper" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0, flex: '1 1 600px' }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Productivity</h3>
                   <div style={{ overflowX: 'auto', overflowY: 'auto', flex: 1, maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch' }} className="custom-scrollbar">
                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0, color: 'white', fontSize: '0.75rem' }}>
