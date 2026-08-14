@@ -37,7 +37,7 @@ COPY backend/drizzle.config.js ./
 FROM node:20-alpine AS production
 
 # Install fonts for sharp SVG text rendering (prebuilt vips needs system fonts)
-RUN apk add --no-cache fontconfig font-noto
+RUN apk add --no-cache fontconfig ttf-dejavu
 
 WORKDIR /app
 
