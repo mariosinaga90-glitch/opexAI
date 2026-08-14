@@ -1485,7 +1485,7 @@ const ProductivityAchievement = () => {
         </div>
       ) : activeTab === 'dashboard_fme' ? (
         fmeData.length > 0 ? (
-          <div ref={dashboardRef} className="export-container animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: '#0b1120', padding: '0.5rem' }}>
+          <div ref={dashboardRef} className="export-container animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', background: '#0b1120', padding: '0.5rem' }}>
             
             {/* Top KPIs */}
             {renderLayoutWrapper('top-kpis',
@@ -1749,7 +1749,7 @@ const ProductivityAchievement = () => {
             )}
                        {/* Combined Ticket Auto + FNA Pivot Table */}
             {renderLayoutWrapper('pivot-table',
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '0.25rem', marginTop: '0.25rem' }}>
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto + FNA</h3>
                   <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
@@ -1800,7 +1800,7 @@ const ProductivityAchievement = () => {
             
             {/* Productivity Team Pivot Table */}
             {renderLayoutWrapper('raw-auto',
-              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '1rem', marginTop: '1rem' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr)', gap: '0.25rem', marginTop: '0.25rem' }}>
                 <div className="glass-panel" style={{ padding: '1rem', display: 'flex', flexDirection: 'column', minWidth: 0 }}>
                   <h3 style={{ margin: '0 0 1rem 0', fontSize: '1rem', color: 'white' }}>Ticket Auto</h3>
                   <div style={{ overflowX: 'auto', overflowY: 'auto', maxHeight: '480px', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '6px', WebkitOverflowScrolling: 'touch', position: 'relative' }} className="custom-scrollbar">
