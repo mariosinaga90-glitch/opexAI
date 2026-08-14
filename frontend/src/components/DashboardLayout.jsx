@@ -7,7 +7,7 @@ import '../pages/Dashboard.css';
 function DashboardLayout({ role }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 768);
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [installPrompt, setInstallPrompt] = useState(null);
@@ -27,10 +27,20 @@ function DashboardLayout({ role }) {
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
+    
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       document.removeEventListener('mousedown', handleClickOutside);
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -89,7 +99,11 @@ function DashboardLayout({ role }) {
 
   const navItems = role === 'admin' ? adminNav : employeeNav;
   
-  const closeSidebar = () => setIsSidebarOpen(false);
+  const closeSidebar = () => {
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   const handleLogout = (e) => {
     if (e) e.preventDefault();
@@ -122,10 +136,10 @@ function DashboardLayout({ role }) {
       <div className="mockup-glow"></div>
       
       {/* Mobile Overlay */}
-      {isSidebarOpen && (
+      {isSidebarOpen && window.innerWidth <= 768 && (
         <div 
           className="sidebar-overlay" 
-          onClick={closeSidebar}
+          onClick={() => setIsSidebarOpen(false)}
           style={{
             position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
             backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 5, backdropFilter: 'blur(4px)'
@@ -134,17 +148,15 @@ function DashboardLayout({ role }) {
       )}
 
       {/* Sidebar */}
-      <aside className={`dashboard-sidebar glass-panel animate-fade-in-up ${isSidebarOpen ? 'open' : ''}`}>
+      <aside className={`dashboard-sidebar glass-panel animate-fade-in-up ${isSidebarOpen ? 'open' : 'collapsed'}`}>
         <div className="sidebar-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="logo-container">
             <span className="logo-text">Opex</span>
             <span className="logo-badge">Tac</span>
           </div>
-          {isSidebarOpen && (
-            <button className="mobile-toggle" onClick={closeSidebar}>
-              <X size={24} />
-            </button>
-          )}
+          <button className="mobile-toggle" onClick={() => setIsSidebarOpen(false)}>
+            <X size={24} />
+          </button>
         </div>
         
         <nav className="sidebar-nav">
@@ -198,7 +210,7 @@ function DashboardLayout({ role }) {
         {/* Topbar */}
         <header className="dashboard-topbar glass-panel animate-fade-in-up delay-1">
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <button className="mobile-toggle" onClick={() => setIsSidebarOpen(true)}>
+            <button className="mobile-toggle" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
               <Menu size={24} />
             </button>
             <div className="search-wrapper">
